@@ -14,6 +14,8 @@ type Device = {
   last_automated_sync: string
   last_clinical_review: string | null
   specialty_link: string
+  mode: string
+  autonomy: string
   manufacturers: { name: string; hq_location: string }
   regional_registrations: { country: string; regulatory_body: string; clearance_type: string }[]
 }
