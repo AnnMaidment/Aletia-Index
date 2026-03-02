@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Search, Shield, ShieldCheck, ShieldAlert, Filter, ExternalLink, Clock, CheckCircle } from 'lucide-react'
 
 type Device = {
   device_id: string
@@ -18,14 +17,7 @@ type Device = {
   autonomy: string
   manufacturers: { name: string; hq_location: string }
   regional_registrations: { country: string; regulatory_body: string; clearance_type: string }[]
-}
-
-const TIER_LABELS: Record<number, string> = {
-  1: 'Clinical Decision Support',
-  2: 'Diagnostic Aid',
-  3: 'Diagnostic Decision',
-  4: 'Autonomous Screening',
-  5: 'Autonomous Action',
+  tech_specs: { api_type: string; ehr_compat: string; data_hosting: string; fhir_compatible: boolean; popia_compliant: boolean } | null
 }
 
 export default function Home() {
@@ -38,9 +30,7 @@ export default function Home() {
   const [selected, setSelected] = useState<Device | null>(null)
   const [specialties, setSpecialties] = useState<string[]>([])
 
-  useEffect(() => {
-    fetchDevices()
-  }, [])
+  useEffect(() => { fetchDevices() }, [])
 
   useEffect(() => {
     let result = devices
@@ -52,266 +42,511 @@ export default function Home() {
         d.specialty_link.toLowerCase().includes(search.toLowerCase())
       )
     }
-    if (specialtyFilter !== 'All') {
-      result = result.filter(d => d.specialty_link === specialtyFilter)
-    }
-    if (statusFilter !== 'All') {
-      result = result.filter(d => d.health_status === statusFilter)
-    }
+    if (specialtyFilter !== 'All') result = result.filter(d => d.specialty_link === specialtyFilter)
+    if (statusFilter !== 'All') result = result.filter(d => d.health_status === statusFilter)
     setFiltered(result)
   }, [search, specialtyFilter, statusFilter, devices])
 
   async function fetchDevices() {
     const { data, error } = await supabase
       .from('device_master')
-      .select(`
-        *,
-        manufacturers (name, hq_location),
-        regional_registrations (country, regulatory_body, clearance_type)
-      `)
+      .select(`*, manufacturers(name, hq_location), regional_registrations(country, regulatory_body, clearance_type), tech_specs(api_type, ehr_compat, data_hosting, fhir_compatible, popia_compliant)`)
     if (error) { console.error(error); setLoading(false); return }
     setDevices(data || [])
     setFiltered(data || [])
-    const specs = [...new Set((data || []).map((d: Device) => d.specialty_link))]
-    setSpecialties(specs)
+    setSpecialties([...new Set((data || []).map((d: Device) => d.specialty_link))])
     setLoading(false)
   }
 
-  const statusIcon = (status: string) => {
-    if (status === 'Green') return <ShieldCheck className="w-5 h-5 text-emerald-500" />
-    if (status === 'Red') return <ShieldAlert className="w-5 h-5 text-red-500" />
-    return <Shield className="w-5 h-5 text-amber-500" />
+  const riskBadge = (status: string) => {
+    if (status === 'Green') return { cls: 'badge ok', label: 'Lower' }
+    if (status === 'Red') return { cls: 'badge danger', label: 'Higher' }
+    return { cls: 'badge warn', label: 'Moderate' }
   }
 
-  const statusBadge = (status: string) => {
-    if (status === 'Green') return 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-    if (status === 'Red') return 'bg-red-50 text-red-700 border border-red-200'
-    return 'bg-amber-50 text-amber-700 border border-amber-200'
-  }
-
-  const tierColor = (tier: number) => {
-    if (tier <= 2) return 'bg-blue-50 text-blue-700'
-    if (tier === 3) return 'bg-purple-50 text-purple-700'
-    return 'bg-orange-50 text-orange-700'
+  const regBadge = (regs: Device['regional_registrations']) => {
+    if (!regs || regs.length === 0) return <span className="badge neutral">Unregistered</span>
+    return <span className="badge neutral">{regs.map(r => r.clearance_type).join(' • ')}</span>
   }
 
   const formatDate = (d: string | null) => {
-    if (!d) return 'Never'
-    return new Date(d).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' })
+    if (!d) return 'Not reviewed'
+    return new Date(d).toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' })
   }
 
+  const verifiedCount = devices.filter(d => d.aletia_verified).length
+  const sahpraCount = devices.filter(d => d.regional_registrations?.some(r => r.country === 'South Africa')).length
+  const greenCount = devices.filter(d => d.health_status === 'Green').length
+  const amberCount = devices.filter(d => d.health_status === 'Amber').length
+  const redCount = devices.filter(d => d.health_status === 'Red').length
+  const total = devices.length || 1
+  const greenDash = Math.round((greenCount / total) * 251)
+  const amberDash = Math.round((amberCount / total) * 251)
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-white" />
+    <>
+      <style>{`
+        :root {
+          --primary:#1f6feb; --primary2:#2b79ff;
+          --secondary:#0b7f7d; --secondary2:#0ea5a3;
+          --bg:#f5f7fb; --surface:#ffffff;
+          --text:#0f172a; --muted:#64748b;
+          --line:#e6ebf3; --shadow:0 10px 30px rgba(15,23,42,.08);
+          --shadow2:0 4px 16px rgba(15,23,42,.06);
+          --blue:#1f6feb; --blue2:#0ea5e9;
+          --chip:#f0f4ff; --chipText:#1e40af;
+          --successBg:#e9f9ef; --successText:#137a3b;
+          --warnBg:#fff4e5; --warnText:#a15c00;
+          --dangerBg:#ffecec; --dangerText:#9f1d1d;
+          --radius:14px; --radius2:18px;
+        }
+        *{box-sizing:border-box; margin:0; padding:0}
+        body{font-family:ui-sans-serif,system-ui,-apple-system,sans-serif; background:radial-gradient(900px 500px at 80% -10%,rgba(31,111,235,.10),transparent 55%),radial-gradient(900px 500px at 10% 10%,rgba(14,165,233,.08),transparent 55%),var(--bg); color:var(--text); min-height:100vh}
+        a{color:inherit; text-decoration:none}
+        .container{max-width:1320px; margin:0 auto; padding:0 18px}
+        .topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+        .nav{height:68px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+        .brand{display:flex;align-items:center;gap:12px}
+        .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,rgba(31,111,235,.18),rgba(14,165,233,.18));border:1px solid rgba(31,111,235,.22);display:grid;place-items:center;box-shadow:var(--shadow2);overflow:hidden}
+        .brandName{font-weight:800;letter-spacing:.3px;font-size:15px}
+        .brandTag{font-size:12px;color:var(--muted);margin-top:2px}
+        .navlinks{display:flex;align-items:center;gap:18px}
+        .navlinks a{font-size:14px;color:#334155;padding:8px 10px;border-radius:10px}
+        .navlinks a:hover{background:#f1f5ff}
+        .navlinks a.active{color:var(--primary);background:#eef4ff}
+        .navRight{display:flex;align-items:center;gap:10px}
+        .iconBtn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer}
+        .primaryBtn{background:linear-gradient(180deg,var(--primary2),var(--primary));color:white;padding:10px 14px;border-radius:12px;font-weight:700;font-size:14px;box-shadow:0 10px 18px rgba(31,111,235,.18);border:none;cursor:pointer}
+        .primaryBtn:hover{filter:brightness(1.03)}
+        .secondaryBtn{padding:11px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600;color:#334155;cursor:pointer;font-size:14px}
+        .secondaryBtn:hover{box-shadow:var(--shadow2)}
+        .page{padding:34px 0 60px}
+        .h1{font-size:40px;letter-spacing:-.02em;font-weight:800}
+        .subhead{margin:10px 0 0;color:var(--muted);font-size:16px;line-height:1.55;max-width:70ch}
+        .pageBand{margin:-34px -18px 0;padding:34px 18px 18px;border-radius:0 0 22px 22px;background:radial-gradient(1200px 520px at 12% 10%,rgba(14,165,163,.10),transparent 60%),radial-gradient(1200px 520px at 65% 0%,rgba(31,111,235,.10),transparent 62%);border-bottom:1px solid rgba(230,235,243,.9)}
+        .grid{margin-top:22px;display:grid;grid-template-columns:1.7fr 1fr;gap:18px}
+        @media(max-width:980px){.grid{grid-template-columns:1fr}.h1{font-size:34px}}
+        .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius2);box-shadow:var(--shadow)}
+        .cardPad{padding:18px}
+        .searchRow{margin-top:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+        .search{flex:1;min-width:240px;display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fbfcff}
+        .search input{width:100%;border:none;outline:none;background:transparent;font-size:14px}
+        .metaLine{margin-top:10px;color:var(--muted);font-size:13px;display:flex;gap:10px;align-items:center}
+        .pills{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+        .pill{background:var(--chip);border:1px solid rgba(31,111,235,.12);color:var(--chipText);padding:8px 10px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer}
+        .pill.light{background:#f8fafc;border:1px solid var(--line);color:#334155}
+        .pill.active{background:var(--primary);color:white;border-color:var(--primary)}
+        .table{width:100%;border-collapse:collapse}
+        .table th{text-align:left;font-size:12px;color:var(--muted);font-weight:700;padding:12px 14px;border-bottom:1px solid var(--line)}
+        .table td{padding:14px;border-bottom:1px solid var(--line);vertical-align:top}
+        .table tr:hover td{background:#f8faff;cursor:pointer}
+        .rowTitle{display:flex;gap:12px;align-items:center}
+        .appIcon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,rgba(31,111,235,.18),rgba(14,165,233,.14));border:1px solid rgba(31,111,235,.16);display:grid;place-items:center;flex:0 0 auto}
+        .appName{font-weight:800}
+        .appOrg{font-size:12px;color:var(--muted);margin-top:2px}
+        .small{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.45}
+        .badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid transparent;white-space:nowrap}
+        .badge.ok{background:var(--successBg);color:var(--successText);border-color:rgba(19,122,59,.18)}
+        .badge.warn{background:var(--warnBg);color:var(--warnText);border-color:rgba(161,92,0,.18)}
+        .badge.danger{background:var(--dangerBg);color:var(--dangerText);border-color:rgba(159,29,29,.18)}
+        .badge.neutral{background:#f1f5f9;color:#334155;border-color:rgba(100,116,139,.18)}
+        .badge.verified{background:var(--successBg);color:var(--successText);border-color:rgba(19,122,59,.18)}
+        .reportBtn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:14px;font-weight:800;font-size:13px;color:#ffffff;background:linear-gradient(180deg,var(--secondary2),var(--secondary));box-shadow:0 10px 16px rgba(14,165,163,.18);border:none;cursor:pointer}
+        .reportBtn:hover{filter:brightness(1.03)}
+        .kpi{display:flex;gap:12px;align-items:center;justify-content:space-between}
+        .kpi h3{font-size:14px}
+        .kpi p{margin:6px 0 0;color:var(--muted);font-size:12.5px;line-height:1.4}
+        .donutWrap{display:flex;gap:12px;align-items:center;margin-top:14px}
+        .legend{display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#334155}
+        .legendRow{display:flex;gap:10px;align-items:center}
+        .swatch{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+        hr.sep{border:none;border-top:1px solid var(--line);margin:16px 0}
+        .three{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        @media(max-width:980px){.three{grid-template-columns:1fr}}
+        .infoCard{padding:16px}
+        .infoTop{display:flex;gap:10px;align-items:flex-start}
+        .infoIcon{width:38px;height:38px;border-radius:12px;background:#eef4ff;border:1px solid rgba(31,111,235,.14);display:grid;place-items:center}
+        .infoCard h4{font-size:14px}
+        .infoCard p{margin:6px 0 0;color:var(--muted);font-size:12.8px;line-height:1.45}
+        .banner{margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px;background:linear-gradient(90deg,rgba(31,111,235,.08),rgba(14,165,233,.06));border:1px solid rgba(31,111,235,.14);border-radius:var(--radius2)}
+        .banner b{font-size:14px}
+        .banner span{color:var(--muted);font-size:13px}
+        .footer{border-top:1px solid var(--line);background:rgba(255,255,255,.7);padding:22px 0}
+        .footerGrid{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12.5px}
+        .footerLinks{display:flex;gap:14px;flex-wrap:wrap}
+        .footerLinks a{color:var(--muted)}
+        .footerLinks a:hover{color:var(--text)}
+        .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+        .modal{background:white;border-radius:22px;max-width:680px;width:100%;max-height:88vh;overflow-y:auto}
+        .modal-header{padding:24px 24px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start}
+        .modal-body{padding:24px}
+        .modal-section{margin-bottom:20px}
+        .modal-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+        .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+        .modal-row{background:#f8fafc;border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+        .closeBtn{background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1}
+      `}</style>
+
+      {/* NAV */}
+      <div className="topbar">
+        <div className="container">
+          <div className="nav">
+            <a className="brand" href="/">
+              <div className="logo">
+                <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+                  <path d="M12 3 4 21h4l1.3-3h5.4L16 21h4L12 3Zm1.6 10H10.4L12 8.6 13.6 13Z" fill="#1f6feb"/>
+                </svg>
+              </div>
+              <div>
+                <div className="brandName">ALETIA <span style={{color:'var(--blue)',fontWeight:800}}>INDEX</span></div>
+                <div className="brandTag">Clinical assurance for digital health</div>
+              </div>
+            </a>
+            <div className="navlinks">
+              <a href="/" className="active">Index</a>
+              <a href="#">Methodology</a>
+              <a href="#">Insights</a>
+              <a href="#">For Clinicians</a>
             </div>
-            <div>
-              <h1 className="text-lg font-bold text-gray-900">Aletia Index</h1>
-              <p className="text-xs text-gray-500">AI/ML Medical Device Registry</p>
+            <div className="navRight">
+              <button className="iconBtn" aria-label="Search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#334155" strokeWidth="1.8"/>
+                  <path d="M16.2 16.2 21 21" stroke="#334155" strokeWidth="1.8" strokeLinecap="round"/>
+                </svg>
+              </button>
+              <button className="primaryBtn">Request Review</button>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500">{filtered.length} devices</span>
-            <button className="bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-              Submit Device
-            </button>
           </div>
         </div>
-      </header>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search & Filters */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 flex flex-wrap gap-3">
-          <div className="flex-1 min-w-64 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search devices, manufacturers, conditions..."
-              className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
+      {/* MAIN */}
+      <main className="page">
+        <div className="container">
+          <div className="pageBand" style={{margin:'-34px -18px 0',padding:'34px 18px 18px',borderRadius:'0 0 22px 22px'}}>
+            <h1 className="h1">Assessment Listings</h1>
+            <p className="subhead">Independent clinical assurance for digital health tools.</p>
           </div>
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-400" />
-            <select
-              className="border border-gray-200 rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={specialtyFilter}
-              onChange={e => setSpecialtyFilter(e.target.value)}
-            >
-              <option value="All">All Specialties</option>
-              {specialties.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-            <select
-              className="border border-gray-200 rounded-lg text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value)}
-            >
-              <option value="All">All Statuses</option>
-              <option value="Green">Green</option>
-              <option value="Amber">Amber</option>
-              <option value="Red">Red</option>
-            </select>
-          </div>
-        </div>
 
-        {/* Stats bar */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          {[
-            { label: 'Total Devices', value: devices.length, color: 'text-gray-900' },
-            { label: 'Aletia Verified', value: devices.filter(d => d.aletia_verified).length, color: 'text-emerald-600' },
-            { label: 'SAHPRA Registered', value: devices.filter(d => d.regional_registrations?.some(r => r.country === 'South Africa')).length, color: 'text-indigo-600' },
-          ].map(stat => (
-            <div key={stat.label} className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-              <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-              <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
-            </div>
-          ))}
-        </div>
+          <div className="grid">
+            {/* LEFT: TABLE */}
+            <section className="card cardPad">
+              <div className="searchRow">
+                <div className="search">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#334155" strokeWidth="1.8"/>
+                    <path d="M16.2 16.2 21 21" stroke="#334155" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
+                  <input
+                    placeholder="Search by technology name, use case, developer, regulatory class…"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                  />
+                </div>
+                <select
+                  className="secondaryBtn"
+                  value={specialtyFilter}
+                  onChange={e => setSpecialtyFilter(e.target.value)}
+                  style={{padding:'11px 12px'}}
+                >
+                  <option value="All">All Specialties</option>
+                  {specialties.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
 
-        {/* Device Grid */}
-        {loading ? (
-          <div className="text-center py-20 text-gray-400">Loading devices...</div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">No devices found.</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map(device => (
-              <div
-                key={device.device_id}
-                className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md hover:border-indigo-200 transition cursor-pointer"
-                onClick={() => setSelected(device)}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      {statusIcon(device.health_status)}
-                      <span className="text-xs font-mono text-gray-400">{device.device_id}</span>
+              <div className="metaLine">
+                <span style={{display:'inline-flex',alignItems:'center',gap:'8px'}}>
+                  <span style={{width:'8px',height:'8px',borderRadius:'99px',background:'var(--blue)',display:'inline-block'}}></span>
+                  <b style={{color:'var(--text)'}}>{filtered.length}</b> Technologies listed
+                </span>
+              </div>
+
+              <div className="pills">
+                {['All','Green','Amber','Red'].map(s => (
+                  <span
+                    key={s}
+                    className={`pill light ${statusFilter === s ? 'active' : ''}`}
+                    onClick={() => setStatusFilter(s)}
+                  >{s === 'All' ? 'All' : `${s} Status`}</span>
+                ))}
+                <span className="pill light">AI/ML</span>
+                <span className="pill light">Clinical Apps</span>
+              </div>
+
+              <div style={{marginTop:'14px',overflow:'auto',borderRadius:'16px',border:'1px solid var(--line)'}}>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th style={{minWidth:'280px'}}>Tool</th>
+                      <th style={{minWidth:'160px'}}>Use Case</th>
+                      <th style={{minWidth:'190px'}}>Regulatory Status</th>
+                      <th style={{minWidth:'110px'}}>Risk</th>
+                      <th style={{minWidth:'200px'}}>Lifecycle Signals</th>
+                      <th style={{minWidth:'120px',textAlign:'right'}}> </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ? (
+                      <tr><td colSpan={6} style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>Loading devices...</td></tr>
+                    ) : filtered.length === 0 ? (
+                      <tr><td colSpan={6} style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>No devices found.</td></tr>
+                    ) : filtered.map(device => {
+                      const risk = riskBadge(device.health_status)
+                      return (
+                        <tr key={device.device_id} onClick={() => setSelected(device)}>
+                          <td>
+                            <div className="rowTitle">
+                              <div className="appIcon">
+                                <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                                  <path d="M12 3 4 21h4l1.3-3h5.4L16 21h4L12 3Zm1.6 10H10.4L12 8.6 13.6 13Z" fill="#1f6feb"/>
+                                </svg>
+                              </div>
+                              <div>
+                                <div className="appName">{device.manufacturers?.name}</div>
+                                <div className="appOrg">{device.device_id}</div>
+                                <div className="small">{device.intended_use}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>{device.specialty_link}</td>
+                          <td>{regBadge(device.regional_registrations)}</td>
+                          <td><span className={risk.cls}>{risk.label}</span></td>
+                          <td>
+                            <div><b>Reviewed {formatDate(device.last_clinical_review)}</b></div>
+                            <div className="small">
+                              {device.aletia_verified ? '✓ Aletia Verified' : 'Pending verification'}
+                            </div>
+                          </td>
+                          <td style={{textAlign:'right'}}>
+                            <button className="reportBtn" onClick={e => { e.stopPropagation(); setSelected(device) }}>
+                              See Report
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="three">
+                <div className="card infoCard">
+                  <div className="infoTop">
+                    <div className="infoIcon">
+                      <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                        <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke="#1f6feb" strokeWidth="1.8"/>
+                        <path d="M8 8h8M8 12h8M8 16h6" stroke="#1f6feb" strokeWidth="1.8" strokeLinecap="round"/>
+                      </svg>
                     </div>
-                    <h3 className="font-semibold text-gray-900 text-sm leading-tight">
-                      {device.manufacturers?.name}
-                    </h3>
-                    <p className="text-xs text-gray-500">{device.manufacturers?.hq_location}</p>
+                    <div>
+                      <h4>Structured Assessment</h4>
+                      <p>Documented review of regulatory posture, evidence claims, and post‑market oversight signals.</p>
+                    </div>
                   </div>
-                  {device.aletia_verified && (
-                    <div className="flex items-center gap-1 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-0.5">
-                      <CheckCircle className="w-3 h-3 text-emerald-600" />
-                      <span className="text-xs text-emerald-700 font-medium">Verified</span>
+                </div>
+                <div className="card infoCard">
+                  <div className="infoTop">
+                    <div className="infoIcon">
+                      <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                        <path d="M12 3v18M3 12h18" stroke="#0ea5e9" strokeWidth="1.8" strokeLinecap="round"/>
+                        <path d="M6 16c2 2 4 3 6 3s4-1 6-3" stroke="#0ea5e9" strokeWidth="1.8" strokeLinecap="round"/>
+                      </svg>
                     </div>
-                  )}
+                    <div>
+                      <h4>Evidence Signals</h4>
+                      <p>Summary of validation data, stability, and outcomes evidence—kept readable for clinicians.</p>
+                    </div>
+                  </div>
                 </div>
-
-                <p className="text-xs text-gray-600 mb-3 line-clamp-2">{device.intended_use}</p>
-
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">{device.specialty_link}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${tierColor(device.accountability_tier)}`}>
-                    Tier {device.accountability_tier}: {TIER_LABELS[device.accountability_tier]}
-                  </span>
+                <div className="card infoCard">
+                  <div className="infoTop">
+                    <div className="infoIcon">
+                      <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                        <path d="M4 7h16M4 12h16M4 17h16" stroke="#1f6feb" strokeWidth="1.8" strokeLinecap="round"/>
+                        <path d="M7 7v10" stroke="#0ea5e9" strokeWidth="1.8" strokeLinecap="round"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4>Lifecycle Transparency</h4>
+                      <p>Indicators for change control, monitoring, and transparency practices across the product lifecycle.</p>
+                    </div>
+                  </div>
                 </div>
+              </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${statusBadge(device.health_status)}`}>
-                    {device.health_status} Status
-                  </span>
-                  <div className="flex gap-1">
-                    {device.regional_registrations?.map(r => (
-                      <span key={r.regulatory_body} className="text-xs px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded">
-                        {r.regulatory_body}
-                      </span>
+              <div className="banner">
+                <div>
+                  <b>Transparent Methodology</b><br/>
+                  <span>We publish evaluation criteria, assessment process, and evidence grading standards.</span>
+                </div>
+                <button className="secondaryBtn">View methodology</button>
+              </div>
+            </section>
+
+            {/* RIGHT: SIDEBAR */}
+            <aside className="card cardPad">
+              <div className="kpi">
+                <div>
+                  <h3>Analysis Overview</h3>
+                  <p>Distribution across listing categories.</p>
+                </div>
+              </div>
+
+              <div className="donutWrap">
+                <svg width="132" height="132" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="40" fill="none" stroke="#e6ebf3" strokeWidth="16"/>
+                  <circle cx="60" cy="60" r="40" fill="none" stroke="#1f6feb" strokeWidth="16"
+                    strokeDasharray={`${greenDash} 251`} strokeDashoffset="0"
+                    transform="rotate(-90 60 60)"/>
+                  <circle cx="60" cy="60" r="40" fill="none" stroke="#f59e0b" strokeWidth="16"
+                    strokeDasharray={`${amberDash} 251`} strokeDashoffset={`-${greenDash}`}
+                    transform="rotate(-90 60 60)"/>
+                  <circle cx="60" cy="60" r="28" fill="white"/>
+                  <text x="60" y="56" textAnchor="middle" fontSize="13" fontWeight="800" fill="#0f172a">{devices.length}</text>
+                  <text x="60" y="68" textAnchor="middle" fontSize="9" fill="#64748b">devices</text>
+                </svg>
+                <div className="legend">
+                  <div className="legendRow"><span className="swatch" style={{background:'#1f6feb'}}></span> {greenCount} • Green Status</div>
+                  <div className="legendRow"><span className="swatch" style={{background:'#f59e0b'}}></span> {amberCount} • Amber Status</div>
+                  <div className="legendRow"><span className="swatch" style={{background:'#ef4444'}}></span> {redCount} • Red Status</div>
+                  <div className="legendRow"><span className="swatch" style={{background:'#10b981'}}></span> {verifiedCount} • Aletia Verified</div>
+                  <div className="legendRow"><span className="swatch" style={{background:'#6366f1'}}></span> {sahpraCount} • SAHPRA</div>
+                </div>
+              </div>
+
+              <hr className="sep"/>
+
+              <div className="card" style={{boxShadow:'none'}}>
+                <div className="cardPad">
+                  <div style={{fontSize:'12px',color:'var(--muted)',fontWeight:800,letterSpacing:'.08em'}}>QUICK FILTERS</div>
+                  <div className="pills" style={{marginTop:'10px'}}>
+                    {['SaMD','FDA Cleared','CE Marked','SAHPRA','Mental Health'].map(f => (
+                      <span key={f} className="pill" onClick={() => setSearch(f)}>{f}</span>
                     ))}
                   </div>
+                  <div style={{marginTop:'14px',fontSize:'12px',color:'var(--muted)',fontWeight:800,letterSpacing:'.08em'}}>ABOUT</div>
+                  <p className="small" style={{marginTop:'8px'}}>
+                    The Aletia Index provides independent clinical assurance for AI/ML medical devices. Data is verified by our clinical team against the 10-Point Assurance Checklist.
+                  </p>
                 </div>
               </div>
-            ))}
+            </aside>
           </div>
-        )}
+        </div>
       </main>
 
-      {/* Device Detail Modal */}
-      {selected && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelected(null)}>
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <div className="p-6 border-b border-gray-100">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    {statusIcon(selected.health_status)}
-                    <span className="font-mono text-sm text-gray-400">{selected.device_id}</span>
-                    {selected.aletia_verified && (
-                      <span className="flex items-center gap-1 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-0.5 text-xs text-emerald-700 font-medium">
-                        <CheckCircle className="w-3 h-3" /> Aletia Verified
-                      </span>
-                    )}
-                  </div>
-                  <h2 className="text-xl font-bold text-gray-900">{selected.manufacturers?.name}</h2>
-                  <p className="text-sm text-gray-500">{selected.manufacturers?.hq_location}</p>
+      {/* FOOTER */}
+      <footer className="footer">
+        <div className="container">
+          <div className="footerGrid">
+            <div>
+              <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+                <div className="logo" style={{width:'34px',height:'34px',borderRadius:'11px',boxShadow:'none'}}>
+                  <svg viewBox="0 0 24 24" fill="none" width="22" height="22">
+                    <path d="M12 3 4 21h4l1.3-3h5.4L16 21h4L12 3Zm1.6 10H10.4L12 8.6 13.6 13Z" fill="#1f6feb"/>
+                  </svg>
                 </div>
-                <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-xl font-light">✕</button>
+                <div>
+                  <div style={{fontWeight:800,color:'var(--text)',letterSpacing:'.3px'}}>Aletia Index</div>
+                  <div>Clinical assurance for digital health tools</div>
+                </div>
               </div>
+              <div style={{marginTop:'10px',maxWidth:'70ch'}}>
+                We independently evaluate health technologies against structured assurance criteria. We do not endorse, certify, or validate clinical outcomes.
+              </div>
+              <div style={{marginTop:'10px'}}>© {new Date().getFullYear()} Aletia Index. All rights reserved.</div>
             </div>
+            <div className="footerLinks">
+              <a href="#">About</a>
+              <a href="#">Methodology</a>
+              <a href="#">Request Review</a>
+              <a href="#">Privacy</a>
+              <a href="#">Terms</a>
+            </div>
+          </div>
+        </div>
+      </footer>
 
-            <div className="p-6 space-y-5">
+      {/* MODAL */}
+      {selected && (
+        <div className="modal-overlay" onClick={() => setSelected(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
               <div>
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Intended Use</h3>
-                <p className="text-sm text-gray-700">{selected.intended_use}</p>
+                <div style={{display:'flex',gap:'8px',alignItems:'center',marginBottom:'6px',flexWrap:'wrap'}}>
+                  <span className="badge neutral">{selected.device_id}</span>
+                  {selected.aletia_verified && <span className="badge verified">✓ Aletia Verified</span>}
+                  <span className={riskBadge(selected.health_status).cls}>{riskBadge(selected.health_status).label} Risk</span>
+                </div>
+                <h2 style={{fontSize:'20px',fontWeight:900}}>{selected.manufacturers?.name}</h2>
+                <p style={{color:'var(--muted)',fontSize:'13px',marginTop:'4px'}}>{selected.manufacturers?.hq_location}</p>
               </div>
-
-              <div className="grid grid-cols-2 gap-4">
+              <button className="closeBtn" onClick={() => setSelected(null)}>✕</button>
+            </div>
+            <div className="modal-body">
+              <div className="modal-section">
+                <div className="modal-label">Intended Use</div>
+                <p style={{fontSize:'14px',color:'var(--text)',lineHeight:1.6}}>{selected.intended_use}</p>
+              </div>
+              <div className="modal-grid">
                 <div>
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Specialty</h3>
-                  <p className="text-sm text-gray-700">{selected.specialty_link}</p>
+                  <div className="modal-label">Specialty</div>
+                  <p style={{fontSize:'14px'}}>{selected.specialty_link}</p>
                 </div>
                 <div>
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">AI Type</h3>
-                  <p className="text-sm text-gray-700">{selected.ai_ml_type}</p>
+                  <div className="modal-label">AI Type</div>
+                  <p style={{fontSize:'14px'}}>{selected.ai_ml_type}</p>
                 </div>
                 <div>
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Autonomy Level</h3>
-                  <p className="text-sm text-gray-700">Tier {selected.accountability_tier}: {TIER_LABELS[selected.accountability_tier]}</p>
+                  <div className="modal-label">Mode</div>
+                  <p style={{fontSize:'14px'}}>{selected.mode} / {selected.autonomy}</p>
                 </div>
                 <div>
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Mode</h3>
-                  <p className="text-sm text-gray-700">{selected.mode} / {selected.autonomy}</p>
+                  <div className="modal-label">Accountability Tier</div>
+                  <p style={{fontSize:'14px'}}>Tier {selected.accountability_tier}</p>
                 </div>
               </div>
-
-              <div>
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Regulatory Registrations</h3>
-                <div className="space-y-2">
-                  {selected.regional_registrations?.map(r => (
-                    <div key={r.regulatory_body} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
-                      <span className="text-sm font-medium text-gray-700">{r.country}</span>
-                      <span className="text-xs text-indigo-600 font-medium">{r.regulatory_body}</span>
-                      <span className="text-xs text-gray-500">{r.clearance_type}</span>
+              <hr className="sep"/>
+              <div className="modal-section">
+                <div className="modal-label">Regulatory Registrations</div>
+                {selected.regional_registrations?.map(r => (
+                  <div key={r.regulatory_body} className="modal-row" style={{marginTop:'8px'}}>
+                    <span style={{fontSize:'13px',fontWeight:600}}>{r.country}</span>
+                    <span style={{fontSize:'12px',color:'var(--primary)',fontWeight:700}}>{r.regulatory_body}</span>
+                    <span style={{fontSize:'12px',color:'var(--muted)'}}>{r.clearance_type}</span>
+                  </div>
+                ))}
+              </div>
+              {selected.tech_specs && (
+                <>
+                  <hr className="sep"/>
+                  <div className="modal-section">
+                    <div className="modal-label">Technical Profile</div>
+                    <div className="modal-grid" style={{marginTop:'8px'}}>
+                      <div className="modal-row"><span style={{fontSize:'13px',color:'var(--muted)'}}>API Type</span><span style={{fontSize:'13px',fontWeight:600}}>{selected.tech_specs.api_type}</span></div>
+                      <div className="modal-row"><span style={{fontSize:'13px',color:'var(--muted)'}}>Hosting</span><span style={{fontSize:'13px',fontWeight:600}}>{selected.tech_specs.data_hosting}</span></div>
+                      <div className="modal-row"><span style={{fontSize:'13px',color:'var(--muted)'}}>FHIR</span><span style={{fontSize:'13px',fontWeight:600}}>{selected.tech_specs.fhir_compatible ? '✓ Yes' : '✗ No'}</span></div>
+                      <div className="modal-row"><span style={{fontSize:'13px',color:'var(--muted)'}}>POPIA</span><span style={{fontSize:'13px',fontWeight:600}}>{selected.tech_specs.popia_compliant ? '✓ Compliant' : '✗ No'}</span></div>
                     </div>
-                  ))}
+                  </div>
+                </>
+              )}
+              <hr className="sep"/>
+              <div className="modal-grid">
+                <div>
+                  <div className="modal-label">Last Automated Sync</div>
+                  <p style={{fontSize:'14px',fontWeight:600}}>{formatDate(selected.last_automated_sync)}</p>
                 </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2 flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> Data Freshness
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <p className="text-xs text-gray-500">Last Automated Sync</p>
-                    <p className="text-sm font-medium text-gray-700">{formatDate(selected.last_automated_sync)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Last Clinical Review</p>
-                    <p className="text-sm font-medium text-gray-700">{formatDate(selected.last_clinical_review)}</p>
-                  </div>
+                <div>
+                  <div className="modal-label">Last Clinical Review</div>
+                  <p style={{fontSize:'14px',fontWeight:600}}>{formatDate(selected.last_clinical_review)}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
