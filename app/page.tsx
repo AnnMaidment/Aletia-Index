@@ -297,19 +297,15 @@ export default function Home() {
 
             <div className="navlinks">
               <a href="/" className="active">Index</a>
-              <a href="#">Methodology</a>
-              <a href="#">Insights</a>
-              <a href="#">For Clinicians</a>
+              <a href="/methodology">Methodology</a>
+<a href="/insights">Insights</a>
+<a href="/clinicians">For Clinicians</a>
             </div>
+           
 
             <div className="navRight">
-              <button className="iconBtn" aria-label="Search">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-                  <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#334155" strokeWidth="1.8"/>
-                  <path d="M16.2 16.2 21 21" stroke="#334155" strokeWidth="1.8" strokeLinecap="round"/>
-                </svg>
               </button>
-              <button className="primaryBtn">Request Review</button>
+              <a href="/request-review" className="primaryBtn">Request Review</a>
               <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
                 <span></span><span></span><span></span>
               </button>
@@ -318,6 +314,7 @@ export default function Home() {
         </div>
       </div>
 
+      
       {/* Mobile menu */}
       <div className={`mobileMenu ${menuOpen ? 'open' : ''}`}>
         <a href="/" className="active" onClick={() => setMenuOpen(false)}>Index</a>
