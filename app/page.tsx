@@ -304,7 +304,7 @@ export default function Home() {
            
 
             <div className="navRight">
-              </button>
+             
               <a href="/request-review" className="primaryBtn">Request Review</a>
               <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
                 <span></span><span></span><span></span>

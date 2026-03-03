@@ -29,11 +29,11 @@ export default function Insights() {
           <h1 className="h1">Insights</h1>
           <p className="subhead">Short, practical write‑ups on clinical assurance, digital health governance, and implementation.</p>
           <div className="three">
-            {[
-              { title:"Reading an AI tool's evidence", desc:"What metrics matter, what "validation" really means, and how to spot weak claims." },
-              { title:"Lifecycle transparency", desc:'Change logs, monitoring, and what "responsible updates" look like for SaMD.' },
-              { title:"Regulatory posture in practice", desc:'How to interpret "cleared", "registered", and "pending" across jurisdictions.' },
-            ].map(item => (
+           {[
+  { title:"Reading an AI tool's evidence", desc:"What metrics matter, what validation really means, and how to spot weak claims." },
+  { title:"Lifecycle transparency", desc:"Change logs, monitoring, and what responsible updates look like for SaMD." },
+  { title:"Regulatory posture in practice", desc:"How to interpret cleared, registered, and pending across jurisdictions." },
+].map(item => (
               <article key={item.title} className="card infoCard">
                 <div className="infoTop">
                   <div className="infoIcon">
