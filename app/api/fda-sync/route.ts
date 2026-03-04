@@ -98,3 +98,61 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+// ── POST /api/fda-sync/seed — pull AI/ML devices from FDA and insert into Supabase ──
+
+export async function PUT(req: NextRequest) {
+  if (!isAuthorised(req)) {
+    return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
+  }
+
+  try {
+    const { searchAIMLDevices } = await import('@/lib/fda');
+    const { supabase } = await import('@/lib/supabase');
+
+    const devices = await searchAIMLDevices(20);
+
+    if (!devices.length) {
+      return NextResponse.json({ message: 'No devices returned from FDA' });
+    }
+
+    const rows = devices.map((d) => ({
+      device_id: d.k_number,
+      intended_use: d.device_name,
+      health_status: 'Amber',
+      aletia_verified: false,
+      last_automated_sync: new Date().toISOString(),
+      country_of_origin: 'US',
+    }));
+
+    const { error } = await supabase
+      .from('device_master')
+      .upsert(rows, { onConflict: 'device_id' });
+
+    if (error) throw new Error(error.message);
+
+    // Also insert regional registrations for each device
+    const regRows = devices.map((d) => ({
+      device_link: d.k_number,
+      country: 'US',
+      regulatory_body: 'FDA',
+      clearance_type: '510k',
+    }));
+
+    await supabase
+      .from('regional_registrations')
+      .upsert(regRows, { onConflict: 'device_link,country,regulatory_body' });
+
+    return NextResponse.json({
+      message: `${devices.length} devices seeded successfully`,
+      devices: devices.map((d) => ({
+        k_number: d.k_number,
+        device_name: d.device_name,
+        applicant: d.applicant,
+        decision_date: d.decision_date,
+      })),
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
