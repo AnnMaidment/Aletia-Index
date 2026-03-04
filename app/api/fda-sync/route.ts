@@ -69,28 +69,32 @@ export async function POST(req: NextRequest) {
 // ── GET /api/fda-sync — health check or bulk sync ─────────────────────────────
 
 export async function GET(req: NextRequest) {
-  if (!isAuthorised(req)) {
-    return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
-  }
+  try {
+    if (!isAuthorised(req)) {
+      return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
+    }
 
-  const isBulk = req.nextUrl.searchParams.get('bulk') === 'true';
+    const isBulk = req.nextUrl.searchParams.get('bulk') === 'true';
 
-  if (!isBulk) {
+    if (!isBulk) {
+      return NextResponse.json({
+        message: 'Aletia FDA Sync endpoint. POST with { device_id, k_number } to sync a device. GET with ?bulk=true to sync all.',
+      });
+    }
+
+    const results = await bulkSyncAllDevices();
+    const succeeded = results.filter((r) => r.success).length;
+    const recallAlerts = results.filter((r) => r.recall_alert).length;
+
     return NextResponse.json({
-      message:
-        'Aletia FDA Sync endpoint. POST with { device_id, k_number } to sync a device. GET with ?bulk=true to sync all.',
+      total: results.length,
+      succeeded,
+      failed: results.length - succeeded,
+      recall_alerts: recallAlerts,
+      results,
     });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const results = await bulkSyncAllDevices();
-  const succeeded = results.filter((r) => r.success).length;
-  const recallAlerts = results.filter((r) => r.recall_alert).length;
-
-  return NextResponse.json({
-    total: results.length,
-    succeeded,
-    failed: results.length - succeeded,
-    recall_alerts: recallAlerts,
-    results,
-  });
 }
