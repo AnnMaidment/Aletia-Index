@@ -305,53 +305,50 @@ export async function getClassificationByProductCode(
 // ── Bulk AI/ML Device Search ───────────────────────────────────────────────────
 
 /**
- * Search FDA 510(k) database for AI/ML Class II and III devices by name keywords.
+ * Search FDA 510(k) database for all AI/ML Class II and III devices.
+ * Fetches maximum 1000 from FDA, filters to Class II/III after.
  * Used to seed the Aletia Index with real devices automatically.
  */
-export async function searchAIMLDevices(
-  limit = 20
-): Promise<FDA510kResult[]> {
+export async function searchAIMLDevices(): Promise<FDA510kResult[]> {
   const results = await fdaFetch<Record<string, string>>('510k', {
-    search: [
-      'device_name:(AI OR "artificial intelligence" OR "machine learning" OR "deep learning")',
-      `device_class:(${ALLOWED_DEVICE_CLASSES.join(' OR ')})`,
-    ].join(' AND '),
-    limit: String(Math.min(limit, 100)),
+    search: 'device_name:(AI OR "artificial intelligence" OR "machine learning" OR "deep learning")',
+    limit: '1000',
   });
   if (!results) return [];
-  return results.map((r) => ({
-    k_number: r.k_number,
-    device_name: r.device_name,
-    applicant: r.applicant,
-    decision_date: r.decision_date,
-    decision_description: r.decision_description,
-    product_code: r.product_code,
-    clearance_type: '510k' as const,
-  }));
+
+  return results
+    .filter((r) => ALLOWED_DEVICE_CLASSES.includes(r.device_class))
+    .map((r) => ({
+      k_number: r.k_number,
+      device_name: r.device_name,
+      applicant: r.applicant,
+      decision_date: r.decision_date,
+      decision_description: r.decision_description,
+      product_code: r.product_code,
+      clearance_type: '510k' as const,
+    }));
 }
 
 /**
  * Search by known AI/ML FDA product codes — more precise than name search.
  * Catches devices that don't have "AI" in their name but are ML-based.
  */
-export async function searchAIMLByProductCodes(
-  limit = 20
-): Promise<FDA510kResult[]> {
+export async function searchAIMLByProductCodes(): Promise<FDA510kResult[]> {
   const results = await fdaFetch<Record<string, string>>('510k', {
-    search: [
-      `product_code:(${AIML_PRODUCT_CODES.join(' OR ')})`,
-      `device_class:(${ALLOWED_DEVICE_CLASSES.join(' OR ')})`,
-    ].join(' AND '),
-    limit: String(Math.min(limit, 100)),
+    search: `product_code:(${AIML_PRODUCT_CODES.join(' OR ')})`,
+    limit: '1000',
   });
   if (!results) return [];
-  return results.map((r) => ({
-    k_number: r.k_number,
-    device_name: r.device_name,
-    applicant: r.applicant,
-    decision_date: r.decision_date,
-    decision_description: r.decision_description,
-    product_code: r.product_code,
-    clearance_type: '510k' as const,
-  }));
+
+  return results
+    .filter((r) => ALLOWED_DEVICE_CLASSES.includes(r.device_class))
+    .map((r) => ({
+      k_number: r.k_number,
+      device_name: r.device_name,
+      applicant: r.applicant,
+      decision_date: r.decision_date,
+      decision_description: r.decision_description,
+      product_code: r.product_code,
+      clearance_type: '510k' as const,
+    }));
 }
