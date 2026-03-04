@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Aletia Index — Assessment Listings",
   description: "Independent clinical assurance for AI/ML medical devices. Transparent, data-driven verification for clinicians, NGOs, and manufacturers.",
+  verification: {
+    google: 'WxzYXPM6Sgp39A7XH2Tgo-RANlWRUJ08Vw7JNfiA9qI',
+  },
   openGraph: {
     title: "Aletia Index — Assessment Listings",
     description: "Independent clinical assurance for AI/ML medical devices.",
