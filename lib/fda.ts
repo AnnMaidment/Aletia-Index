@@ -301,12 +301,10 @@ export async function getClassificationByProductCode(
     definition: r.definition ?? '',
   };
 }
-
 // ── Bulk AI/ML Device Search ───────────────────────────────────────────────────
 
 /**
- * Search FDA 510(k) database for all AI/ML Class II and III devices.
- * Fetches maximum 1000 from FDA, filters to Class II/III after.
+ * Search FDA 510(k) database for all AI/ML devices by name keywords.
  * Used to seed the Aletia Index with real devices automatically.
  */
 export async function searchAIMLDevices(): Promise<FDA510kResult[]> {
@@ -316,17 +314,15 @@ export async function searchAIMLDevices(): Promise<FDA510kResult[]> {
   });
   if (!results) return [];
 
-  return results
-    .filter((r) => ALLOWED_DEVICE_CLASSES.includes(r.device_class))
-    .map((r) => ({
-      k_number: r.k_number,
-      device_name: r.device_name,
-      applicant: r.applicant,
-      decision_date: r.decision_date,
-      decision_description: r.decision_description,
-      product_code: r.product_code,
-      clearance_type: '510k' as const,
-    }));
+  return results.map((r) => ({
+    k_number: r.k_number,
+    device_name: r.device_name,
+    applicant: r.applicant,
+    decision_date: r.decision_date,
+    decision_description: r.decision_description,
+    product_code: r.product_code,
+    clearance_type: '510k' as const,
+  }));
 }
 
 /**
@@ -340,15 +336,13 @@ export async function searchAIMLByProductCodes(): Promise<FDA510kResult[]> {
   });
   if (!results) return [];
 
-  return results
-    .filter((r) => ALLOWED_DEVICE_CLASSES.includes(r.device_class))
-    .map((r) => ({
-      k_number: r.k_number,
-      device_name: r.device_name,
-      applicant: r.applicant,
-      decision_date: r.decision_date,
-      decision_description: r.decision_description,
-      product_code: r.product_code,
-      clearance_type: '510k' as const,
-    }));
+  return results.map((r) => ({
+    k_number: r.k_number,
+    device_name: r.device_name,
+    applicant: r.applicant,
+    decision_date: r.decision_date,
+    decision_description: r.decision_description,
+    product_code: r.product_code,
+    clearance_type: '510k' as const,
+  }));
 }
