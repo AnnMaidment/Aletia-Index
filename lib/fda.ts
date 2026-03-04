@@ -236,7 +236,7 @@ export async function getRecallsByKNumber(
   if (!results?.length) return [];
   return results.map((r) => ({
     recall_number: r.recall_number ?? '',
-    device_name: r.device?.brand_name ?? '',
+     device_name: (r.device as any)?.brand_name ?? '',
     recalling_firm: r.recalling_firm ?? '',
     recall_initiation_date: r.recall_initiation_date ?? '',
     status: r.status ?? '',
