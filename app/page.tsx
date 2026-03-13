@@ -89,42 +89,18 @@ export default function Home() {
   return (
     <>
       <style>{`
-        :root {
-          --primary:#1f6feb; --primary2:#2b79ff;
-          --secondary:#0b7f7d; --secondary2:#0ea5a3;
-          --bg:#f5f7fb; --surface:#ffffff;
-          --text:#0f172a; --muted:#64748b;
-          --line:#e6ebf3;
-          --shadow:0 10px 30px rgba(15,23,42,.08);
-          --shadow2:0 4px 16px rgba(15,23,42,.06);
-          --blue:#1f6feb; --blue2:#0ea5e9;
-          --chip:#f0f4ff; --chipText:#1e40af;
-          --successBg:#e9f9ef; --successText:#137a3b;
-          --warnBg:#fff4e5; --warnText:#a15c00;
-          --dangerBg:#ffecec; --dangerText:#9f1d1d;
-          --radius:14px; --radius2:18px;
-        }
-        *{box-sizing:border-box;margin:0;padding:0}
-        html{scroll-behavior:smooth}
-        body{
-          font-family:ui-sans-serif,system-ui,-apple-system,sans-serif;
-          background:
-            radial-gradient(1200px 520px at 12% 10%,rgba(14,165,163,.10),transparent 60%),
-            radial-gradient(1200px 520px at 65% 0%,rgba(31,111,235,.10),transparent 62%),
-            var(--bg);
-          color:var(--text);
-          min-height:100vh;
-        }
-        a{color:inherit;text-decoration:none}
-
-        /* ── LAYOUT ── */
-        .container{max-width:1320px;margin:0 auto;padding:0 18px}
+        /* ── PAGE-SPECIFIC OVERRIDES ── */
+        body{background:radial-gradient(900px 500px at 80% -10%,rgba(31,111,235,.10),transparent 55%),radial-gradient(900px 500px at 10% 10%,rgba(10,143,188,.07),transparent 55%),var(--bg)}
+        .page{padding:28px 0 60px}
+        .cardPad{padding:18px}
+        hr.sep{margin:14px 0}
+        .secondaryBtn{padding:10px 12px}
 
         /* ── NAV ── */
         .topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
         .nav{height:68px;display:flex;align-items:center;justify-content:space-between;gap:14px}
         .brand{display:flex;align-items:center;gap:12px}
-        .logoWrap{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,rgba(31,111,235,.15),rgba(14,165,233,.15));border:1px solid rgba(31,111,235,.22);display:grid;place-items:center;box-shadow:var(--shadow2);overflow:hidden;flex-shrink:0}
+        .logoWrap{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,rgba(0,80,144,.10),rgba(127,183,214,.18));border:1px solid rgba(0,80,144,.18);display:grid;place-items:center;box-shadow:var(--shadow2);overflow:hidden;flex-shrink:0}
         .logoWrap img{width:28px;height:28px;object-fit:contain;display:block}
         .brandName{font-weight:800;letter-spacing:.3px;font-size:15px}
         .brandTag{font-size:12px;color:var(--muted);margin-top:2px}
@@ -137,33 +113,19 @@ export default function Home() {
         .iconBtn:hover{box-shadow:var(--shadow2)}
         .primaryBtn{background:linear-gradient(180deg,var(--primary2),var(--primary));color:white;padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px;box-shadow:0 6px 18px rgba(31,111,235,.22);border:none;cursor:pointer;white-space:nowrap;transition:filter .15s}
         .primaryBtn:hover{filter:brightness(1.06)}
-        .secondaryBtn{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600;color:#334155;cursor:pointer;font-size:14px;transition:box-shadow .15s}
-        .secondaryBtn:hover{box-shadow:var(--shadow2)}
 
-        /* Mobile menu */
+        /* ── MOBILE MENU ── */
         .hamburger{display:none;width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;flex-direction:column;gap:5px;padding:10px}
         .hamburger span{display:block;width:18px;height:2px;background:#334155;border-radius:2px;transition:all .2s}
-        .mobileMenu{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:16px 18px;z-index:49;flex-direction:column;gap:4px}
+        .mobileMenu{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:16px 18px;z-index:49;flex-direction:column;gap:6px}
         .mobileMenu.open{display:flex}
-        .mobileMenu a{font-size:15px;color:#334155;padding:12px 14px;border-radius:12px;font-weight:500}
+        .mobileMenu a{font-size:15px;color:#334155;padding:12px 14px;border-radius:12px;font-weight:500;display:block}
         .mobileMenu a:hover{background:#f1f5ff}
         .mobileMenu a.active{color:var(--primary);background:#eef4ff;font-weight:600}
         .mobileMenu .primaryBtn{width:100%;text-align:center;margin-top:8px;padding:13px}
 
-        /* ── PAGE ── */
-        .page{padding:28px 0 60px}
-
         /* ── MAIN GRID ── */
-        .mainGrid{
-          display:grid;
-          grid-template-columns:1fr 280px;
-          gap:18px;
-          align-items:start;
-        }
-
-        /* ── CARD ── */
-        .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius2);box-shadow:var(--shadow)}
-        .cardPad{padding:18px}
+        .mainGrid{display:grid;grid-template-columns:1fr 280px;gap:18px;align-items:start}
 
         /* ── SEARCH ROW ── */
         .searchRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
@@ -191,8 +153,7 @@ export default function Home() {
         .table tbody tr{transition:background .12s;cursor:pointer}
         .table tbody tr:hover td{background:#f8faff}
         .rowTitle{display:flex;gap:11px;align-items:center}
-        .appIcon{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,rgba(31,111,235,.15),rgba(14,165,233,.12));border:1px solid rgba(31,111,235,.14);display:grid;place-items:center;flex-shrink:0}
-        .appName{font-weight:700;font-size:14px;line-height:1.3}
+        .appIcon{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,rgba(0,80,144,.10),rgba(127,183,214,.18));border:1px solid rgba(0,80,144,.12);display:grid;place-items:center;flex-shrink:0}
         .appOrg{font-size:11px;color:var(--muted);margin-top:2px;font-family:ui-monospace,monospace}
         .small{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.45;max-width:260px}
 
@@ -205,19 +166,10 @@ export default function Home() {
         .badge.verified{background:var(--successBg);color:var(--successText);border-color:rgba(19,122,59,.15)}
 
         /* ── REPORT BTN ── */
-        .reportBtn{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:12px;font-weight:700;font-size:13px;color:#fff;background:linear-gradient(180deg,var(--secondary2),var(--secondary));box-shadow:0 6px 14px rgba(14,165,163,.18);border:none;cursor:pointer;transition:filter .15s;white-space:nowrap}
+        .reportBtn{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:12px;font-weight:700;font-size:13px;color:#fff;background:linear-gradient(180deg,#0A8FBC,#006C8E);box-shadow:0 6px 14px rgba(0,108,142,.18);border:none;cursor:pointer;transition:filter .15s;white-space:nowrap}
         .reportBtn:hover{filter:brightness(1.06)}
 
-        /* ── INFO CARDS ── */
-        .three{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-        .infoCard{padding:16px}
-        .infoTop{display:flex;gap:10px;align-items:flex-start}
-        .infoIcon{width:36px;height:36px;border-radius:11px;background:#eef4ff;border:1px solid rgba(31,111,235,.14);display:grid;place-items:center;flex-shrink:0}
-        .infoCard h4{font-size:13px;font-weight:700;margin-bottom:4px}
-        .infoCard p{color:var(--muted);font-size:12.5px;line-height:1.45}
-
-        /* ── BANNER ── */
-        .banner{margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px;background:linear-gradient(90deg,rgba(31,111,235,.07),rgba(14,165,233,.05));border:1px solid rgba(31,111,235,.13);border-radius:var(--radius2)}
+        /* ── BANNER EXTRAS ── */
         .banner b{font-size:14px}
         .banner span{color:var(--muted);font-size:13px}
 
@@ -229,9 +181,6 @@ export default function Home() {
         .legend{display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:#334155}
         .legendRow{display:flex;gap:8px;align-items:center}
         .swatch{width:9px;height:9px;border-radius:3px;flex-shrink:0}
-        hr.sep{border:none;border-top:1px solid var(--line);margin:14px 0}
-
-        /* ── QUICK FILTERS SIDEBAR ── */
         .sideSection{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.08em;margin-bottom:8px}
 
         /* ── FOOTER ── */
@@ -265,7 +214,6 @@ export default function Home() {
           .navRight .primaryBtn{display:none}
           .navRight .iconBtn{display:none}
           .hamburger{display:flex}
-          .three{grid-template-columns:1fr}
           .modal-grid{grid-template-columns:1fr}
           .table th:nth-child(4),.table td:nth-child(4),
           .table th:nth-child(5),.table td:nth-child(5){display:none}
@@ -273,7 +221,6 @@ export default function Home() {
           .sidebar{flex-direction:column}
         }
         @media(max-width:480px){
-          .container{padding:0 12px}
           .brandTag{display:none}
           .reportBtn{padding:7px 10px;font-size:12px}
           .page{padding:16px 0 40px}
@@ -317,12 +264,14 @@ export default function Home() {
       
       {/* Mobile menu */}
       <div className={`mobileMenu ${menuOpen ? 'open' : ''}`}>
-        <a href="/" className="active" onClick={() => setMenuOpen(false)}>Index</a>
-        <a href="#" onClick={() => setMenuOpen(false)}>Methodology</a>
-        <a href="#" onClick={() => setMenuOpen(false)}>Insights</a>
-        <a href="#" onClick={() => setMenuOpen(false)}>For Clinicians</a>
-        <button className="primaryBtn" onClick={() => setMenuOpen(false)}>Request Review</button>
-      </div>
+  <a href="/" className="active" onClick={() => setMenuOpen(false)}>Index</a>
+  <a href="/methodology" onClick={() => setMenuOpen(false)}>Methodology</a>
+  <a href="/insights" onClick={() => setMenuOpen(false)}>Insights</a>
+  <a href="/clinicians" onClick={() => setMenuOpen(false)}>For Clinicians</a>
+  <a href="/request-review" className="primaryBtn" onClick={() => setMenuOpen(false)}>
+    Request Review
+  </a>
+</div>
 
       {/* ── MAIN ── */}
       <main className="page">
@@ -460,36 +409,66 @@ export default function Home() {
 
             {/* ── RIGHT: SIDEBAR ── */}
             <aside className="sidebar">
-              <div className="card cardPad">
-                <div className="kpiHead">
-                  <h3>Analysis Overview</h3>
-                  <p>Distribution across listing categories.</p>
-                </div>
-                <div className="donutWrap">
-                  <svg width="120" height="120" viewBox="0 0 120 120" style={{flexShrink:0}}>
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#e6ebf3" strokeWidth="16"/>
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#1f6feb" strokeWidth="16"
-                      strokeDasharray={`${greenDash} ${circ}`} strokeDashoffset="0"
-                      transform="rotate(-90 60 60)"/>
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#0ea5e9" strokeWidth="16"
-                      strokeDasharray={`${amberDash} ${circ}`} strokeDashoffset={`-${greenDash}`}
-                      transform="rotate(-90 60 60)"/>
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#1e3a8a" strokeWidth="16"
-                      strokeDasharray={`${redDash} ${circ}`} strokeDashoffset={`-${greenDash + amberDash}`}
-                      transform="rotate(-90 60 60)"/>
-                    <circle cx="60" cy="60" r="28" fill="white"/>
-                    <text x="60" y="56" textAnchor="middle" fontSize="13" fontWeight="800" fill="#0f172a">{devices.length}</text>
-                    <text x="60" y="68" textAnchor="middle" fontSize="9" fill="#64748b">devices</text>
-                  </svg>
-                  <div className="legend">
-                    <div className="legendRow"><span className="swatch" style={{background:'#1f6feb'}}></span>{greenCount} • Green</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#0ea5e9'}}></span>{amberCount} • Amber</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#1e3a8a'}}></span>{redCount} • Red</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#0b7f7d'}}></span>{verifiedCount} • Verified</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#2b79ff'}}></span>{sahpraCount} • SAHPRA</div>
-                  </div>
-                </div>
-              </div>
+ <div className="card cardPad">
+  <div className="kpiHead">
+    <h3>Analysis Overview</h3>
+    <p>Distribution across listing categories.</p>
+  </div>
+
+  <div className="donutWrap">
+    <svg width="120" height="120" viewBox="0 0 120 120" style={{ flexShrink: 0 }}>
+      <circle cx="60" cy="60" r="40" fill="none" stroke="#e6ebf3" strokeWidth="16" />
+      <circle
+        cx="60"
+        cy="60"
+        r="40"
+        fill="none"
+        stroke="#005090"
+        strokeWidth="16"
+        strokeDasharray={`${greenDash} ${circ}`}
+        strokeDashoffset="0"
+        transform="rotate(-90 60 60)"
+      />
+      <circle
+        cx="60"
+        cy="60"
+        r="40"
+        fill="none"
+        stroke="#0A8FBC"
+        strokeWidth="16"
+        strokeDasharray={`${amberDash} ${circ}`}
+        strokeDashoffset={`-${greenDash}`}
+        transform="rotate(-90 60 60)"
+      />
+      <circle
+        cx="60"
+        cy="60"
+        r="40"
+        fill="none"
+        stroke="#7FB7D6"
+        strokeWidth="16"
+        strokeDasharray={`${redDash} ${circ}`}
+        strokeDashoffset={`-${greenDash + amberDash}`}
+        transform="rotate(-90 60 60)"
+      />
+      <circle cx="60" cy="60" r="28" fill="white" />
+      <text x="60" y="56" textAnchor="middle" fontSize="13" fontWeight="800" fill="#0f172a">
+        {devices.length}
+      </text>
+      <text x="60" y="68" textAnchor="middle" fontSize="9" fill="#64748b">
+        devices
+      </text>
+    </svg>
+
+    <div className="legend">
+      <div className="legendRow"><span className="swatch" style={{ background: '#005090' }}></span>{greenCount} • Green</div>
+      <div className="legendRow"><span className="swatch" style={{ background: '#0A8FBC' }}></span>{amberCount} • Amber</div>
+      <div className="legendRow"><span className="swatch" style={{ background: '#7FB7D6' }}></span>{redCount} • Red</div>
+      <div className="legendRow"><span className="swatch" style={{ background: '#006C8E' }}></span>{verifiedCount} • Verified</div>
+      <div className="legendRow"><span className="swatch" style={{ background: '#2b79ff' }}></span>{sahpraCount} • SAHPRA</div>
+    </div>
+  </div>
+</div>
 
               <div className="card cardPad">
                 <div className="sideSection">QUICK FILTERS</div>
