@@ -99,6 +99,16 @@ export async function syncDeviceFromFDA(
       health_status,
     };
 
+    if (clearanceData?.device_name) {
+      deviceUpdate.device_name = clearanceData.device_name;
+      updatedFields.push('device_name');
+    }
+
+    if (clearanceData?.applicant) {
+      deviceUpdate.manufacturer_name = clearanceData.applicant;
+      updatedFields.push('manufacturer_name');
+    }
+
     if (classification?.device_class) {
       // Map FDA class to accountability_tier as a starting heuristic
       // Human auditors can always override this

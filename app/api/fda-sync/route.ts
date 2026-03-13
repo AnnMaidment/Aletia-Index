@@ -271,6 +271,8 @@ export async function PUT(req: NextRequest) {
     const rows = devices.map((d) => ({
       device_id: d.k_number,
       intended_use: d.device_name,
+      device_name: d.device_name,
+      manufacturer_name: d.applicant,
       health_status: 'Amber',
       aletia_verified: false,
       last_automated_sync: new Date().toISOString(),

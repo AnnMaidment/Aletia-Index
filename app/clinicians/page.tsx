@@ -1,4 +1,11 @@
+import type { Metadata } from 'next'
 import { Nav, Footer } from '@/components/NavFooter'
+
+export const metadata: Metadata = {
+  title: 'For Clinicians',
+  description: 'A practical guide to using the Aletia Index for safe AI tool adoption and procurement in clinical settings.',
+  alternates: { canonical: 'https://www.aletia-index.com/clinicians' },
+}
 
 export default function Clinicians() {
   return (

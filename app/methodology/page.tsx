@@ -1,4 +1,11 @@
+import type { Metadata } from 'next'
 import { Nav, Footer } from '@/components/NavFooter'
+
+export const metadata: Metadata = {
+  title: 'Our Methodology',
+  description: 'How Aletia Index assessments are structured, what "Verified" means, and how clinical evidence is graded.',
+  alternates: { canonical: 'https://www.aletia-index.com/methodology' },
+}
 
 export default function Methodology() {
   return (

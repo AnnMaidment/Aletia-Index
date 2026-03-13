@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(echo \"=== fdaSync.ts deviceUpdate ===\" && sed -n '95,125p' lib/fdaSync.ts && echo \"\" && echo \"=== route.ts seed rows ===\" && sed -n '270,285p' app/api/fda-sync/route.ts && echo \"\" && echo \"=== device page generateMetadata deviceName ===\" && grep -n \"deviceName\" app/device/\\\\[id\\\\]/page.tsx)"
+    ]
+  }
+}

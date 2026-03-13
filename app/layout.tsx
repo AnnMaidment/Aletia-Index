@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const BASE_URL = 'https://www.aletia-index.com'
+
 export const metadata: Metadata = {
-  title: "Aletia Index — Assessment Listings",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: 'Aletia Index',
+    template: '%s | Aletia Index',
+  },
   description: "Independent clinical assurance for AI/ML medical devices. Transparent, data-driven verification for clinicians, NGOs, and manufacturers.",
   verification: {
     google: 'WxzYXPM6Sgp39A7XH2Tgo-RANlWRUJ08Vw7JNfiA9qI',
   },
+  alternates: {
+    canonical: BASE_URL,
+  },
   openGraph: {
-    title: "Aletia Index — Assessment Listings",
+    title: "Aletia Index — Clinical Assurance for Digital Health",
     description: "Independent clinical assurance for AI/ML medical devices.",
-    url: "https://www.aletia-index.com",
+    url: BASE_URL,
     siteName: "Aletia Index",
     images: [
       {
@@ -24,7 +33,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aletia Index — Assessment Listings",
+    title: "Aletia Index",
     description: "Independent clinical assurance for AI/ML medical devices.",
     images: ["/assets/og-cover.png"],
   },
