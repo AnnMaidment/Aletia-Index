@@ -188,7 +188,7 @@ export default function Home() {
         .table th{text-align:left;font-size:12px;color:var(--muted);font-weight:700;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
         .table td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14px}
         .table tr:last-child td{border-bottom:none}
-        .table tbody tr{transition:background .12s;cursor:pointer}
+        .table tbody tr{transition:background .12s}
         .table tbody tr:hover td{background:#f8faff}
         .rowTitle{display:flex;gap:11px;align-items:center}
         .appIcon{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,rgba(31,111,235,.15),rgba(14,165,233,.12));border:1px solid rgba(31,111,235,.14);display:grid;place-items:center;flex-shrink:0}
@@ -205,8 +205,11 @@ export default function Home() {
         .badge.verified{background:var(--successBg);color:var(--successText);border-color:rgba(19,122,59,.15)}
 
         /* ── REPORT BTN ── */
-        .reportBtn{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:12px;font-weight:700;font-size:13px;color:#fff;background:linear-gradient(180deg,var(--secondary2),var(--secondary));box-shadow:0 6px 14px rgba(14,165,163,.18);border:none;cursor:pointer;transition:filter .15s;white-space:nowrap}
+        .reportBtn{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:12px;font-weight:700;font-size:13px;color:#fff;background:linear-gradient(180deg,var(--secondary2),var(--secondary));box-shadow:0 6px 14px rgba(14,165,163,.18);border:none;cursor:pointer;transition:filter .15s;white-space:nowrap;text-decoration:none}
         .reportBtn:hover{filter:brightness(1.06)}
+        .quickViewBtn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;transition:box-shadow .15s;margin-right:6px;flex-shrink:0}
+        .quickViewBtn:hover{box-shadow:var(--shadow2)}
+        .actionCell{display:flex;align-items:center;justify-content:flex-end;gap:4px}
 
         /* ── INFO CARDS ── */
         .three{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -390,7 +393,7 @@ export default function Home() {
                     ) : filtered.map(device => {
                       const risk = riskBadge(device.health_status)
                       return (
-                        <tr key={device.device_id} onClick={() => setSelected(device)}>
+                        <tr key={device.device_id}>
                           <td>
                             <div className="rowTitle">
                               <div className="appIcon">
@@ -399,7 +402,7 @@ export default function Home() {
                                 </svg>
                               </div>
                               <div>
-                                <div className="appName">{device.manufacturers?.name}</div>
+                                <a href={`/device/${device.device_id}`} className="appName">{device.manufacturers?.name}</a>
                                 <div className="appOrg">{device.device_id}</div>
                                 <div className="small">{device.intended_use}</div>
                               </div>
@@ -415,9 +418,17 @@ export default function Home() {
                             </div>
                           </td>
                           <td style={{textAlign:'right'}}>
-                            <button className="reportBtn" onClick={e => { e.stopPropagation(); setSelected(device) }}>
-                              See Report
-                            </button>
+                            <div className="actionCell">
+                              <button className="quickViewBtn" title="Quick view" onClick={() => setSelected(device)}>
+                                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z" stroke="#64748b" strokeWidth="1.8"/>
+                                  <circle cx="12" cy="12" r="3" stroke="#64748b" strokeWidth="1.8"/>
+                                </svg>
+                              </button>
+                              <a href={`/device/${device.device_id}`} className="reportBtn">
+                                Get Report
+                              </a>
+                            </div>
                           </td>
                         </tr>
                       )
