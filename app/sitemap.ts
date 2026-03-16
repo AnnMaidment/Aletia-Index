@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next'
+import { supabase } from '@/lib/supabase'
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: 'https://www.aletia-index.com',
       lastModified: new Date(),
@@ -33,4 +34,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
   ]
+
+  const { data: devices, error } = await supabase
+    .from('device_master')
+    .select('device_id, last_automated_sync')
+
+  console.log('[sitemap] device count:', devices?.length ?? 0)
+  if (error) {
+    console.error('[sitemap] Supabase error:', error)
+  }
+
+  const devicePages: MetadataRoute.Sitemap = (devices ?? []).map((device) => ({
+    url: `https://www.aletia-index.com/device/${device.device_id}`,
+    lastModified: device.last_automated_sync
+      ? new Date(device.last_automated_sync)
+      : new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.6,
+  }))
+
+  return [...staticPages, ...devicePages]
 }
