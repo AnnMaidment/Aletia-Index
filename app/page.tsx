@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase'
 type Device = {
   device_id: string
   intended_use: string
+  manufacturer_name: string | null
   ai_ml_type: string
   accountability_tier: number
   health_status: 'Green' | 'Amber' | 'Red'
