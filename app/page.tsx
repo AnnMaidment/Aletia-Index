@@ -23,6 +23,7 @@ type Device = {
 export default function Home() {
   const [devices, setDevices] = useState<Device[]>([])
   const [filtered, setFiltered] = useState<Device[]>([])
+
   const [search, setSearch] = useState('')
   const [specialtyFilter, setSpecialtyFilter] = useState('All')
   const [statusFilter, setStatusFilter] = useState('All')
@@ -30,6 +31,9 @@ export default function Home() {
   const [selected, setSelected] = useState<Device | null>(null)
   const [specialties, setSpecialties] = useState<string[]>([])
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const [currentPage, setCurrentPage] = useState(1)
+const PAGE_SIZE = 25
 
   useEffect(() => { fetchDevices() }, [])
 
@@ -46,7 +50,9 @@ export default function Home() {
   }
   if (specialtyFilter !== 'All') result = result.filter(d => d.specialty_link === specialtyFilter)
   if (statusFilter !== 'All') result = result.filter(d => d.health_status === statusFilter)
+    setCurrentPage(1)
   setFiltered(result)
+
 }, [search, specialtyFilter, statusFilter, devices])
 
   async function fetchDevices() {
@@ -86,6 +92,11 @@ export default function Home() {
   const greenDash = Math.round((greenCount / total) * circ)
   const amberDash = Math.round((amberCount / total) * circ)
   const redDash = Math.round((redCount / total) * circ)
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+const paginated = filtered.slice(
+  (currentPage - 1) * PAGE_SIZE,
+  currentPage * PAGE_SIZE
+)
 
   return (
     <>
@@ -391,7 +402,7 @@ export default function Home() {
                       <tr><td colSpan={6} style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>Loading devices…</td></tr>
                     ) : filtered.length === 0 ? (
                       <tr><td colSpan={6} style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>No devices found.</td></tr>
-                    ) : filtered.map(device => {
+                    ) : paginated.map(device => {
                       const risk = riskBadge(device.health_status)
                       return (
                         <tr key={device.device_id}>
@@ -403,11 +414,26 @@ export default function Home() {
                                 </svg>
                               </div>
                               <div>
-                               <a href={`/device/${device.device_id}`} className="appName">
-  {device.manufacturers?.name || device.intended_use || device.device_id}
+                              <a 
+  href={`/device/${device.device_id}`} 
+  className="appName"
+  style={{ 
+    display: '-webkit-box',
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden'
+  }}
+>
+  {device.manufacturers?.name || device.manufacturer_name || device.device_id}
 </a>
                                 <div className="appOrg">{device.device_id}</div>
-                                <div className="small">{device.intended_use}</div>
+
+                                <div className="small" style={{
+  display: '-webkit-box',
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden'
+}}>{device.intended_use}</div>
                               </div>
                             </div>
                           </td>
@@ -438,6 +464,49 @@ export default function Home() {
                     })}
                   </tbody>
                 </table>
+                {totalPages > 1 && (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '14px 16px',
+    borderTop: '1px solid var(--line)',
+    fontSize: 13,
+    color: 'var(--muted)'
+  }}>
+    <span>
+      Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)} of {filtered.length} devices
+    </span>
+    <div style={{ display: 'flex', gap: 6 }}>
+      <button
+        className="secondaryBtn"
+        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+        disabled={currentPage === 1}
+        style={{ padding: '7px 12px', fontSize: 13, opacity: currentPage === 1 ? 0.4 : 1 }}
+      >
+        ← Prev
+      </button>
+      <span style={{
+        padding: '7px 12px',
+        borderRadius: 12,
+        background: '#f1f5f9',
+        fontWeight: 700,
+        color: 'var(--text)',
+        fontSize: 13
+      }}>
+        {currentPage} / {totalPages}
+      </span>
+      <button
+        className="secondaryBtn"
+        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+        disabled={currentPage === totalPages}
+        style={{ padding: '7px 12px', fontSize: 13, opacity: currentPage === totalPages ? 0.4 : 1 }}
+      >
+        Next →
+      </button>
+    </div>
+  </div>
+)}
               </div>
 
               <div className="three">
