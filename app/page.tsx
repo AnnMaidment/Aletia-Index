@@ -402,7 +402,9 @@ export default function Home() {
                                 </svg>
                               </div>
                               <div>
-                                <a href={`/device/${device.device_id}`} className="appName">{device.manufacturers?.name}</a>
+                               <a href={`/device/${device.device_id}`} className="appName">
+  {device.manufacturers?.name || device.intended_use || device.device_id}
+</a>
                                 <div className="appOrg">{device.device_id}</div>
                                 <div className="small">{device.intended_use}</div>
                               </div>
