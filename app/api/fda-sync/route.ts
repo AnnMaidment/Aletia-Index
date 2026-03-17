@@ -65,6 +65,39 @@ export async function POST(req: NextRequest) {
     status: result.success ? 200 : 500,
   });
 }
+export async function PATCH(req: NextRequest) {
+  if (!isAuthorised(req)) {
+    return NextResponse.json({ error: 'Unauthorised' }, { status: 401 });
+  }
+
+  const { supabase } = await import('@/lib/supabase');
+  const { get510kByKNumber } = await import('@/lib/fda');
+
+  const { data: devices } = await supabase
+    .from('device_master')
+    .select('device_id')
+    .like('device_id', 'K%')
+    .is('manufacturer_name', null);
+
+  if (!devices?.length) {
+    return NextResponse.json({ message: 'Nothing to backfill' });
+  }
+
+  let updated = 0;
+  for (const device of devices) {
+    await new Promise(r => setTimeout(r, 300));
+    const clearance = await get510kByKNumber(device.device_id);
+    if (clearance?.applicant) {
+      await supabase
+        .from('device_master')
+        .update({ manufacturer_name: clearance.applicant })
+        .eq('device_id', device.device_id);
+      updated++;
+    }
+  }
+
+  return NextResponse.json({ total: devices.length, updated });
+}
 
 // ── GET /api/fda-sync — health check or bulk sync ─────────────────────────────
 
