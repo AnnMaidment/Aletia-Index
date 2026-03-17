@@ -33,20 +33,21 @@ export default function Home() {
 
   useEffect(() => { fetchDevices() }, [])
 
-  useEffect(() => {
-    let result = devices
-    if (search) {
-      result = result.filter(d =>
-        d.device_id.toLowerCase().includes(search.toLowerCase()) ||
-        d.intended_use.toLowerCase().includes(search.toLowerCase()) ||
-        d.manufacturers?.name.toLowerCase().includes(search.toLowerCase()) ||
-        d.specialty_link.toLowerCase().includes(search.toLowerCase())
-      )
-    }
-    if (specialtyFilter !== 'All') result = result.filter(d => d.specialty_link === specialtyFilter)
-    if (statusFilter !== 'All') result = result.filter(d => d.health_status === statusFilter)
-    setFiltered(result)
-  }, [search, specialtyFilter, statusFilter, devices])
+ useEffect(() => {
+  let result = devices
+  if (search) {
+    const q = search.toLowerCase()
+    result = result.filter(d =>
+      (d.device_id ?? '').toLowerCase().includes(q) ||
+      (d.intended_use ?? '').toLowerCase().includes(q) ||
+      (d.manufacturers?.name ?? '').toLowerCase().includes(q) ||
+      (d.specialty_link ?? '').toLowerCase().includes(q)
+    )
+  }
+  if (specialtyFilter !== 'All') result = result.filter(d => d.specialty_link === specialtyFilter)
+  if (statusFilter !== 'All') result = result.filter(d => d.health_status === statusFilter)
+  setFiltered(result)
+}, [search, specialtyFilter, statusFilter, devices])
 
   async function fetchDevices() {
     const { data, error } = await supabase
