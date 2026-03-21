@@ -16,88 +16,122 @@ type Device = {
   specialty_link: string
   mode: string
   autonomy: string
-  manufacturers: { name: string; hq_location: string }
+  pipeline_stage: string | null
+  data_source: string | null
+  breakthrough_designation: boolean
+  excluded: boolean
+  manufacturers: { name: string; hq_location: string } | null
   regional_registrations: { country: string; regulatory_body: string; clearance_type: string }[]
   tech_specs: { api_type: string; ehr_compat: string; data_hosting: string; fhir_compatible: boolean; popia_compliant: boolean } | null
 }
 
+// Pipeline stage display labels
+const PIPELINE_LABELS: Record<string, string> = {
+  proof_of_concept: 'Proof of Concept',
+  pre_submission:   'Pre-submission',
+  submitted:        'Submitted',
+  under_review:     'Under Review',
+  cleared:          'Cleared',
+}
+
 export default function Home() {
-  const [devices, setDevices] = useState<Device[]>([])
-  const [filtered, setFiltered] = useState<Device[]>([])
-
-  const [search, setSearch] = useState('')
+  const [devices,         setDevices]         = useState<Device[]>([])
+  const [filtered,        setFiltered]        = useState<Device[]>([])
+  const [search,          setSearch]          = useState('')
   const [specialtyFilter, setSpecialtyFilter] = useState('All')
-  const [statusFilter, setStatusFilter] = useState('All')
-  const [loading, setLoading] = useState(true)
-  const [selected, setSelected] = useState<Device | null>(null)
-  const [specialties, setSpecialties] = useState<string[]>([])
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  const [currentPage, setCurrentPage] = useState(1)
-const PAGE_SIZE = 25
+  const [statusFilter,    setStatusFilter]    = useState('All')
+  const [sourceFilter,    setSourceFilter]    = useState('All')
+  const [loading,         setLoading]         = useState(true)
+  const [selected,        setSelected]        = useState<Device | null>(null)
+  const [specialties,     setSpecialties]     = useState<string[]>([])
+  const [menuOpen,        setMenuOpen]        = useState(false)
+  const [currentPage,     setCurrentPage]     = useState(1)
+  const PAGE_SIZE = 25
 
   useEffect(() => { fetchDevices() }, [])
 
- useEffect(() => {
-  let result = devices
-  if (search) {
-    const q = search.toLowerCase()
-    result = result.filter(d =>
-      (d.device_id ?? '').toLowerCase().includes(q) ||
-      (d.intended_use ?? '').toLowerCase().includes(q) ||
-      (d.manufacturers?.name ?? '').toLowerCase().includes(q) ||
-      (d.specialty_link ?? '').toLowerCase().includes(q)
-    )
-  }
-  if (specialtyFilter !== 'All') result = result.filter(d => d.specialty_link === specialtyFilter)
-  if (statusFilter !== 'All') result = result.filter(d => d.health_status === statusFilter)
-    setCurrentPage(1)
-  setFiltered(result)
+  useEffect(() => {
+    let result = devices
 
-}, [search, specialtyFilter, statusFilter, devices])
+    if (search) {
+      const q = search.toLowerCase()
+      result = result.filter(d =>
+        (d.device_id       ?? '').toLowerCase().includes(q) ||
+        (d.intended_use    ?? '').toLowerCase().includes(q) ||
+        (d.manufacturers?.name ?? d.manufacturer_name ?? '').toLowerCase().includes(q) ||
+        (d.specialty_link  ?? '').toLowerCase().includes(q)
+      )
+    }
+
+    if (specialtyFilter !== 'All')
+      result = result.filter(d => d.specialty_link === specialtyFilter)
+
+    if (statusFilter === 'Pipeline')
+      result = result.filter(d => !!d.pipeline_stage)
+    else if (statusFilter !== 'All')
+      result = result.filter(d => !d.pipeline_stage && d.health_status === statusFilter)
+
+    if (sourceFilter !== 'All')
+      result = result.filter(d => (d.data_source ?? 'registry_sync') === sourceFilter)
+
+    setCurrentPage(1)
+    setFiltered(result)
+  }, [search, specialtyFilter, statusFilter, sourceFilter, devices])
 
   async function fetchDevices() {
     const { data, error } = await supabase
       .from('device_master')
-      .select(`*, manufacturers(name, hq_location), regional_registrations(country, regulatory_body, clearance_type), tech_specs(api_type, ehr_compat, data_hosting, fhir_compatible, popia_compliant)`)
+      .select(`
+        *,
+        manufacturers(name, hq_location),
+        regional_registrations(country, regulatory_body, clearance_type),
+        tech_specs(api_type, ehr_compat, data_hosting, fhir_compatible, popia_compliant)
+      `)
+      .eq('excluded', false)
+
     if (error) { console.error(error); setLoading(false); return }
-    setDevices(data || [])
-    setFiltered(data || [])
-    setSpecialties([...new Set((data || []).map((d: Device) => d.specialty_link))])
+
+    const rows = data || []
+    setDevices(rows)
+    setFiltered(rows)
+    // Only meaningful specialty values in the dropdown
+    const uniqueSpecialties = [...new Set(
+      rows.map((d: Device) => d.specialty_link).filter(Boolean)
+    )].sort() as string[]
+    setSpecialties(uniqueSpecialties)
     setLoading(false)
   }
 
+  // ── Badge helpers ──────────────────────────────────────────────────────────
+
   const riskBadge = (status: string) => {
-    if (status === 'Green') return { cls: 'badge ok', label: 'Lower' }
-    if (status === 'Red') return { cls: 'badge danger', label: 'Higher' }
-    return { cls: 'badge warn', label: 'Moderate' }
+    if (status === 'Green') return { cls: 'badge ok',     label: 'Lower'    }
+    if (status === 'Red')   return { cls: 'badge danger', label: 'Higher'   }
+    return                         { cls: 'badge warn',   label: 'Moderate' }
   }
 
-  const regBadge = (regs: Device['regional_registrations']) => {
-    if (!regs || regs.length === 0) return <span className="badge neutral">Unregistered</span>
-    return <span className="badge neutral">{regs.map(r => r.clearance_type).join(' • ')}</span>
-  }
+  const formatDate = (d: string | null) =>
+    d ? new Date(d).toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }) : 'Not reviewed'
 
-  const formatDate = (d: string | null) => {
-    if (!d) return 'Not reviewed'
-    return new Date(d).toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' })
-  }
+  // ── Stats ──────────────────────────────────────────────────────────────────
 
-  const verifiedCount = devices.filter(d => d.aletia_verified).length
-  const sahpraCount = devices.filter(d => d.regional_registrations?.some(r => r.country === 'South Africa')).length
-  const greenCount = devices.filter(d => d.health_status === 'Green').length
-  const amberCount = devices.filter(d => d.health_status === 'Amber').length
-  const redCount = devices.filter(d => d.health_status === 'Red').length
-  const total = devices.length || 1
-  const circ = 251
-  const greenDash = Math.round((greenCount / total) * circ)
-  const amberDash = Math.round((amberCount / total) * circ)
-  const redDash = Math.round((redCount / total) * circ)
+  const clearedDevices  = devices.filter(d => !d.pipeline_stage)
+  const pipelineDevices = devices.filter(d =>  d.pipeline_stage)
+  const verifiedCount   = devices.filter(d => d.aletia_verified).length
+  const sahpraCount     = devices.filter(d => d.regional_registrations?.some(r => r.country === 'South Africa')).length
+  const greenCount      = clearedDevices.filter(d => d.health_status === 'Green').length
+  const amberCount      = clearedDevices.filter(d => d.health_status === 'Amber').length
+  const redCount        = clearedDevices.filter(d => d.health_status === 'Red').length
+
+  // Donut: only cleared devices in the status chart
+  const total      = clearedDevices.length || 1
+  const circ       = 251
+  const greenDash  = Math.round((greenCount  / total) * circ)
+  const amberDash  = Math.round((amberCount  / total) * circ)
+  const redDash    = Math.round((redCount    / total) * circ)
+
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
-const paginated = filtered.slice(
-  (currentPage - 1) * PAGE_SIZE,
-  currentPage * PAGE_SIZE
-)
+  const paginated  = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
 
   return (
     <>
@@ -146,16 +180,14 @@ const paginated = filtered.slice(
         .navlinks a:hover{background:#f1f5ff}
         .navlinks a.active{color:var(--primary);background:#eef4ff;font-weight:600}
         .navRight{display:flex;align-items:center;gap:10px}
-        .iconBtn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;transition:box-shadow .15s}
-        .iconBtn:hover{box-shadow:var(--shadow2)}
-        .primaryBtn{background:linear-gradient(180deg,var(--primary2),var(--primary));color:white;padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px;box-shadow:0 6px 18px rgba(31,111,235,.22);border:none;cursor:pointer;white-space:nowrap;transition:filter .15s}
+        .primaryBtn{background:linear-gradient(180deg,var(--primary2),var(--primary));color:white;padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px;box-shadow:0 6px 18px rgba(31,111,235,.22);border:none;cursor:pointer;white-space:nowrap;transition:filter .15s;text-decoration:none;display:inline-block}
         .primaryBtn:hover{filter:brightness(1.06)}
         .secondaryBtn{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600;color:#334155;cursor:pointer;font-size:14px;transition:box-shadow .15s}
         .secondaryBtn:hover{box-shadow:var(--shadow2)}
 
         /* Mobile menu */
         .hamburger{display:none;width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;flex-direction:column;gap:5px;padding:10px}
-        .hamburger span{display:block;width:18px;height:2px;background:#334155;border-radius:2px;transition:all .2s}
+        .hamburger span{display:block;width:18px;height:2px;background:#334155;border-radius:2px}
         .mobileMenu{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:16px 18px;z-index:49;flex-direction:column;gap:4px}
         .mobileMenu.open{display:flex}
         .mobileMenu a{font-size:15px;color:#334155;padding:12px 14px;border-radius:12px;font-weight:500}
@@ -167,12 +199,7 @@ const paginated = filtered.slice(
         .page{padding:28px 0 60px}
 
         /* ── MAIN GRID ── */
-        .mainGrid{
-          display:grid;
-          grid-template-columns:1fr 280px;
-          gap:18px;
-          align-items:start;
-        }
+        .mainGrid{display:grid;grid-template-columns:1fr 280px;gap:18px;align-items:start}
 
         /* ── CARD ── */
         .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius2);box-shadow:var(--shadow)}
@@ -216,6 +243,9 @@ const paginated = filtered.slice(
         .badge.danger{background:var(--dangerBg);color:var(--dangerText);border-color:rgba(159,29,29,.15)}
         .badge.neutral{background:#f1f5f9;color:#334155;border-color:rgba(100,116,139,.15)}
         .badge.verified{background:var(--successBg);color:var(--successText);border-color:rgba(19,122,59,.15)}
+        .badge.pipeline{background:#f0f4ff;color:#1e40af;border-color:rgba(31,64,174,.15)}
+        .badge.research{background:#f0f4ff;color:#1e40af;border-color:rgba(31,64,174,.15);font-size:11px;padding:3px 8px}
+        .badge.breakthrough{background:#eff6ff;color:#1d4ed8;border-color:rgba(29,78,216,.15)}
 
         /* ── REPORT BTN ── */
         .reportBtn{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:12px;font-weight:700;font-size:13px;color:#fff;background:linear-gradient(180deg,var(--secondary2),var(--secondary));box-shadow:0 6px 14px rgba(14,165,163,.18);border:none;cursor:pointer;transition:filter .15s;white-space:nowrap;text-decoration:none}
@@ -279,7 +309,6 @@ const paginated = filtered.slice(
         @media(max-width:768px){
           .navlinks{display:none}
           .navRight .primaryBtn{display:none}
-          .navRight .iconBtn{display:none}
           .hamburger{display:flex}
           .three{grid-template-columns:1fr}
           .modal-grid{grid-template-columns:1fr}
@@ -310,34 +339,29 @@ const paginated = filtered.slice(
                 <div className="brandTag">Clinical assurance for digital health</div>
               </div>
             </a>
-
             <div className="navlinks">
               <a href="/" className="active">Index</a>
               <a href="/methodology">Methodology</a>
-<a href="/insights">Insights</a>
-<a href="/clinicians">For Clinicians</a>
+              <a href="/insights">Insights</a>
+              <a href="/clinicians">For Clinicians</a>
             </div>
-           
-
             <div className="navRight">
-             
               <a href="/request-review" className="primaryBtn">Request Review</a>
               <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
-                <span></span><span></span><span></span>
+                <span/><span/><span/>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      
       {/* Mobile menu */}
       <div className={`mobileMenu ${menuOpen ? 'open' : ''}`}>
         <a href="/" className="active" onClick={() => setMenuOpen(false)}>Index</a>
-        <a href="#" onClick={() => setMenuOpen(false)}>Methodology</a>
-        <a href="#" onClick={() => setMenuOpen(false)}>Insights</a>
-        <a href="#" onClick={() => setMenuOpen(false)}>For Clinicians</a>
-        <button className="primaryBtn" onClick={() => setMenuOpen(false)}>Request Review</button>
+        <a href="/methodology" onClick={() => setMenuOpen(false)}>Methodology</a>
+        <a href="/insights" onClick={() => setMenuOpen(false)}>Insights</a>
+        <a href="/clinicians" onClick={() => setMenuOpen(false)}>For Clinicians</a>
+        <a href="/request-review" className="primaryBtn" onClick={() => setMenuOpen(false)}>Request Review</a>
       </div>
 
       {/* ── MAIN ── */}
@@ -367,23 +391,39 @@ const paginated = filtered.slice(
                   <option value="All">All Specialties</option>
                   {specialties.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
+                <select
+                  className="secondaryBtn"
+                  value={sourceFilter}
+                  onChange={e => setSourceFilter(e.target.value)}
+                >
+                  <option value="All">All Sources</option>
+                  <option value="registry_sync">Registry Sync</option>
+                  <option value="aletia_research">Aletia Research</option>
+                  <option value="manufacturer_submitted">Manufacturer Submitted</option>
+                </select>
               </div>
 
               <div className="metaLine">
-                <span style={{width:'8px',height:'8px',borderRadius:'99px',background:'var(--blue)',display:'inline-block',flexShrink:0}}></span>
+                <span style={{width:'8px',height:'8px',borderRadius:'99px',background:'var(--blue)',display:'inline-block',flexShrink:0}}/>
                 <b style={{color:'var(--text)'}}>{filtered.length}</b> Technologies listed
+                {pipelineDevices.length > 0 && (
+                  <span style={{marginLeft:4}}>
+                    · <span style={{color:'#1e40af',fontWeight:600}}>{pipelineDevices.length} in pipeline</span>
+                  </span>
+                )}
               </div>
 
+              {/* Status filter pills */}
               <div className="pills">
-                {['All','Green','Amber','Red'].map(s => (
+                {(['All','Green','Amber','Red','Pipeline'] as const).map(s => (
                   <span
                     key={s}
                     className={`pill light ${statusFilter === s ? 'active' : ''}`}
                     onClick={() => setStatusFilter(s)}
-                  >{s === 'All' ? 'All' : `${s} Status`}</span>
+                  >
+                    {s === 'All' ? 'All' : s === 'Pipeline' ? '⚗ Pipeline' : `${s} Status`}
+                  </span>
                 ))}
-                <span className="pill light">AI/ML</span>
-                <span className="pill light">Clinical Apps</span>
               </div>
 
               <div className="tableWrap">
@@ -404,9 +444,13 @@ const paginated = filtered.slice(
                     ) : filtered.length === 0 ? (
                       <tr><td colSpan={6} style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>No devices found.</td></tr>
                     ) : paginated.map(device => {
-                      const risk = riskBadge(device.health_status)
+                      const isPreClearance = !!device.pipeline_stage
+                      const dataSource     = device.data_source ?? 'registry_sync'
+                      const risk           = riskBadge(device.health_status)
+
                       return (
                         <tr key={device.device_id}>
+                          {/* ── Tool ── */}
                           <td>
                             <div className="rowTitle">
                               <div className="appIcon">
@@ -415,38 +459,83 @@ const paginated = filtered.slice(
                                 </svg>
                               </div>
                               <div>
-                              <a 
-  href={`/device/${device.device_id}`} 
-  className="appName"
-  style={{ 
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical',
-    overflow: 'hidden'
-  }}
->
-  {device.manufacturers?.name || device.manufacturer_name || device.device_id}
-</a>
+                                <a
+                                  href={`/device/${device.device_id}`}
+                                  className="appName"
+                                  style={{
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  {device.manufacturers?.name || device.manufacturer_name || device.device_id}
+                                </a>
                                 <div className="appOrg">{device.device_id}</div>
-
+                                {/* Data source provenance tag */}
+                                {dataSource === 'aletia_research' && (
+                                  <span className="badge research" style={{marginTop:4}}>ⓘ Aletia Research</span>
+                                )}
+                                {dataSource === 'manufacturer_submitted' && (
+                                  <span className="badge research" style={{marginTop:4,background:'#f0fdf4',color:'#15803d',borderColor:'rgba(21,128,61,.15)'}}>✓ Manufacturer Submitted</span>
+                                )}
+                                {device.breakthrough_designation && (
+                                  <span className="badge breakthrough" style={{marginTop:4,fontSize:11,padding:'3px 8px'}}>⚡ Breakthrough</span>
+                                )}
                                 <div className="small" style={{
-  display: '-webkit-box',
-  WebkitLineClamp: 3,
-  WebkitBoxOrient: 'vertical',
-  overflow: 'hidden'
-}}>{device.intended_use}</div>
+                                  display: '-webkit-box',
+                                  WebkitLineClamp: 3,
+                                  WebkitBoxOrient: 'vertical',
+                                  overflow: 'hidden',
+                                }}>
+                                  {device.intended_use}
+                                </div>
                               </div>
                             </div>
                           </td>
+
+                          {/* ── Use Case ── */}
                           <td style={{color:'var(--muted)',fontSize:'13px'}}>{device.specialty_link}</td>
-                          <td>{regBadge(device.regional_registrations)}</td>
-                          <td><span className={risk.cls}>{risk.label}</span></td>
+
+                          {/* ── Regulatory Status ── */}
                           <td>
-                            <div style={{fontSize:'13px',fontWeight:600}}>Reviewed {formatDate(device.last_clinical_review)}</div>
+                            {isPreClearance ? (
+                              <span className="badge pipeline">
+                                ⚗ {PIPELINE_LABELS[device.pipeline_stage!] ?? device.pipeline_stage}
+                              </span>
+                            ) : device.regional_registrations?.length > 0 ? (
+                              <div style={{display:'flex',flexDirection:'column',gap:4}}>
+                                {device.regional_registrations.map(r => (
+                                  <span key={r.regulatory_body} className="badge neutral" style={{fontSize:11}}>
+                                    {r.clearance_type || r.regulatory_body}
+                                  </span>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="badge neutral">Unregistered</span>
+                            )}
+                          </td>
+
+                          {/* ── Risk ── */}
+                          <td>
+                            {isPreClearance ? (
+                              <span style={{fontSize:12,color:'var(--muted)'}}>—</span>
+                            ) : (
+                              <span className={risk.cls}>{risk.label}</span>
+                            )}
+                          </td>
+
+                          {/* ── Lifecycle Signals ── */}
+                          <td>
+                            <div style={{fontSize:'13px',fontWeight:600}}>
+                              {isPreClearance ? 'Pipeline entry' : `Reviewed ${formatDate(device.last_clinical_review)}`}
+                            </div>
                             <div className="small">
                               {device.aletia_verified ? '✓ Aletia Verified' : 'Pending verification'}
                             </div>
                           </td>
+
+                          {/* ── Actions ── */}
                           <td style={{textAlign:'right'}}>
                             <div className="actionCell">
                               <button className="quickViewBtn" title="Quick view" onClick={() => setSelected(device)}>
@@ -456,7 +545,7 @@ const paginated = filtered.slice(
                                 </svg>
                               </button>
                               <a href={`/device/${device.device_id}`} className="reportBtn">
-                                Get Report
+                                View
                               </a>
                             </div>
                           </td>
@@ -465,55 +554,43 @@ const paginated = filtered.slice(
                     })}
                   </tbody>
                 </table>
+
+                {/* Pagination */}
                 {totalPages > 1 && (
-  <div style={{
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '14px 16px',
-    borderTop: '1px solid var(--line)',
-    fontSize: 13,
-    color: 'var(--muted)'
-  }}>
-    <span>
-      Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)} of {filtered.length} devices
-    </span>
-    <div style={{ display: 'flex', gap: 6 }}>
-      <button
-        className="secondaryBtn"
-        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-        disabled={currentPage === 1}
-        style={{ padding: '7px 12px', fontSize: 13, opacity: currentPage === 1 ? 0.4 : 1 }}
-      >
-        ← Prev
-      </button>
-      <span style={{
-        padding: '7px 12px',
-        borderRadius: 12,
-        background: '#f1f5f9',
-        fontWeight: 700,
-        color: 'var(--text)',
-        fontSize: 13
-      }}>
-        {currentPage} / {totalPages}
-      </span>
-      <button
-        className="secondaryBtn"
-        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-        disabled={currentPage === totalPages}
-        style={{ padding: '7px 12px', fontSize: 13, opacity: currentPage === totalPages ? 0.4 : 1 }}
-      >
-        Next →
-      </button>
-    </div>
-  </div>
-)}
+                  <div style={{
+                    display:'flex', alignItems:'center', justifyContent:'space-between',
+                    padding:'14px 16px', borderTop:'1px solid var(--line)',
+                    fontSize:13, color:'var(--muted)',
+                  }}>
+                    <span>
+                      Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)} of {filtered.length}
+                    </span>
+                    <div style={{display:'flex',gap:6}}>
+                      <button
+                        className="secondaryBtn"
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        style={{padding:'7px 12px',fontSize:13,opacity:currentPage === 1 ? 0.4 : 1}}
+                      >← Prev</button>
+                      <span style={{padding:'7px 12px',borderRadius:12,background:'#f1f5f9',fontWeight:700,color:'var(--text)',fontSize:13}}>
+                        {currentPage} / {totalPages}
+                      </span>
+                      <button
+                        className="secondaryBtn"
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        style={{padding:'7px 12px',fontSize:13,opacity:currentPage === totalPages ? 0.4 : 1}}
+                      >Next →</button>
+                    </div>
+                  </div>
+                )}
               </div>
 
+              {/* Info cards */}
               <div className="three">
                 {[
                   { title:'Structured Assessment', desc:'Documented review of regulatory posture, evidence claims, and post‑market oversight signals.', color:'#1f6feb' },
-                  { title:'Evidence Signals', desc:'Summary of validation data, stability, and outcomes evidence—kept readable for clinicians.', color:'#0ea5e9' },
+                  { title:'Evidence Signals',       desc:'Summary of validation data, stability, and outcomes evidence—kept readable for clinicians.',  color:'#0ea5e9' },
                   { title:'Lifecycle Transparency', desc:'Indicators for change control, monitoring, and transparency practices across the product lifecycle.', color:'#1f6feb' },
                 ].map(item => (
                   <div key={item.title} className="card infoCard">
@@ -538,7 +615,7 @@ const paginated = filtered.slice(
                   <b>Transparent Methodology</b><br/>
                   <span>We publish evaluation criteria, assessment process, and evidence grading standards.</span>
                 </div>
-                <button className="secondaryBtn">View methodology</button>
+                <a href="/methodology" className="secondaryBtn">View methodology</a>
               </div>
             </section>
 
@@ -547,30 +624,36 @@ const paginated = filtered.slice(
               <div className="card cardPad">
                 <div className="kpiHead">
                   <h3>Analysis Overview</h3>
-                  <p>Distribution across listing categories.</p>
+                  <p>Distribution of cleared devices by health status.</p>
                 </div>
                 <div className="donutWrap">
                   <svg width="120" height="120" viewBox="0 0 120 120" style={{flexShrink:0}}>
                     <circle cx="60" cy="60" r="40" fill="none" stroke="#e6ebf3" strokeWidth="16"/>
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#1f6feb" strokeWidth="16"
+                    {/* Green segment */}
+                    <circle cx="60" cy="60" r="40" fill="none" stroke="#137a3b" strokeWidth="16"
                       strokeDasharray={`${greenDash} ${circ}`} strokeDashoffset="0"
                       transform="rotate(-90 60 60)"/>
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#0ea5e9" strokeWidth="16"
+                    {/* Amber segment */}
+                    <circle cx="60" cy="60" r="40" fill="none" stroke="#a15c00" strokeWidth="16"
                       strokeDasharray={`${amberDash} ${circ}`} strokeDashoffset={`-${greenDash}`}
                       transform="rotate(-90 60 60)"/>
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#1e3a8a" strokeWidth="16"
+                    {/* Red segment */}
+                    <circle cx="60" cy="60" r="40" fill="none" stroke="#9f1d1d" strokeWidth="16"
                       strokeDasharray={`${redDash} ${circ}`} strokeDashoffset={`-${greenDash + amberDash}`}
                       transform="rotate(-90 60 60)"/>
                     <circle cx="60" cy="60" r="28" fill="white"/>
-                    <text x="60" y="56" textAnchor="middle" fontSize="13" fontWeight="800" fill="#0f172a">{devices.length}</text>
-                    <text x="60" y="68" textAnchor="middle" fontSize="9" fill="#64748b">devices</text>
+                    <text x="60" y="56" textAnchor="middle" fontSize="13" fontWeight="800" fill="#0f172a">{clearedDevices.length}</text>
+                    <text x="60" y="68" textAnchor="middle" fontSize="9" fill="#64748b">cleared</text>
                   </svg>
                   <div className="legend">
-                    <div className="legendRow"><span className="swatch" style={{background:'#1f6feb'}}></span>{greenCount} • Green</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#0ea5e9'}}></span>{amberCount} • Amber</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#1e3a8a'}}></span>{redCount} • Red</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#0b7f7d'}}></span>{verifiedCount} • Verified</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#2b79ff'}}></span>{sahpraCount} • SAHPRA</div>
+                    <div className="legendRow"><span className="swatch" style={{background:'#137a3b'}}/>{greenCount} · Green</div>
+                    <div className="legendRow"><span className="swatch" style={{background:'#a15c00'}}/>{amberCount} · Amber</div>
+                    <div className="legendRow"><span className="swatch" style={{background:'#9f1d1d'}}/>{redCount} · Red</div>
+                    <div className="legendRow"><span className="swatch" style={{background:'#0b7f7d'}}/>{verifiedCount} · Verified</div>
+                    <div className="legendRow"><span className="swatch" style={{background:'#1e40af'}}/>{sahpraCount} · SAHPRA</div>
+                    {pipelineDevices.length > 0 && (
+                      <div className="legendRow"><span className="swatch" style={{background:'#6366f1'}}/>{pipelineDevices.length} · Pipeline</div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -578,7 +661,7 @@ const paginated = filtered.slice(
               <div className="card cardPad">
                 <div className="sideSection">QUICK FILTERS</div>
                 <div className="pills" style={{marginTop:'8px'}}>
-                  {['SaMD','FDA Cleared','CE Marked','SAHPRA','Mental Health'].map(f => (
+                  {['Radiology','Cardiology','Pathology','Mental Health','SAHPRA'].map(f => (
                     <span key={f} className="pill" onClick={() => setSearch(f)}>{f}</span>
                   ))}
                 </div>
@@ -614,11 +697,11 @@ const paginated = filtered.slice(
               <p style={{marginTop:'8px'}}>© {new Date().getFullYear()} Aletia Index. All rights reserved.</p>
             </div>
             <div className="footerLinks">
-              <a href="#">About</a>
-              <a href="#">Methodology</a>
-              <a href="#">Request Review</a>
-              <a href="#">Privacy</a>
-              <a href="#">Terms</a>
+              <a href="/about">About</a>
+              <a href="/methodology">Methodology</a>
+              <a href="/request-review">Request Review</a>
+              <a href="/privacy">Privacy</a>
+              <a href="/terms">Terms</a>
             </div>
           </div>
         </div>
@@ -633,14 +716,28 @@ const paginated = filtered.slice(
                 <div style={{display:'flex',gap:'7px',alignItems:'center',marginBottom:'8px',flexWrap:'wrap'}}>
                   <span className="badge neutral">{selected.device_id}</span>
                   {selected.aletia_verified && <span className="badge verified">✓ Aletia Verified</span>}
-                  <span className={riskBadge(selected.health_status).cls}>{riskBadge(selected.health_status).label} Risk</span>
+                  {selected.breakthrough_designation && <span className="badge breakthrough">⚡ Breakthrough</span>}
+                  {selected.pipeline_stage
+                    ? <span className="badge pipeline">⚗ {PIPELINE_LABELS[selected.pipeline_stage] ?? selected.pipeline_stage}</span>
+                    : <span className={riskBadge(selected.health_status).cls}>{riskBadge(selected.health_status).label} Risk</span>
+                  }
                 </div>
-                <h2 style={{fontSize:'19px',fontWeight:900,lineHeight:1.2}}>{selected.manufacturers?.name}</h2>
+                <h2 style={{fontSize:'19px',fontWeight:900,lineHeight:1.2}}>
+                  {selected.manufacturers?.name || selected.manufacturer_name}
+                </h2>
                 <p style={{color:'var(--muted)',fontSize:'13px',marginTop:'4px'}}>{selected.manufacturers?.hq_location}</p>
               </div>
               <button className="closeBtn" onClick={() => setSelected(null)}>✕</button>
             </div>
             <div className="modal-body">
+
+              {/* Pre-clearance warning in modal */}
+              {selected.pipeline_stage && (
+                <div style={{marginBottom:16,padding:'12px 14px',background:'#fff9ec',border:'1px solid rgba(161,92,0,.25)',borderRadius:12,fontSize:13,color:'#a15c00'}}>
+                  ⚠️ This device has not received regulatory clearance.
+                </div>
+              )}
+
               <div className="modal-section">
                 <div className="modal-label">Intended Use</div>
                 <p style={{fontSize:'14px',color:'var(--text)',lineHeight:1.6}}>{selected.intended_use}</p>
@@ -654,7 +751,9 @@ const paginated = filtered.slice(
               <hr className="sep"/>
               <div className="modal-section">
                 <div className="modal-label">Regulatory Registrations</div>
-                {selected.regional_registrations?.map(r => (
+                {selected.pipeline_stage ? (
+                  <p style={{fontSize:13,color:'var(--muted)',marginTop:6}}>No clearances — device is in the regulatory pipeline.</p>
+                ) : selected.regional_registrations?.map(r => (
                   <div key={r.regulatory_body} className="modal-row" style={{marginTop:'8px'}}>
                     <span style={{fontSize:'13px',fontWeight:600}}>{r.country}</span>
                     <span style={{fontSize:'12px',color:'var(--primary)',fontWeight:700}}>{r.regulatory_body}</span>
@@ -680,6 +779,11 @@ const paginated = filtered.slice(
               <div className="modal-grid">
                 <div><div className="modal-label">Last Automated Sync</div><p style={{fontSize:'14px',fontWeight:600}}>{formatDate(selected.last_automated_sync)}</p></div>
                 <div><div className="modal-label">Last Clinical Review</div><p style={{fontSize:'14px',fontWeight:600}}>{formatDate(selected.last_clinical_review)}</p></div>
+              </div>
+              <div style={{marginTop:16,textAlign:'center'}}>
+                <a href={`/device/${selected.device_id}`} className="reportBtn" style={{width:'100%',justifyContent:'center'}}>
+                  View full listing →
+                </a>
               </div>
             </div>
           </div>

@@ -23,7 +23,7 @@ export interface SyncResult {
 
 /**
  * Derive health_status from FDA signals.
- * Red  = active recall present
+ * Red   = active recall present
  * Amber = elevated adverse event count (>50 MDRs)
  * Green = no signals
  */
@@ -39,7 +39,10 @@ function deriveHealthStatus(
 /**
  * Sync a single device from the FDA.
  * Pass the Aletia device_id plus either a k_number or pma_number.
- * Updates DEVICE_MASTER and REGIONAL_REGISTRATIONS, stamps last_automated_sync.
+ *
+ * FIX: Changed .update() to .upsert() so that devices not yet in the
+ * database are inserted rather than silently ignored.
+ * Also ensures intended_use and all required fields are set on first insert.
  */
 export async function syncDeviceFromFDA(
   deviceId: string,
@@ -65,8 +68,8 @@ export async function syncDeviceFromFDA(
       ? await getClassificationByProductCode(productCode)
       : null;
 
-    // getClassificationByProductCode returns null for Class I devices
-    // If we have a product code but no classification, it means Class I — skip
+    // getClassificationByProductCode returns null for Class I devices.
+    // If we have a product code but no classification, it's Class I — skip.
     if (productCode && !classification) {
       return {
         device_id: deviceId,
@@ -93,17 +96,35 @@ export async function syncDeviceFromFDA(
     // ── 5. Derive health_status ─────────────────────────────────────────
     const health_status = deriveHealthStatus(hasActiveRecall, total_events);
 
-    // ── 6. Update DEVICE_MASTER ─────────────────────────────────────────
-    const deviceUpdate: Record<string, unknown> = {
-      last_automated_sync: new Date().toISOString(),
+    // ── 6. Upsert DEVICE_MASTER ─────────────────────────────────────────
+    // Previously .update() — silently did nothing when device didn't exist.
+    // Now .upsert() — inserts on first sync, updates on subsequent syncs.
+    const deviceUpsert: Record<string, unknown> = {
+      device_id: deviceId,             // required for upsert conflict resolution
       health_status,
+      last_automated_sync: new Date().toISOString(),
+      data_source: 'registry_sync',
+      excluded: false,
     };
 
+    // Populate fields from FDA data — used both on insert and update
+    if (clearanceData?.applicant) {
+      deviceUpsert.manufacturer_name = clearanceData.applicant;
+      updatedFields.push('manufacturer_name');
+    }
+
+    if (clearanceData?.device_name) {
+      deviceUpsert.intended_use = clearanceData.device_name;
+      updatedFields.push('intended_use');
+    }
+
+    if (clearanceData?.decision_date) {
+      deviceUpsert.country_of_origin = 'US';
+    }
+
     if (classification?.device_class) {
-      // Map FDA class to accountability_tier as a starting heuristic
-      // Human auditors can always override this
       const tierMap: Record<string, number> = { '2': 2, '3': 4 };
-      deviceUpdate.accountability_tier = tierMap[classification.device_class] ?? 2;
+      deviceUpsert.accountability_tier = tierMap[classification.device_class] ?? 2;
       updatedFields.push('accountability_tier');
     }
 
@@ -111,11 +132,10 @@ export async function syncDeviceFromFDA(
 
     const { error: deviceError } = await supabase
       .from('device_master')
-      .update(deviceUpdate)
-      .eq('device_id', deviceId);
+      .upsert(deviceUpsert, { onConflict: 'device_id' });
 
     if (deviceError) {
-      throw new Error(`device_master update failed: ${deviceError.message}`);
+      throw new Error(`device_master upsert failed: ${deviceError.message}`);
     }
 
     // ── 7. Upsert REGIONAL_REGISTRATIONS ────────────────────────────────
@@ -169,7 +189,6 @@ export async function syncDeviceFromFDA(
  * Intended to be called on a schedule (e.g. nightly via Vercel Cron).
  */
 export async function bulkSyncAllDevices(): Promise<SyncResult[]> {
-
   const { data: registrations, error } = await supabase
     .from('regional_registrations')
     .select('device_link, clearance_type')
@@ -190,8 +209,8 @@ export async function bulkSyncAllDevices(): Promise<SyncResult[]> {
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     const result = await syncDeviceFromFDA(reg.device_link, {
-      k_number: reg.clearance_type === '510k' ? reg.device_link : undefined,
-      pma_number: reg.clearance_type === 'PMA' ? reg.device_link : undefined,
+      k_number:   reg.clearance_type === '510k' ? reg.device_link : undefined,
+      pma_number: reg.clearance_type === 'PMA'  ? reg.device_link : undefined,
     });
     results.push(result);
   }
