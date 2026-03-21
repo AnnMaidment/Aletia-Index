@@ -139,10 +139,10 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    const { searchAIMLDevices } = await import('@/lib/fda');
+    const { searchAllAIMLDevices } = await import('@/lib/fda');
     const { supabase } = await import('@/lib/supabase');
 
-    const devices = await searchAIMLDevices();
+    const devices = await searchAllAIMLDevices();
 
     if (!devices.length) {
       return NextResponse.json({ message: 'No devices returned from FDA' });

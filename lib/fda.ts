@@ -9,6 +9,9 @@
  *
  * Scope: Class II and Class III AI/ML medical devices only.
  * Jurisdictions: FDA (US), CE Mark (EU), SAHPRA (ZA)
+ *
+ * Product codes last updated: March 2026
+ * Source: https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-and-machine-learning-aiml-enabled-medical-devices
  */
 
 const FDA_BASE = 'https://api.fda.gov/device';
@@ -17,14 +20,106 @@ const API_KEY = process.env.OPENFDA_API_KEY ?? '';
 // Aletia Index only covers Class II and III — Class I is out of scope
 const ALLOWED_DEVICE_CLASSES = ['2', '3'];
 
-// FDA product codes associated with AI/ML Software as a Medical Device (SaMD)
-const AIML_PRODUCT_CODES = [
-  'QIH', // Clinical decision support software
-  'QBS', // Radiological image analysis
-  'MYN', // AI diagnostic software
-  'PWE', // Computer-aided detection
-  'IYO', // Ophthalmic AI
-  'QJO', // Cardiac AI
+/**
+ * Complete list of FDA product codes associated with AI/ML medical devices.
+ * Derived from the FDA's official AI-Enabled Medical Devices list (March 2026).
+ * This replaces the original 6-code list which missed devices like K251293 (QUO).
+ *
+ * Grouped by clinical area for maintainability.
+ * Update this list quarterly when FDA publishes new authorisations.
+ */
+export const AIML_PRODUCT_CODES = [
+  // ── RADIOLOGY — imaging AI, reconstruction, segmentation ──────────────────
+  'QIH', // Radiological CAD software — most common AI/ML code (~40% of all AI devices)
+  'LNH', // MRI system with deep learning reconstruction (AI image enhancement)
+  'LLZ', // Diagnostic imaging software / viewer with AI features
+  'JAK', // CT system with AI-assisted acquisition or analysis
+  'KPR', // X-ray / digital radiography with AI
+  'IYN', // Ultrasound system with AI-assisted features
+  'MYN', // Dental / chest X-ray AI (computer-aided detection)
+  'QDQ', // Mammography AI / breast cancer detection
+  'QAS', // Stroke / neuro AI triage (LVO, ASPECTS, perfusion)
+  'QFM', // Chest X-ray AI triage and prioritisation
+  'QBS', // Radiological image analysis (trauma, brain, general)
+  'QKB', // Auto-segmentation and auto-contouring (radiation therapy)
+  'OEB', // Lung CT AI (nodule detection, lung cancer screening)
+  'MUJ', // Radiation therapy planning AI
+  'KPS', // PET / nuclear medicine AI
+  'OWB', // Angiography / fluoroscopy AI
+  'QWO', // Lung disease AI (ILD, interstitial lung disease)
+  'SAO', // Orthopedic / musculoskeletal imaging AI
+  'QJU', // Cardiac ultrasound guidance AI
+  'QHA', // Coronary FFR / fractional flow reserve AI
+  'QTZ', // Thermal / ablation imaging AI
+  'QER', // Ophthalmic imaging AI (retina, glaucoma)
+  'IYO', // Ophthalmic ultrasound AI
+  'KGI', // Bone density / DXA AI
+  'POK', // Fetal / thyroid ultrasound AI
+  'QBC', // Neurological imaging AI
+  'JAA', // Radiology image management with AI
+  'QKB', // Segmentation / auto-contour (RT planning)
+
+  // ── CARDIOVASCULAR ────────────────────────────────────────────────────────
+  'QYE', // ECG AI — low ejection fraction, cardiac function detection
+  'QDA', // ECG wearable AI (Withings, consumer devices)
+  'DQK', // Cardiac rhythm AI / arrhythmia detection and classification
+  'DPS', // Holter monitor AI analysis
+  'DQD', // Electronic stethoscope AI (Eko Health)
+  'PJA', // Coronary CTA with FFR-CT (HeartFlow)
+  'SDJ', // Cardiac amyloid / echocardiography AI
+  'MXD', // Cardiac implantable device with AI (Abbott)
+  'QME', // Vital signs / contactless patient monitoring AI
+  'MWI', // Wearable health monitoring AI (Empatica)
+  'SDY', // Loss of pulse / cardiac arrest detection (Fitbit)
+  'SFR', // Hypertension notification (Apple Watch)
+  'QUO', // Heart failure status indicator AI (Icardio.Ai — why K251293 was missed)
+  'DSH', // Cardiac patch / long-term ambulatory monitoring
+  'QJO', // Cardiac AI (legacy code — retain from original list)
+
+  // ── NEUROLOGY ─────────────────────────────────────────────────────────────
+  'OLO', // Robotic surgical system (spine / neuro)
+  'QPF', // Autism / neurodevelopmental AI diagnosis (Canvas Dx, EarliPoint)
+  'OMB', // EEG analysis AI (seizure detection, brain mapping)
+  'OLZ', // Sleep study / polysomnography AI
+  'OLV', // Sleep staging AI (Compumedics)
+  'HAW', // Surgical navigation (neuro, EVD placement)
+  'POS', // Epilepsy wearable monitoring AI
+  'SBF', // AR surgical navigation (spine — Augmedics, SyncAR)
+
+  // ── PATHOLOGY ─────────────────────────────────────────────────────────────
+  'QPN', // Digital pathology AI (prostate — Ibex)
+  'SFH', // Pathology AI — De Novo (ArteraAI prostate treatment response)
+  'PZM', // NGS tumour profiling (Geneseeq)
+
+  // ── OBSTETRICS / GYNAECOLOGY ──────────────────────────────────────────────
+  'PBH', // Embryo AI selection (IVF — Fairtility CHLOE)
+  'HGM', // Fetal heart rate / CTG AI (PeriGen)
+
+  // ── HEMATOLOGY ────────────────────────────────────────────────────────────
+  'JOY', // Peripheral blood smear AI (Scopio Labs)
+  'POV', // Semen quality analysis AI (LensHooke)
+
+  // ── GASTROENTEROLOGY / UROLOGY ────────────────────────────────────────────
+  'QNP', // Colonoscopy polyp detection AI (SKOUT, MAGENTIQ-COLO)
+  'QZB', // Robotic surgical system GI (Moon Surgical Maestro)
+  'SFE', // Surgical hyperspectral imaging AI (HyperSnap)
+
+  // ── ANESTHESIOLOGY ────────────────────────────────────────────────────────
+  'QRG', // Nerve block AI guidance (Nerveblox)
+  'PHZ', // Respiratory / rhonchi detection AI (Tyto Care)
+  'BZQ', // Airway management AI (Airmod)
+  'MNR', // Sleep apnea / home sleep apnea test (SANSA HSAT, TipTraQ)
+
+  // ── ORTHOPEDIC ────────────────────────────────────────────────────────────
+  'MAX', // Lumbar fusion surgical AI (GetSet GoLIF!)
+  'KWS', // Shoulder planning AI (Medacta MyShoulder)
+  'QHE', // Surgical planning AI (Precision AI)
+
+  // ── MICROBIOLOGY ──────────────────────────────────────────────────────────
+  'PRE', // Sepsis / infection AI diagnostic (TriVerity)
+
+  // ── LEGACY — kept from original list ─────────────────────────────────────
+  'PWE', // Computer-aided detection (older cleared devices)
 ];
 
 // ── Jurisdiction Types ─────────────────────────────────────────────────────────
@@ -47,24 +142,14 @@ export type ClearanceType =
   | 'Acknowledgement Letter'  // SAHPRA — provisional registration
   | 'Full Registration';      // SAHPRA — full market authorisation
 
-/**
- * A single registration row in REGIONAL_REGISTRATIONS.
- * One device can have multiple rows — one per jurisdiction.
- *
- * Example for a device registered in all three jurisdictions:
- *   { device_link: 'UDI-VIZ-001', country: 'US',  regulatory_body: 'FDA',      clearance_type: '510k' }
- *   { device_link: 'UDI-VIZ-001', country: 'EU',  regulatory_body: 'CE Mark',  clearance_type: 'MDR' }
- *   { device_link: 'UDI-VIZ-001', country: 'ZA',  regulatory_body: 'SAHPRA',   clearance_type: 'Acknowledgement Letter' }
- */
 export interface RegionalRegistration {
   device_link: string;
   country: string;
   regulatory_body: RegulatoryBody;
   clearance_type: ClearanceType;
-  regulatory_expiry?: string; // ISO date string — triggers RED FLAG alert when near expiry
+  regulatory_expiry?: string;
 }
 
-/** Jurisdiction metadata — maps each regulatory body to its country and valid clearance types */
 export const JURISDICTIONS: Record<
   RegulatoryBody,
   { country: string; clearance_types: ClearanceType[] }
@@ -123,7 +208,7 @@ export interface FDAAdverseEventSummary {
 export interface FDAClassificationResult {
   product_code: string;
   device_name: string;
-  device_class: '2' | '3'; // Class I excluded — out of scope for Aletia
+  device_class: '2' | '3';
   regulation_number: string;
   definition: string;
 }
@@ -141,9 +226,9 @@ async function fdaFetch<T>(
   try {
     const res = await fetch(url, {
       headers: { Accept: 'application/json' },
-      next: { revalidate: 86400 }, // Next.js: cache response for 24 hours
+      cache: 'no-store',
     });
-    if (res.status === 404) return []; // No results — not a real error
+    if (res.status === 404) return [];
     if (!res.ok) {
       console.error(`[fda.ts] HTTP ${res.status} → ${url}`);
       return null;
@@ -158,7 +243,6 @@ async function fdaFetch<T>(
 
 // ── 510(k) Clearances ──────────────────────────────────────────────────────────
 
-/** Look up a 510(k) clearance by K number, e.g. "K213201" */
 export async function get510kByKNumber(
   kNumber: string
 ): Promise<FDA510kResult | null> {
@@ -179,7 +263,6 @@ export async function get510kByKNumber(
   };
 }
 
-/** Search 510(k) clearances by device name — returns first match */
 export async function search510kByName(
   deviceName: string
 ): Promise<FDA510kResult | null> {
@@ -202,7 +285,6 @@ export async function search510kByName(
 
 // ── PMA (Pre-Market Approval) ──────────────────────────────────────────────────
 
-/** Look up a PMA by PMA number, e.g. "P200001" */
 export async function getPMAByNumber(
   pmaNumber: string
 ): Promise<FDAPMAResult | null> {
@@ -225,7 +307,6 @@ export async function getPMAByNumber(
 
 // ── Recalls ────────────────────────────────────────────────────────────────────
 
-/** Get recalls for a device by 510(k) number — more precise than name search */
 export async function getRecallsByKNumber(
   kNumber: string
 ): Promise<FDARecallResult[]> {
@@ -236,7 +317,7 @@ export async function getRecallsByKNumber(
   if (!results?.length) return [];
   return results.map((r) => ({
     recall_number: r.recall_number ?? '',
-     device_name: (r.device as any)?.brand_name ?? '',
+    device_name: (r.device as any)?.brand_name ?? '',
     recalling_firm: r.recalling_firm ?? '',
     recall_initiation_date: r.recall_initiation_date ?? '',
     status: r.status ?? '',
@@ -247,10 +328,6 @@ export async function getRecallsByKNumber(
 
 // ── Adverse Events (MDRs) ──────────────────────────────────────────────────────
 
-/**
- * Get total count of Medical Device Reports for a device.
- * High MDR counts are a post-market safety signal that influences health_status.
- */
 export async function getAdverseEventCount(
   deviceName: string
 ): Promise<FDAAdverseEventSummary> {
@@ -271,10 +348,6 @@ export async function getAdverseEventCount(
 
 // ── Classification ─────────────────────────────────────────────────────────────
 
-/**
- * Get device classification by product code.
- * Returns null for Class I devices — out of scope for Aletia Index.
- */
 export async function getClassificationByProductCode(
   productCode: string
 ): Promise<FDAClassificationResult | null> {
@@ -285,7 +358,6 @@ export async function getClassificationByProductCode(
   if (!results?.length) return null;
   const r = results[0];
 
-  // Reject Class I — Aletia Index only covers Class II and III
   if (!ALLOWED_DEVICE_CLASSES.includes(r.device_class)) {
     console.info(
       `[fda.ts] Skipping Class I device with product code: ${productCode}`
@@ -301,15 +373,71 @@ export async function getClassificationByProductCode(
     definition: r.definition ?? '',
   };
 }
+
 // ── Bulk AI/ML Device Search ───────────────────────────────────────────────────
 
 /**
- * Search FDA 510(k) database for all AI/ML devices by name keywords.
- * Used to seed the Aletia Index with real devices automatically.
+ * PRIMARY SEED STRATEGY: Search by product codes.
+ *
+ * This is the most reliable method. It catches devices regardless of how
+ * the manufacturer names them — "CardioVision" is caught by QUO just as
+ * "AI Chest Analysis" is caught by QFM.
+ *
+ * The FDA API accepts a max of ~100 characters in a search query, so we
+ * batch the codes into groups of 15 and merge the results.
+ */
+export async function searchAIMLByProductCodes(): Promise<FDA510kResult[]> {
+  const BATCH_SIZE = 15;
+  const uniqueCodes = [...new Set(AIML_PRODUCT_CODES)]; // deduplicate
+  const batches: string[][] = [];
+
+  for (let i = 0; i < uniqueCodes.length; i += BATCH_SIZE) {
+    batches.push(uniqueCodes.slice(i, i + BATCH_SIZE));
+  }
+
+  const allResults: FDA510kResult[] = [];
+  const seen = new Set<string>();
+
+  for (const batch of batches) {
+    // Respect FDA rate limit between batches
+    await new Promise(r => setTimeout(r, 300));
+
+    const results = await fdaFetch<Record<string, string>>('510k', {
+      search: `product_code:(${batch.join(' OR ')})`,
+      limit: '1000',
+    });
+
+    if (!results) continue;
+
+    for (const r of results) {
+      if (!r.k_number || seen.has(r.k_number)) continue;
+      seen.add(r.k_number);
+      allResults.push({
+        k_number: r.k_number,
+        device_name: r.device_name,
+        applicant: r.applicant,
+        decision_date: r.decision_date,
+        decision_description: r.decision_description,
+        product_code: r.product_code,
+        clearance_type: '510k' as const,
+      });
+    }
+  }
+
+  console.info(`[fda.ts] searchAIMLByProductCodes: ${allResults.length} devices found across ${batches.length} batches`);
+  return allResults;
+}
+
+/**
+ * SUPPLEMENTARY SEED STRATEGY: Search by AI keywords in device name.
+ *
+ * Catches devices that have "AI" or "artificial intelligence" explicitly
+ * in their name but use a product code not in our list.
+ * Run this after searchAIMLByProductCodes and merge results.
  */
 export async function searchAIMLDevices(): Promise<FDA510kResult[]> {
   const results = await fdaFetch<Record<string, string>>('510k', {
-    search: 'device_name:(AI OR "artificial intelligence" OR "machine learning" OR "deep learning")',
+    search: 'device_name:(AI OR "artificial intelligence" OR "machine learning" OR "deep learning" OR "neural network")',
     limit: '1000',
   });
   if (!results) return [];
@@ -326,23 +454,26 @@ export async function searchAIMLDevices(): Promise<FDA510kResult[]> {
 }
 
 /**
- * Search by known AI/ML FDA product codes — more precise than name search.
- * Catches devices that don't have "AI" in their name but are ML-based.
+ * COMBINED SEED: Run both strategies and deduplicate by K number.
+ * Use this for full reseeds. The product code search is primary;
+ * the name search catches any stragglers.
  */
-export async function searchAIMLByProductCodes(): Promise<FDA510kResult[]> {
-  const results = await fdaFetch<Record<string, string>>('510k', {
-    search: `product_code:(${AIML_PRODUCT_CODES.join(' OR ')})`,
-    limit: '1000',
-  });
-  if (!results) return [];
+export async function searchAllAIMLDevices(): Promise<FDA510kResult[]> {
+  const [byCode, byName] = await Promise.all([
+    searchAIMLByProductCodes(),
+    searchAIMLDevices(),
+  ]);
 
-  return results.map((r) => ({
-    k_number: r.k_number,
-    device_name: r.device_name,
-    applicant: r.applicant,
-    decision_date: r.decision_date,
-    decision_description: r.decision_description,
-    product_code: r.product_code,
-    clearance_type: '510k' as const,
-  }));
+  const seen = new Set(byCode.map(d => d.k_number));
+  const combined = [...byCode];
+
+  for (const d of byName) {
+    if (!seen.has(d.k_number)) {
+      combined.push(d);
+      seen.add(d.k_number);
+    }
+  }
+
+  console.info(`[fda.ts] searchAllAIMLDevices: ${combined.length} total unique devices`);
+  return combined;
 }

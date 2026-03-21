@@ -88,6 +88,7 @@ export default function Home() {
         tech_specs(api_type, ehr_compat, data_hosting, fhir_compatible, popia_compliant)
       `)
       .eq('excluded', false)
+         .range(0, 5999) 
 
     if (error) { console.error(error); setLoading(false); return }
 
