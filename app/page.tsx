@@ -1,138 +1,162 @@
-'use client'
+import { createClient } from '@supabase/supabase-js'
+import { Suspense } from 'react'
+import MobileMenu   from './components/MobileMenu'
+import FiltersBar   from './components/FiltersBar'
+import DeviceGrid   from './components/DeviceGrid'
+import QuickFilters from './components/QuickFilters'
+import type { Device } from '@/lib/types'
+export const dynamic = 'force-dynamic'
 
-import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+const PAGE_SIZE = 25
 
-type Device = {
-  device_id: string
-  intended_use: string
-  manufacturer_name: string | null
-  ai_ml_type: string
-  accountability_tier: number
-  health_status: 'Green' | 'Amber' | 'Red'
-  aletia_verified: boolean
-  last_automated_sync: string
-  last_clinical_review: string | null
-  specialty_link: string
-  mode: string
-  autonomy: string
-  pipeline_stage: string | null
-  data_source: string | null
-  breakthrough_designation: boolean
-  excluded: boolean
-  manufacturers: { name: string; hq_location: string } | null
-  regional_registrations: { country: string; regulatory_body: string; clearance_type: string }[]
-  tech_specs: { api_type: string; ehr_compat: string; data_hosting: string; fhir_compatible: boolean; popia_compliant: boolean } | null
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  )
 }
 
-// Pipeline stage display labels
-const PIPELINE_LABELS: Record<string, string> = {
-  proof_of_concept: 'Proof of Concept',
-  pre_submission:   'Pre-submission',
-  submitted:        'Submitted',
-  under_review:     'Under Review',
-  cleared:          'Cleared',
+function strParam(
+  params: Record<string, string | string[] | undefined>,
+  key: string,
+): string {
+  const v = params[key]
+  return typeof v === 'string' ? v : Array.isArray(v) ? v[0] : ''
 }
 
-export default function Home() {
-  const [devices,         setDevices]         = useState<Device[]>([])
-  const [filtered,        setFiltered]        = useState<Device[]>([])
-  const [search,          setSearch]          = useState('')
-  const [specialtyFilter, setSpecialtyFilter] = useState('All')
-  const [statusFilter,    setStatusFilter]    = useState('All')
-  const [sourceFilter,    setSourceFilter]    = useState('All')
-  const [loading,         setLoading]         = useState(true)
-  const [selected,        setSelected]        = useState<Device | null>(null)
-  const [specialties,     setSpecialties]     = useState<string[]>([])
-  const [menuOpen,        setMenuOpen]        = useState(false)
-  const [currentPage,     setCurrentPage]     = useState(1)
-  const PAGE_SIZE = 25
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const params     = await searchParams
+  const search     = strParam(params, 'search')
+  const specialty  = strParam(params, 'specialty') || 'All'
+  const status     = strParam(params, 'status')    || 'All'
+  const source     = strParam(params, 'source')    || 'All'
+  const pccp       = strParam(params, 'pccp') || 'approved'
+  const autonomous = strParam(params, 'autonomous')
+  const page       = Math.max(1, parseInt(strParam(params, 'page') || '1') || 1)
 
-  useEffect(() => { fetchDevices() }, [])
+  const supabase = getSupabase()
 
-  useEffect(() => {
-    let result = devices
-
-    if (search) {
-      const q = search.toLowerCase()
-      result = result.filter(d =>
-        (d.device_id       ?? '').toLowerCase().includes(q) ||
-        (d.intended_use    ?? '').toLowerCase().includes(q) ||
-        (d.manufacturers?.name ?? d.manufacturer_name ?? '').toLowerCase().includes(q) ||
-        (d.specialty_link  ?? '').toLowerCase().includes(q)
-      )
-    }
-
-    if (specialtyFilter !== 'All')
-      result = result.filter(d => d.specialty_link === specialtyFilter)
-
-    if (statusFilter === 'Pipeline')
-      result = result.filter(d => !!d.pipeline_stage)
-    else if (statusFilter !== 'All')
-      result = result.filter(d => !d.pipeline_stage && d.health_status === statusFilter)
-
-    if (sourceFilter !== 'All')
-      result = result.filter(d => (d.data_source ?? 'registry_sync') === sourceFilter)
-
-    setCurrentPage(1)
-    setFiltered(result)
-  }, [search, specialtyFilter, statusFilter, sourceFilter, devices])
-
-  async function fetchDevices() {
-    const { data, error } = await supabase
+  // ── Manufacturer name pre-query ─────────────────────────────────────────────
+  let manufacturerDeviceIds: string[] = []
+  if (search) {
+    const { data: mfrData } = await supabase
       .from('device_master')
-      .select(`
-        *,
-        manufacturers(name, hq_location),
-        regional_registrations(country, regulatory_body, clearance_type),
-        tech_specs(api_type, ehr_compat, data_hosting, fhir_compatible, popia_compliant)
-      `)
+      .select('device_id, manufacturers!inner(name)')
       .eq('excluded', false)
-         .range(0, 5999) 
-
-    if (error) { console.error(error); setLoading(false); return }
-
-    const rows = data || []
-    setDevices(rows)
-    setFiltered(rows)
-    // Only meaningful specialty values in the dropdown
-    const uniqueSpecialties = [...new Set(
-      rows.map((d: Device) => d.specialty_link).filter(Boolean)
-    )].sort() as string[]
-    setSpecialties(uniqueSpecialties)
-    setLoading(false)
+      .or(`name.ilike.%${search}%`, { referencedTable: 'manufacturers' })
+      .range(0, 9999)
+    manufacturerDeviceIds = (mfrData ?? []).map(
+      (d: { device_id: string }) => d.device_id,
+    )
   }
 
-  // ── Badge helpers ──────────────────────────────────────────────────────────
+  // ── Filtered + paginated query ──────────────────────────────────────────────
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let query: any = supabase
+    .from('device_master')
+    .select(
+      `device_id, intended_use, manufacturer_name, specialty_link,
+       health_status, pipeline_stage, data_source, excluded,
+       aletia_verified, breakthrough_designation,
+       ai_ml_type, accountability_tier, mode, autonomy,
+       last_automated_sync, last_clinical_review,
+       autonomous_output_mode, autonomous_output_description, eu_risk_class,
+       manufacturers(name, hq_location),
+       regional_registrations(country, regulatory_body, clearance_type),
+       tech_specs(api_type, ehr_compat, data_hosting, fhir_compatible, popia_compliant)`,
+      { count: 'exact' },
+    )
+    .eq('excluded', false)
 
-  const riskBadge = (status: string) => {
-    if (status === 'Green') return { cls: 'badge ok',     label: 'Lower'    }
-    if (status === 'Red')   return { cls: 'badge danger', label: 'Higher'   }
-    return                         { cls: 'badge warn',   label: 'Moderate' }
+  if (pccp === 'approved') {
+    query = query.eq('pccp_status', 'approved')
   }
 
-  const formatDate = (d: string | null) =>
-    d ? new Date(d).toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }) : 'Not reviewed'
+  // Autonomous filter — mutually exclusive with PCCP filter
+  if (autonomous === 'true') {
+    query = query.eq('autonomous_output_mode', true)
+  }
 
-  // ── Stats ──────────────────────────────────────────────────────────────────
+  if (search) {
+    const idPart = manufacturerDeviceIds.length > 0
+      ? `,device_id.in.(${manufacturerDeviceIds.join(',')})`
+      : ''
+    query = query.or(
+      `device_id.ilike.%${search}%,intended_use.ilike.%${search}%,manufacturer_name.ilike.%${search}%${idPart}`,
+    )
+  }
 
-  const clearedDevices  = devices.filter(d => !d.pipeline_stage)
-  const pipelineDevices = devices.filter(d =>  d.pipeline_stage)
-  const verifiedCount   = devices.filter(d => d.aletia_verified).length
-  const sahpraCount     = devices.filter(d => d.regional_registrations?.some(r => r.country === 'South Africa')).length
-  const greenCount      = clearedDevices.filter(d => d.health_status === 'Green').length
-  const amberCount      = clearedDevices.filter(d => d.health_status === 'Amber').length
-  const redCount        = clearedDevices.filter(d => d.health_status === 'Red').length
+  if (specialty !== 'All') {
+    query = query.eq('specialty_link', specialty)
+  }
+  if (status === 'Pipeline') {
+    query = query.not('pipeline_stage', 'is', null)
+  } else if (status !== 'All') {
+    query = query.is('pipeline_stage', null).eq('health_status', status)
+  }
+  if (source !== 'All') {
+    if (source === 'registry_sync') {
+      query = query.or('data_source.eq.registry_sync,data_source.is.null')
+    } else {
+      query = query.eq('data_source', source)
+    }
+  }
 
-  // Donut: only cleared devices in the status chart
-  const total      = clearedDevices.length || 1
-  const circ       = 251
-  const greenDash  = Math.round((greenCount  / total) * circ)
-  const amberDash  = Math.round((amberCount  / total) * circ)
-  const redDash    = Math.round((redCount    / total) * circ)
+  const { data: devices, count: totalCount } = (await query.range(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE - 1,
+  )) as { data: Device[] | null; count: number | null }
 
-  const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
-  const paginated  = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+  // ── Global stats (unfiltered) + specialties ─────────────────────────────────
+  const [{ data: statsData }, { data: specData }] = await Promise.all([
+    supabase
+      .from('device_master')
+      .select('health_status, pipeline_stage, aletia_verified, regional_registrations(country)')
+      .eq('excluded', false)
+      .range(0, 9999),
+    supabase
+      .from('device_master')
+      .select('specialty_link')
+      .eq('excluded', false)
+      .not('specialty_link', 'is', null)
+      .range(0, 9999),
+  ])
+
+  const all      = statsData ?? []
+  const cleared  = all.filter((d: { pipeline_stage: string | null }) => !d.pipeline_stage)
+  const pipeline = all.filter((d: { pipeline_stage: string | null }) =>  d.pipeline_stage)
+  const green    = cleared.filter((d: { health_status: string }) => d.health_status === 'Green').length
+  const amber    = cleared.filter((d: { health_status: string }) => d.health_status === 'Amber').length
+  const red      = cleared.filter((d: { health_status: string }) => d.health_status === 'Red').length
+  const verified = all.filter((d: { aletia_verified: boolean }) => d.aletia_verified).length
+  const sahpra   = all.filter((d: { regional_registrations?: { country: string }[] }) =>
+    d.regional_registrations?.some(r => r.country === 'South Africa'),
+  ).length
+
+  const specialties = [...new Set(
+    (specData ?? []).map((d: { specialty_link: string }) => d.specialty_link),
+  )].sort() as string[]
+
+  // ── Donut chart offsets ─────────────────────────────────────────────────────
+  const circ      = 251
+  const total     = cleared.length || 1
+  const greenDash = Math.round((green / total) * circ)
+  const amberDash = Math.round((amber / total) * circ)
+  const redDash   = Math.round((red   / total) * circ)
+
+  // ── filterQuery — passed to DeviceGrid for Link-based pagination ────────────
+  const fq = new URLSearchParams()
+  if (search)              fq.set('search',    search)
+  if (specialty !== 'All') fq.set('specialty', specialty)
+  if (status    !== 'All') fq.set('status',    status)
+  if (source    !== 'All') fq.set('source',    source)
+  if (pccp === 'approved') fq.set('pccp',      'approved')
+  if (autonomous === 'true') fq.set('autonomous', 'true')
+  const filterQuery = fq.toString()
 
   return (
     <>
@@ -336,7 +360,7 @@ export default function Home() {
                 <img src="/assets/aletia.png" alt="Aletia Index" />
               </div>
               <div>
-                <div className="brandName">ALETIA <span style={{color:'var(--blue)',fontWeight:800}}>INDEX</span></div>
+                <div className="brandName">ALETIA <span style={{ color: 'var(--blue)', fontWeight: 800 }}>INDEX</span></div>
                 <div className="brandTag">Clinical assurance for digital health</div>
               </div>
             </a>
@@ -348,21 +372,10 @@ export default function Home() {
             </div>
             <div className="navRight">
               <a href="/request-review" className="primaryBtn">Request Review</a>
-              <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
-                <span/><span/><span/>
-              </button>
+              <MobileMenu />
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Mobile menu */}
-      <div className={`mobileMenu ${menuOpen ? 'open' : ''}`}>
-        <a href="/" className="active" onClick={() => setMenuOpen(false)}>Index</a>
-        <a href="/methodology" onClick={() => setMenuOpen(false)}>Methodology</a>
-        <a href="/insights" onClick={() => setMenuOpen(false)}>Insights</a>
-        <a href="/clinicians" onClick={() => setMenuOpen(false)}>For Clinicians</a>
-        <a href="/request-review" className="primaryBtn" onClick={() => setMenuOpen(false)}>Request Review</a>
       </div>
 
       {/* ── MAIN ── */}
@@ -372,234 +385,59 @@ export default function Home() {
 
             {/* ── LEFT: TABLE ── */}
             <section className="card cardPad">
-              <div className="searchRow">
-                <div className="search">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style={{flexShrink:0}}>
-                    <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#94a3b8" strokeWidth="1.8"/>
-                    <path d="M16.2 16.2 21 21" stroke="#94a3b8" strokeWidth="1.8" strokeLinecap="round"/>
-                  </svg>
-                  <input
-                    placeholder="Search by technology name, use case, developer, regulatory class…"
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                  />
+              <Suspense fallback={null}>
+                <FiltersBar
+                  specialties={specialties}
+                  totalCount={totalCount ?? 0}
+                  pipelineCount={pipeline.length}
+                />
+              </Suspense>
+
+              <Suspense fallback={
+                <div className="tableWrap">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th style={{ minWidth: '260px' }}>Tool</th>
+                        <th style={{ minWidth: '140px' }}>Use Case</th>
+                        <th style={{ minWidth: '180px' }}>Regulatory Status</th>
+                        <th style={{ minWidth: '100px' }}>Risk</th>
+                        <th style={{ minWidth: '180px' }}>Lifecycle Signals</th>
+                        <th style={{ minWidth: '110px', textAlign: 'right' }}> </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td colSpan={6} style={{ textAlign: 'center', padding: '40px', color: 'var(--muted)' }}>
+                          Loading…
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-                <select
-                  className="secondaryBtn"
-                  value={specialtyFilter}
-                  onChange={e => setSpecialtyFilter(e.target.value)}
-                >
-                  <option value="All">All Specialties</option>
-                  {specialties.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-                <select
-                  className="secondaryBtn"
-                  value={sourceFilter}
-                  onChange={e => setSourceFilter(e.target.value)}
-                >
-                  <option value="All">All Sources</option>
-                  <option value="registry_sync">Registry Sync</option>
-                  <option value="aletia_research">Aletia Research</option>
-                  <option value="manufacturer_submitted">Manufacturer Submitted</option>
-                </select>
-              </div>
-
-              <div className="metaLine">
-                <span style={{width:'8px',height:'8px',borderRadius:'99px',background:'var(--blue)',display:'inline-block',flexShrink:0}}/>
-                <b style={{color:'var(--text)'}}>{filtered.length}</b> Technologies listed
-                {pipelineDevices.length > 0 && (
-                  <span style={{marginLeft:4}}>
-                    · <span style={{color:'#1e40af',fontWeight:600}}>{pipelineDevices.length} in pipeline</span>
-                  </span>
-                )}
-              </div>
-
-              {/* Status filter pills */}
-              <div className="pills">
-                {(['All','Green','Amber','Red','Pipeline'] as const).map(s => (
-                  <span
-                    key={s}
-                    className={`pill light ${statusFilter === s ? 'active' : ''}`}
-                    onClick={() => setStatusFilter(s)}
-                  >
-                    {s === 'All' ? 'All' : s === 'Pipeline' ? '⚗ Pipeline' : `${s} Status`}
-                  </span>
-                ))}
-              </div>
-
-              <div className="tableWrap">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th style={{minWidth:'260px'}}>Tool</th>
-                      <th style={{minWidth:'140px'}}>Use Case</th>
-                      <th style={{minWidth:'180px'}}>Regulatory Status</th>
-                      <th style={{minWidth:'100px'}}>Risk</th>
-                      <th style={{minWidth:'180px'}}>Lifecycle Signals</th>
-                      <th style={{minWidth:'110px',textAlign:'right'}}> </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loading ? (
-                      <tr><td colSpan={6} style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>Loading devices…</td></tr>
-                    ) : filtered.length === 0 ? (
-                      <tr><td colSpan={6} style={{textAlign:'center',padding:'40px',color:'var(--muted)'}}>No devices found.</td></tr>
-                    ) : paginated.map(device => {
-                      const isPreClearance = !!device.pipeline_stage
-                      const dataSource     = device.data_source ?? 'registry_sync'
-                      const risk           = riskBadge(device.health_status)
-
-                      return (
-                        <tr key={device.device_id}>
-                          {/* ── Tool ── */}
-                          <td>
-                            <div className="rowTitle">
-                              <div className="appIcon">
-                                <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
-                                  <path d="M12 3 4 21h4l1.3-3h5.4L16 21h4L12 3Zm1.6 10H10.4L12 8.6 13.6 13Z" fill="#1f6feb"/>
-                                </svg>
-                              </div>
-                              <div>
-                                <a
-                                  href={`/device/${device.device_id}`}
-                                  className="appName"
-                                  style={{
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: 'vertical',
-                                    overflow: 'hidden',
-                                  }}
-                                >
-                                  {device.manufacturers?.name || device.manufacturer_name || device.device_id}
-                                </a>
-                                <div className="appOrg">{device.device_id}</div>
-                                {/* Data source provenance tag */}
-                                {dataSource === 'aletia_research' && (
-                                  <span className="badge research" style={{marginTop:4}}>ⓘ Aletia Research</span>
-                                )}
-                                {dataSource === 'manufacturer_submitted' && (
-                                  <span className="badge research" style={{marginTop:4,background:'#f0fdf4',color:'#15803d',borderColor:'rgba(21,128,61,.15)'}}>✓ Manufacturer Submitted</span>
-                                )}
-                                {device.breakthrough_designation && (
-                                  <span className="badge breakthrough" style={{marginTop:4,fontSize:11,padding:'3px 8px'}}>⚡ Breakthrough</span>
-                                )}
-                                <div className="small" style={{
-                                  display: '-webkit-box',
-                                  WebkitLineClamp: 3,
-                                  WebkitBoxOrient: 'vertical',
-                                  overflow: 'hidden',
-                                }}>
-                                  {device.intended_use}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-
-                          {/* ── Use Case ── */}
-                          <td style={{color:'var(--muted)',fontSize:'13px'}}>{device.specialty_link}</td>
-
-                          {/* ── Regulatory Status ── */}
-                          <td>
-                            {isPreClearance ? (
-                              <span className="badge pipeline">
-                                ⚗ {PIPELINE_LABELS[device.pipeline_stage!] ?? device.pipeline_stage}
-                              </span>
-                            ) : device.regional_registrations?.length > 0 ? (
-                              <div style={{display:'flex',flexDirection:'column',gap:4}}>
-                                {device.regional_registrations.map(r => (
-                                  <span key={r.regulatory_body} className="badge neutral" style={{fontSize:11}}>
-                                    {r.clearance_type || r.regulatory_body}
-                                  </span>
-                                ))}
-                              </div>
-                            ) : (
-                              <span className="badge neutral">Unregistered</span>
-                            )}
-                          </td>
-
-                          {/* ── Risk ── */}
-                          <td>
-                            {isPreClearance ? (
-                              <span style={{fontSize:12,color:'var(--muted)'}}>—</span>
-                            ) : (
-                              <span className={risk.cls}>{risk.label}</span>
-                            )}
-                          </td>
-
-                          {/* ── Lifecycle Signals ── */}
-                          <td>
-                            <div style={{fontSize:'13px',fontWeight:600}}>
-                              {isPreClearance ? 'Pipeline entry' : `Reviewed ${formatDate(device.last_clinical_review)}`}
-                            </div>
-                            <div className="small">
-                              {device.aletia_verified ? '✓ Aletia Verified' : 'Pending verification'}
-                            </div>
-                          </td>
-
-                          {/* ── Actions ── */}
-                          <td style={{textAlign:'right'}}>
-                            <div className="actionCell">
-                              <button className="quickViewBtn" title="Quick view" onClick={() => setSelected(device)}>
-                                <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
-                                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z" stroke="#64748b" strokeWidth="1.8"/>
-                                  <circle cx="12" cy="12" r="3" stroke="#64748b" strokeWidth="1.8"/>
-                                </svg>
-                              </button>
-                              <a href={`/device/${device.device_id}`} className="reportBtn">
-                                View
-                              </a>
-                            </div>
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div style={{
-                    display:'flex', alignItems:'center', justifyContent:'space-between',
-                    padding:'14px 16px', borderTop:'1px solid var(--line)',
-                    fontSize:13, color:'var(--muted)',
-                  }}>
-                    <span>
-                      Showing {(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)} of {filtered.length}
-                    </span>
-                    <div style={{display:'flex',gap:6}}>
-                      <button
-                        className="secondaryBtn"
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                        disabled={currentPage === 1}
-                        style={{padding:'7px 12px',fontSize:13,opacity:currentPage === 1 ? 0.4 : 1}}
-                      >← Prev</button>
-                      <span style={{padding:'7px 12px',borderRadius:12,background:'#f1f5f9',fontWeight:700,color:'var(--text)',fontSize:13}}>
-                        {currentPage} / {totalPages}
-                      </span>
-                      <button
-                        className="secondaryBtn"
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                        disabled={currentPage === totalPages}
-                        style={{padding:'7px 12px',fontSize:13,opacity:currentPage === totalPages ? 0.4 : 1}}
-                      >Next →</button>
-                    </div>
-                  </div>
-                )}
-              </div>
+              }>
+                <DeviceGrid
+                  devices={devices ?? []}
+                  totalCount={totalCount ?? 0}
+                  page={page}
+                  pageSize={PAGE_SIZE}
+                  filterQuery={filterQuery}
+                />
+              </Suspense>
 
               {/* Info cards */}
               <div className="three">
                 {[
-                  { title:'Structured Assessment', desc:'Documented review of regulatory posture, evidence claims, and post‑market oversight signals.', color:'#1f6feb' },
-                  { title:'Evidence Signals',       desc:'Summary of validation data, stability, and outcomes evidence—kept readable for clinicians.',  color:'#0ea5e9' },
-                  { title:'Lifecycle Transparency', desc:'Indicators for change control, monitoring, and transparency practices across the product lifecycle.', color:'#1f6feb' },
+                  { title: 'Structured Assessment', desc: 'Documented review of regulatory posture, evidence claims, and post‑market oversight signals.',           color: '#1f6feb' },
+                  { title: 'Evidence Signals',       desc: 'Summary of validation data, stability, and outcomes evidence—kept readable for clinicians.',            color: '#0ea5e9' },
+                  { title: 'Lifecycle Transparency', desc: 'Indicators for change control, monitoring, and transparency practices across the product lifecycle.',  color: '#1f6feb' },
                 ].map(item => (
                   <div key={item.title} className="card infoCard">
                     <div className="infoTop">
                       <div className="infoIcon">
                         <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
-                          <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke={item.color} strokeWidth="1.8"/>
-                          <path d="M8 8h8M8 12h8M8 16h6" stroke={item.color} strokeWidth="1.8" strokeLinecap="round"/>
+                          <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke={item.color} strokeWidth="1.8" />
+                          <path d="M8 8h8M8 12h8M8 16h6" stroke={item.color} strokeWidth="1.8" strokeLinecap="round" />
                         </svg>
                       </div>
                       <div>
@@ -613,7 +451,7 @@ export default function Home() {
 
               <div className="banner">
                 <div>
-                  <b>Transparent Methodology</b><br/>
+                  <b>Transparent Methodology</b><br />
                   <span>We publish evaluation criteria, assessment process, and evidence grading standards.</span>
                 </div>
                 <a href="/methodology" className="secondaryBtn">View methodology</a>
@@ -628,32 +466,35 @@ export default function Home() {
                   <p>Distribution of cleared devices by health status.</p>
                 </div>
                 <div className="donutWrap">
-                  <svg width="120" height="120" viewBox="0 0 120 120" style={{flexShrink:0}}>
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#e6ebf3" strokeWidth="16"/>
-                    {/* Green segment */}
+                  <svg width="120" height="120" viewBox="0 0 120 120" style={{ flexShrink: 0 }}>
+                    <circle cx="60" cy="60" r="40" fill="none" stroke="#e6ebf3" strokeWidth="16" />
+                    {/* Green — stroke must match badge.ok colour */}
                     <circle cx="60" cy="60" r="40" fill="none" stroke="#137a3b" strokeWidth="16"
-                      strokeDasharray={`${greenDash} ${circ}`} strokeDashoffset="0"
-                      transform="rotate(-90 60 60)"/>
-                    {/* Amber segment */}
+                      strokeDasharray={`${greenDash} ${circ}`}
+                      strokeDashoffset="0"
+                      transform="rotate(-90 60 60)" />
+                    {/* Amber */}
                     <circle cx="60" cy="60" r="40" fill="none" stroke="#a15c00" strokeWidth="16"
-                      strokeDasharray={`${amberDash} ${circ}`} strokeDashoffset={`-${greenDash}`}
-                      transform="rotate(-90 60 60)"/>
-                    {/* Red segment */}
+                      strokeDasharray={`${amberDash} ${circ}`}
+                      strokeDashoffset={`-${greenDash}`}
+                      transform="rotate(-90 60 60)" />
+                    {/* Red */}
                     <circle cx="60" cy="60" r="40" fill="none" stroke="#9f1d1d" strokeWidth="16"
-                      strokeDasharray={`${redDash} ${circ}`} strokeDashoffset={`-${greenDash + amberDash}`}
-                      transform="rotate(-90 60 60)"/>
-                    <circle cx="60" cy="60" r="28" fill="white"/>
-                    <text x="60" y="56" textAnchor="middle" fontSize="13" fontWeight="800" fill="#0f172a">{clearedDevices.length}</text>
+                      strokeDasharray={`${redDash} ${circ}`}
+                      strokeDashoffset={`-${greenDash + amberDash}`}
+                      transform="rotate(-90 60 60)" />
+                    <circle cx="60" cy="60" r="28" fill="white" />
+                    <text x="60" y="56" textAnchor="middle" fontSize="13" fontWeight="800" fill="#0f172a">{cleared.length}</text>
                     <text x="60" y="68" textAnchor="middle" fontSize="9" fill="#64748b">cleared</text>
                   </svg>
                   <div className="legend">
-                    <div className="legendRow"><span className="swatch" style={{background:'#137a3b'}}/>{greenCount} · Green</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#a15c00'}}/>{amberCount} · Amber</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#9f1d1d'}}/>{redCount} · Red</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#0b7f7d'}}/>{verifiedCount} · Verified</div>
-                    <div className="legendRow"><span className="swatch" style={{background:'#1e40af'}}/>{sahpraCount} · SAHPRA</div>
-                    {pipelineDevices.length > 0 && (
-                      <div className="legendRow"><span className="swatch" style={{background:'#6366f1'}}/>{pipelineDevices.length} · Pipeline</div>
+                    <div className="legendRow"><span className="swatch" style={{ background: '#137a3b' }} />{green} · Green</div>
+                    <div className="legendRow"><span className="swatch" style={{ background: '#a15c00' }} />{amber} · Amber</div>
+                    <div className="legendRow"><span className="swatch" style={{ background: '#9f1d1d' }} />{red} · Red</div>
+                    <div className="legendRow"><span className="swatch" style={{ background: '#0b7f7d' }} />{verified} · Verified</div>
+                    <div className="legendRow"><span className="swatch" style={{ background: '#1e40af' }} />{sahpra} · SAHPRA</div>
+                    {pipeline.length > 0 && (
+                      <div className="legendRow"><span className="swatch" style={{ background: '#6366f1' }} />{pipeline.length} · Pipeline</div>
                     )}
                   </div>
                 </div>
@@ -661,14 +502,12 @@ export default function Home() {
 
               <div className="card cardPad">
                 <div className="sideSection">QUICK FILTERS</div>
-                <div className="pills" style={{marginTop:'8px'}}>
-                  {['Radiology','Cardiology','Pathology','Mental Health','SAHPRA'].map(f => (
-                    <span key={f} className="pill" onClick={() => setSearch(f)}>{f}</span>
-                  ))}
-                </div>
-                <hr className="sep"/>
+                <Suspense fallback={null}>
+                  <QuickFilters />
+                </Suspense>
+                <hr className="sep" />
                 <div className="sideSection">ABOUT</div>
-                <p style={{fontSize:'12.5px',color:'var(--muted)',lineHeight:1.55,marginTop:'6px'}}>
+                <p style={{ fontSize: '12.5px', color: 'var(--muted)', lineHeight: 1.55, marginTop: '6px' }}>
                   The Aletia Index provides independent clinical assurance for AI/ML medical devices. Data is verified by our clinical team against the 10-Point Assurance Checklist.
                 </p>
               </div>
@@ -683,19 +522,19 @@ export default function Home() {
         <div className="container">
           <div className="footerGrid">
             <div>
-              <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'10px'}}>
-                <div className="logoWrap" style={{width:'34px',height:'34px',borderRadius:'10px',boxShadow:'none'}}>
-                  <img src="/assets/aletia.png" alt="Aletia Index" style={{width:'22px',height:'22px'}}/>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                <div className="logoWrap" style={{ width: '34px', height: '34px', borderRadius: '10px', boxShadow: 'none' }}>
+                  <img src="/assets/aletia.png" alt="Aletia Index" style={{ width: '22px', height: '22px' }} />
                 </div>
                 <div>
-                  <div style={{fontWeight:800,color:'var(--text)',letterSpacing:'.3px',fontSize:'14px'}}>Aletia Index</div>
-                  <div style={{fontSize:'12px'}}>Clinical assurance for digital health tools</div>
+                  <div style={{ fontWeight: 800, color: 'var(--text)', letterSpacing: '.3px', fontSize: '14px' }}>Aletia Index</div>
+                  <div style={{ fontSize: '12px' }}>Clinical assurance for digital health tools</div>
                 </div>
               </div>
-              <p style={{maxWidth:'60ch',lineHeight:1.55}}>
+              <p style={{ maxWidth: '60ch', lineHeight: 1.55 }}>
                 We independently evaluate health technologies against structured assurance criteria. We do not endorse, certify, or validate clinical outcomes.
               </p>
-              <p style={{marginTop:'8px'}}>© {new Date().getFullYear()} Aletia Index. All rights reserved.</p>
+              <p style={{ marginTop: '8px' }}>© {new Date().getFullYear()} Aletia Index. All rights reserved.</p>
             </div>
             <div className="footerLinks">
               <a href="/about">About</a>
@@ -707,89 +546,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* ── MODAL ── */}
-      {selected && (
-        <div className="modal-overlay" onClick={() => setSelected(null)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <div style={{flex:1}}>
-                <div style={{display:'flex',gap:'7px',alignItems:'center',marginBottom:'8px',flexWrap:'wrap'}}>
-                  <span className="badge neutral">{selected.device_id}</span>
-                  {selected.aletia_verified && <span className="badge verified">✓ Aletia Verified</span>}
-                  {selected.breakthrough_designation && <span className="badge breakthrough">⚡ Breakthrough</span>}
-                  {selected.pipeline_stage
-                    ? <span className="badge pipeline">⚗ {PIPELINE_LABELS[selected.pipeline_stage] ?? selected.pipeline_stage}</span>
-                    : <span className={riskBadge(selected.health_status).cls}>{riskBadge(selected.health_status).label} Risk</span>
-                  }
-                </div>
-                <h2 style={{fontSize:'19px',fontWeight:900,lineHeight:1.2}}>
-                  {selected.manufacturers?.name || selected.manufacturer_name}
-                </h2>
-                <p style={{color:'var(--muted)',fontSize:'13px',marginTop:'4px'}}>{selected.manufacturers?.hq_location}</p>
-              </div>
-              <button className="closeBtn" onClick={() => setSelected(null)}>✕</button>
-            </div>
-            <div className="modal-body">
-
-              {/* Pre-clearance warning in modal */}
-              {selected.pipeline_stage && (
-                <div style={{marginBottom:16,padding:'12px 14px',background:'#fff9ec',border:'1px solid rgba(161,92,0,.25)',borderRadius:12,fontSize:13,color:'#a15c00'}}>
-                  ⚠️ This device has not received regulatory clearance.
-                </div>
-              )}
-
-              <div className="modal-section">
-                <div className="modal-label">Intended Use</div>
-                <p style={{fontSize:'14px',color:'var(--text)',lineHeight:1.6}}>{selected.intended_use}</p>
-              </div>
-              <div className="modal-grid">
-                <div><div className="modal-label">Specialty</div><p style={{fontSize:'14px'}}>{selected.specialty_link}</p></div>
-                <div><div className="modal-label">AI Type</div><p style={{fontSize:'14px'}}>{selected.ai_ml_type}</p></div>
-                <div><div className="modal-label">Mode</div><p style={{fontSize:'14px'}}>{selected.mode} / {selected.autonomy}</p></div>
-                <div><div className="modal-label">Accountability Tier</div><p style={{fontSize:'14px'}}>Tier {selected.accountability_tier}</p></div>
-              </div>
-              <hr className="sep"/>
-              <div className="modal-section">
-                <div className="modal-label">Regulatory Registrations</div>
-                {selected.pipeline_stage ? (
-                  <p style={{fontSize:13,color:'var(--muted)',marginTop:6}}>No clearances — device is in the regulatory pipeline.</p>
-                ) : selected.regional_registrations?.map(r => (
-                  <div key={r.regulatory_body} className="modal-row" style={{marginTop:'8px'}}>
-                    <span style={{fontSize:'13px',fontWeight:600}}>{r.country}</span>
-                    <span style={{fontSize:'12px',color:'var(--primary)',fontWeight:700}}>{r.regulatory_body}</span>
-                    <span style={{fontSize:'12px',color:'var(--muted)'}}>{r.clearance_type}</span>
-                  </div>
-                ))}
-              </div>
-              {selected.tech_specs && (
-                <>
-                  <hr className="sep"/>
-                  <div className="modal-section">
-                    <div className="modal-label">Technical Profile</div>
-                    <div className="modal-grid" style={{marginTop:'8px'}}>
-                      <div className="modal-row"><span style={{fontSize:'13px',color:'var(--muted)'}}>API Type</span><span style={{fontSize:'13px',fontWeight:600}}>{selected.tech_specs.api_type}</span></div>
-                      <div className="modal-row"><span style={{fontSize:'13px',color:'var(--muted)'}}>Hosting</span><span style={{fontSize:'13px',fontWeight:600}}>{selected.tech_specs.data_hosting}</span></div>
-                      <div className="modal-row"><span style={{fontSize:'13px',color:'var(--muted)'}}>FHIR</span><span style={{fontSize:'13px',fontWeight:600}}>{selected.tech_specs.fhir_compatible ? '✓ Yes' : '✗ No'}</span></div>
-                      <div className="modal-row"><span style={{fontSize:'13px',color:'var(--muted)'}}>POPIA</span><span style={{fontSize:'13px',fontWeight:600}}>{selected.tech_specs.popia_compliant ? '✓ Compliant' : '✗ No'}</span></div>
-                    </div>
-                  </div>
-                </>
-              )}
-              <hr className="sep"/>
-              <div className="modal-grid">
-                <div><div className="modal-label">Last Automated Sync</div><p style={{fontSize:'14px',fontWeight:600}}>{formatDate(selected.last_automated_sync)}</p></div>
-                <div><div className="modal-label">Last Clinical Review</div><p style={{fontSize:'14px',fontWeight:600}}>{formatDate(selected.last_clinical_review)}</p></div>
-              </div>
-              <div style={{marginTop:16,textAlign:'center'}}>
-                <a href={`/device/${selected.device_id}`} className="reportBtn" style={{width:'100%',justifyContent:'center'}}>
-                  View full listing →
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }

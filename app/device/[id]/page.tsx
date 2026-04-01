@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { Nav, Footer } from '@/components/NavFooter'
 import type { Metadata } from 'next'
 import type { CSSProperties } from 'react'
+import { AutonomousBadge } from '@/app/components/AutonomousBadge'
 
 const BASE_URL = 'https://www.aletia-index.com'
 
@@ -126,7 +127,6 @@ function PipelineStepper({ currentStage }: { currentStage: string }) {
 
           return (
             <div key={stage.key} style={{ display: 'flex', alignItems: 'center', flex: i < PIPELINE_STAGES.length - 1 ? '1' : 'none' }}>
-              {/* Node */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                 <div style={{
                   width: 28, height: 28, borderRadius: '50%', display: 'grid', placeItems: 'center',
@@ -146,7 +146,6 @@ function PipelineStepper({ currentStage }: { currentStage: string }) {
                   {stage.label}
                 </span>
               </div>
-              {/* Connector line */}
               {i < PIPELINE_STAGES.length - 1 && (
                 <div style={{
                   flex: 1, height: 2, margin: '0 4px', marginBottom: 22,
@@ -190,7 +189,7 @@ function PreClearanceBanner({ dataSource }: { dataSource: string }) {
 // ── Data source provenance tag ────────────────────────────────────────────────
 
 function DataSourceTag({ source }: { source: string }) {
-  if (source === 'registry_sync') return null // no tag needed — this is the default trusted state
+  if (source === 'registry_sync') return null
 
   const config: Record<string, { label: string; bg: string; color: string; border: string }> = {
     aletia_research:        { label: 'Aletia Research — Unverified', bg: '#f0f4ff', color: '#1e40af', border: 'rgba(31,64,174,.15)' },
@@ -297,7 +296,7 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
   const dataSource      = (device.data_source ?? 'registry_sync') as string
   const showClaimNotice = !isClaimed && (dataSource === 'aletia_research' || !device.manufacturer_link)
 
-  const hasRecall    = regs.some(r => r.recall_active)
+  const hasRecall     = regs.some(r => r.recall_active)
   const jurisdictions = regs.map(r => r.regulatory_body).join(', ')
 
   const syncStr   = fmt(device.last_automated_sync)
@@ -405,6 +404,17 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
 
               {/* Data source provenance */}
               <DataSourceTag source={dataSource} />
+
+              {/* Autonomous output mode badge */}
+              {device.autonomous_output_mode && (
+                <AutonomousBadge
+                  description={device.autonomous_output_description}
+                  riskClass={device.eu_risk_class}
+                  dataSource={device.data_source}
+                  deviceId={device.device_id}
+                />
+              )}
+
             </div>
 
             <h1 className="h1" style={{ marginBottom: 6 }}>{mfr.name}</h1>
@@ -514,7 +524,6 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
               <LabelValue label="Last Clinical Review" value={reviewStr ?? 'Not reviewed'} />
             </div>
 
-            {/* Data freshness delta — shown when there's a meaningful gap */}
             {gap && (
               <div style={{
                 marginTop: 12, padding: '10px 14px',
