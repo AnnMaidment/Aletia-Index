@@ -26,10 +26,6 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 // ============================================================
 // ⚠️  URL VERIFICATION REQUIRED
@@ -158,6 +154,11 @@ async function fetchCSV(url: string): Promise<Record<string, string>[]> {
 // ============================================================
 
 export async function runPCCPIngest(): Promise<PCCPIngestResult> {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   const result: PCCPIngestResult = {
     total_rows_main: 0,
     total_rows_corrections: 0,
