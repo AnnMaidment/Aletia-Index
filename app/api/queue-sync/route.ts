@@ -30,11 +30,6 @@ import { createClient } from '@supabase/supabase-js'
 import { syncDeviceFromFDA } from '@/lib/fdaSync'
 import { syncDeNovoDevice } from '@/lib/denovoSync'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 // Delay between FDA API calls to respect rate limits
 const RATE_LIMIT_DELAY_MS = 400
 
@@ -51,6 +46,11 @@ function isDeNovo(id: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   // Auth
   const token = req.headers.get('x-sync-token')
   if (token !== process.env.SYNC_SECRET) {

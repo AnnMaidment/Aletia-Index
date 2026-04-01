@@ -18,12 +18,11 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { queryScarletDevices, type ScarletDevice } from '@/lib/scarletEudamedQuery';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
 export async function POST(req: Request) {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
   // Auth check — same pattern as pccp-ingest
   const token = req.headers.get('x-sync-token') ??
     req.headers.get('authorization')?.replace('Bearer ', '');
