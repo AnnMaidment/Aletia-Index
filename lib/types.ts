@@ -13,6 +13,7 @@ export type Device = {
   autonomy: string | null
   autonomous_output_mode:        boolean | null;
   autonomous_output_description: string | null;
+  eu_risk_class:                 string | null; 
   pipeline_stage: string | null
   data_source: string | null
   breakthrough_designation: boolean
