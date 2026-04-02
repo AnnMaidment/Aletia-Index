@@ -228,7 +228,7 @@ function ClaimNotice({ deviceId, manufacturerName }: { deviceId: string; manufac
         </div>
       </div>
       <a
-        href={`/claim/${deviceId}`}
+      href={`/claim/request/${deviceId}`}
         style={{
           flexShrink: 0, padding: '9px 16px', borderRadius: 12,
           background: 'var(--surface)', border: '1px solid var(--line)',
