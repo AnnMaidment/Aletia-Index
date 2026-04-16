@@ -1,0 +1,295 @@
+/* app/admin/admin.css
+ *
+ * Admin portal styles. Scoped via .admin-shell root so they don't leak into
+ * the public site. Uses the same CSS variables as globals.css where sensible,
+ * but leans more utilitarian — this is an internal tool, not a brand surface.
+ */
+
+.admin-shell {
+  --primary: #1f6feb;
+  --bg:      #f5f7fb;
+  --text:    #0f172a;
+  --muted:   #64748b;
+  --line:    #e6ebf3;
+  --ok:      #16a34a;
+  --warn:    #d97706;
+  --danger:  #dc2626;
+
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+}
+
+/* ---------- Sidebar ---------- */
+
+.admin-sidebar {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.admin-brand {
+  padding: 0 20px 16px;
+  border-bottom: 1px solid #1e293b;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+}
+.admin-brand a { color: #fff; text-decoration: none; }
+
+.admin-nav { display: flex; flex-direction: column; padding: 0 8px; gap: 2px; flex: 1; }
+.admin-nav a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  color: #cbd5e1;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 13.5px;
+}
+.admin-nav a:hover { background: #1e293b; color: #fff; }
+.admin-nav a[aria-current="page"] { background: #1e3a8a; color: #fff; }
+
+.badge {
+  background: var(--primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.admin-user {
+  padding: 16px 20px;
+  border-top: 1px solid #1e293b;
+  font-size: 12px;
+}
+.admin-user-email {
+  color: #e2e8f0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-user-role {
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.admin-logout {
+  background: transparent;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+  width: 100%;
+}
+.admin-logout:hover { background: #1e293b; color: #fff; }
+
+/* ---------- Main area ---------- */
+
+.admin-main { padding: 24px 28px 80px; max-width: 1400px; width: 100%; }
+
+.admin-h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--text);
+}
+.admin-subtle {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 20px;
+}
+
+/* ---------- Stat cards ---------- */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.stat-card-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-card-value { font-size: 26px; font-weight: 700; margin-top: 4px; color: var(--text); }
+.stat-card-hint  { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+/* ---------- Filter bar ---------- */
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+.filter-bar label { font-size: 12px; color: var(--muted); margin-right: 4px; }
+.filter-bar select, .filter-bar input {
+  background: #fff;
+  border: 1px solid var(--line);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text);
+}
+.filter-bar input[type="search"] { min-width: 220px; }
+
+/* ---------- Queue table ---------- */
+
+.admin-table-wrap {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.admin-table th {
+  text-align: left;
+  padding: 10px 12px;
+  background: #f8fafc;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-size: 11px;
+  border-bottom: 1px solid var(--line);
+}
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: #fafbfc; }
+
+.pill {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.pill.commercial { background: #dbeafe; color: #1e40af; }
+.pill.academic   { background: #f3e8ff; color: #6b21a8; }
+.pill.high       { background: #dcfce7; color: #166534; }
+.pill.medium     { background: #fef3c7; color: #92400e; }
+.pill.low        { background: #fee2e2; color: #991b1b; }
+.pill.none       { background: #e2e8f0; color: #475569; }
+.pill.source     { background: #e0e7ff; color: #3730a3; }
+
+.row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn:hover { background: #f1f5f9; }
+.btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn.primary:hover { background: #1858c4; }
+.btn.danger  { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn.danger:hover { background: #b91c1c; }
+.btn.small { padding: 4px 8px; font-size: 11.5px; }
+
+/* ---------- Detail drawer ---------- */
+
+.drawer-overlay {
+  position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45);
+  display: flex; justify-content: flex-end; z-index: 100;
+}
+.drawer {
+  background: #fff; width: min(560px, 100%); height: 100%;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+  display: flex; flex-direction: column;
+}
+.drawer-head {
+  padding: 16px 20px; border-bottom: 1px solid var(--line);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.drawer-body { padding: 20px; overflow-y: auto; flex: 1; }
+.drawer-foot {
+  padding: 14px 20px; border-top: 1px solid var(--line);
+  display: flex; gap: 8px; justify-content: flex-end;
+}
+
+.kv { display: grid; grid-template-columns: 140px 1fr; gap: 8px 12px; font-size: 13px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; color: var(--text); word-break: break-word; }
+
+.json-block {
+  background: #0f172a; color: #cbd5e1;
+  padding: 12px; border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  white-space: pre-wrap; word-break: break-word;
+  max-height: 400px; overflow-y: auto;
+}
+
+/* ---------- Login page ---------- */
+
+.admin-login-wrap {
+  min-height: 100vh; display: grid; place-items: center; background: var(--bg);
+}
+.admin-login-card {
+  background: #fff; border: 1px solid var(--line); border-radius: 10px;
+  padding: 28px 32px; width: 360px;
+}
+.admin-login-card h1 { margin: 0 0 4px; font-size: 18px; }
+.admin-login-card p  { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
+.admin-login-card label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 4px; }
+.admin-login-card input {
+  width: 100%; padding: 9px 10px; font-size: 14px;
+  border: 1px solid var(--line); border-radius: 6px; box-sizing: border-box;
+}
+.admin-login-card button { width: 100%; padding: 10px; margin-top: 16px; }
+.admin-login-error {
+  background: #fef2f2; color: var(--danger); border: 1px solid #fecaca;
+  padding: 8px 10px; border-radius: 6px; font-size: 13px; margin-top: 12px;
+}
+
+/* ---------- Section headings ---------- */
+
+.section-h { font-size: 14px; font-weight: 600; color: var(--text); margin: 16px 0 8px; }
+
+/* ---------- Empty / loading states ---------- */
+
+.empty-state {
+  text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px;
+  background: #fff; border: 1px dashed var(--line); border-radius: 8px;
+}
