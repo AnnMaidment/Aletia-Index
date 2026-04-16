@@ -17,7 +17,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { queryScarletDevices, type ScarletDevice } from '@/lib/scarletEudamedQuery';
-
+// add a comment
 export async function POST(req: Request) {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
