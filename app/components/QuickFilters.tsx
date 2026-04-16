@@ -19,7 +19,7 @@ export default function QuickFilters() {
   return (
     <div className="pills" style={{ marginTop: '8px' }}>
       {QUICK_FILTERS.map(f => (
-        <span key={f} className="pill" onClick={() => applySearch(f)}>{f}</span>
+        <span key={f} className="pill light" onClick={() => applySearch(f)}>{f}</span>
       ))}
     </div>
   )

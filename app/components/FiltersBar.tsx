@@ -9,6 +9,9 @@ interface Props {
   pipelineCount: number
 }
 
+// Sub-stage pill labels for Pipeline mode — must match PIPELINE_STAGE_MAP in page.tsx
+const PIPELINE_SUBSTAGES = ['Development', 'Pre-Submission', 'Clinical Trial', 'Under Review'] as const
+
 export default function FiltersBar({ specialties, totalCount, pipelineCount }: Props) {
   const router       = useRouter()
   const pathname     = usePathname()
@@ -20,6 +23,9 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount }: P
   const source     = searchParams.get('source')     ?? 'All'
   const pccp       = searchParams.get('pccp') || 'approved'
   const autonomous = searchParams.get('autonomous') ?? ''
+  const pipeline   = searchParams.get('pipeline')   ?? ''   // 'true' when Pipeline mode active
+
+  const isPipelineMode = pipeline === 'true'
 
   const [inputValue, setInputValue] = useState(search)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -45,8 +51,28 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount }: P
     debounceRef.current = setTimeout(() => pushParams({ search: val }), 350)
   }
 
+  // ── Pill click handlers ────────────────────────────────────────────────────
+
+  function activatePccp() {
+    pushParams({ pccp: 'approved', autonomous: '', pipeline: '', status: '' })
+  }
+
+  function activateAutonomous() {
+    const next = autonomous === 'true' ? '' : 'true'
+    pushParams({ pccp: 'all', autonomous: next, pipeline: '', status: '' })
+  }
+
+  function activatePipeline() {
+    pushParams({ pipeline: 'true', pccp: 'all', autonomous: '', status: '' })
+  }
+
+  function activateAllDevices() {
+    pushParams({ pccp: 'all', autonomous: '', pipeline: '', status: '' })
+  }
+
   return (
     <>
+      {/* ── Search + dropdowns ── */}
       <div className="searchRow">
         <div className="search">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
@@ -79,6 +105,7 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount }: P
         </select>
       </div>
 
+      {/* ── Count line ── */}
       <div className="metaLine">
         <span style={{ width: '8px', height: '8px', borderRadius: '99px', background: 'var(--blue)', display: 'inline-block', flexShrink: 0 }} />
         <b style={{ color: 'var(--text)' }}>{totalCount}</b> Technologies listed
@@ -89,45 +116,106 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount }: P
         )}
       </div>
 
-      {/* ── PCCP + Autonomous filter row — same axis, above status pills ── */}
+      {/* ── Mode row: PCCP | Autonomous | divider | Pipeline | All devices ── */}
       <div className="pills" style={{ marginBottom: 8 }}>
+        {/* PCCP Authorized */}
         <span
-          className={`pill ${pccp === 'approved' ? 'active' : 'light'}`}
-          onClick={() => pushParams({ pccp: 'approved', autonomous: '' })}
+          className={`pill ${!isPipelineMode && pccp === 'approved' ? 'active' : 'light'}`}
+          onClick={activatePccp}
         >
           ✓ PCCP Authorized
         </span>
+
+        {/* Autonomous Output */}
         <span
-          className={`pill ${autonomous === 'true' ? 'active' : 'light'}`}
-          style={autonomous === 'true' ? {
+          className={`pill ${!isPipelineMode && autonomous === 'true' ? 'active' : 'light'}`}
+          style={!isPipelineMode && autonomous === 'true' ? {
             background: '#fffbeb',
             color: '#92400e',
             borderColor: '#d97706',
           } : {}}
-          onClick={() => pushParams({ pccp: 'all', autonomous: autonomous === 'true' ? '' : 'true' })}
+          onClick={activateAutonomous}
         >
           ⬡ Autonomous Output
         </span>
+
+        {/* ── Subtle divider ── */}
         <span
-          className={`pill light ${pccp !== 'approved' && autonomous !== 'true' ? 'active' : ''}`}
-          onClick={() => pushParams({ pccp: 'all', autonomous: '' })}
+          aria-hidden="true"
+          style={{
+            display: 'inline-block',
+            width: '1px',
+            height: '20px',
+            background: 'var(--line)',
+            borderRadius: '1px',
+            margin: '0 2px',
+            alignSelf: 'center',
+            flexShrink: 0,
+          }}
+        />
+
+        {/* Pipeline */}
+        <span
+          className={`pill ${isPipelineMode ? 'active' : 'light'}`}
+          style={isPipelineMode ? {
+            background: '#ede9fe',
+            color: '#5b21b6',
+            borderColor: '#8b5cf6',
+          } : {}}
+          onClick={activatePipeline}
         >
-          All devices
+          🔬 Pipeline
+          {pipelineCount > 0 && (
+            <span style={{
+              marginLeft: 5,
+              padding: '1px 6px',
+              borderRadius: '99px',
+              fontSize: 10,
+              fontWeight: 800,
+              background: isPipelineMode ? 'rgba(91,33,182,.15)' : '#e2e8f0',
+              color: isPipelineMode ? '#5b21b6' : '#64748b',
+            }}>
+              {pipelineCount}
+            </span>
+          )}
         </span>
+
       </div>
 
-      {/* ── Status pills ── */}
-      <div className="pills">
-        {(['All', 'Green', 'Amber', 'Red', 'Pipeline'] as const).map(s => (
+      {/* ── Second row: conditionally health-status pills or pipeline sub-stages ── */}
+      {isPipelineMode ? (
+        /* Pipeline sub-stage pills */
+        <div className="pills">
           <span
-            key={s}
-            className={`pill light ${status === s ? 'active' : ''}`}
-            onClick={() => pushParams({ status: s })}
+            className={`pill light ${status === 'All' || !PIPELINE_SUBSTAGES.includes(status as typeof PIPELINE_SUBSTAGES[number]) ? 'active' : ''}`}
+            onClick={() => pushParams({ status: '' })}
           >
-            {s === 'All' ? 'All' : s === 'Pipeline' ? '⚗ Pipeline' : `${s} Status`}
+            All stages
           </span>
-        ))}
-      </div>
+          {PIPELINE_SUBSTAGES.map(stage => (
+            <span
+              key={stage}
+              className={`pill light ${status === stage ? 'active' : ''}`}
+              onClick={() => pushParams({ status: stage })}
+            >
+              {stage}
+            </span>
+          ))}
+        </div>
+      ) : (
+        /* Health-status pills (Green / Amber / Red only — Pipeline moved to mode row) */
+        <div className="pills">
+          {(['All', 'Green', 'Amber', 'Red'] as const).map(s => (
+            <span
+              key={s}
+              className={`pill light ${status === s || (s === 'All' && !['Green', 'Amber', 'Red'].includes(status)) ? 'active' : ''}`}
+              onClick={() => pushParams({ status: s })}
+            >
+              {s === 'All' ? 'All' : `${s} Status`}
+            </span>
+          ))}
+        </div>
+      )}
     </>
   )
 }

@@ -6,12 +6,23 @@ import type { Device } from '@/lib/types'
 import { PIPELINE_LABELS } from '@/lib/types'
 import { AutonomousBadge } from './AutonomousBadge'
 
+// Extend Device locally to include pre_approval_profile without touching shared types
+type PreApprovalProfile = {
+  dev_stage:    string | null
+  trial_phase:  string | null
+  nct_number:   string | null
+}
+
+type DeviceWithPipeline = Device & {
+  pre_approval_profile?: PreApprovalProfile | null
+}
+
 interface Props {
-  devices:     Device[]
+  devices:     DeviceWithPipeline[]
   totalCount:  number
   page:        number
   pageSize:    number
-  filterQuery: string   // current filter params serialised without 'page'
+  filterQuery: string
 }
 
 const riskBadge = (status: string) => {
@@ -31,7 +42,7 @@ function pageHref(p: number, filterQuery: string): string {
 }
 
 export default function DeviceGrid({ devices, totalCount, page, pageSize, filterQuery }: Props) {
-  const [selected, setSelected] = useState<Device | null>(null)
+  const [selected, setSelected] = useState<DeviceWithPipeline | null>(null)
   const totalPages = Math.ceil(totalCount / pageSize)
 
   return (
@@ -59,15 +70,21 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
               const isPreClearance = !!device.pipeline_stage
               const dataSource     = device.data_source ?? 'registry_sync'
               const risk           = riskBadge(device.health_status)
+              const pap            = device.pre_approval_profile   // may be null for cleared devices
 
               return (
-                <tr key={device.device_id}>
+                <tr
+                  key={device.device_id}
+                  className={isPreClearance ? 'pipelineRow' : ''}
+                >
                   {/* ── Tool ── */}
                   <td>
                     <div className="rowTitle">
-                      <div className="appIcon">
+                      {/* Icon — slightly muted for pipeline rows */}
+                      <div className="appIcon" style={isPreClearance ? { background: '#f1f5f9', border: '1px solid #e2e8f0' } : undefined}>
                         <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
-                          <path d="M12 3 4 21h4l1.3-3h5.4L16 21h4L12 3Zm1.6 10H10.4L12 8.6 13.6 13Z" fill="#1f6feb" />
+                          <path d="M12 3 4 21h4l1.3-3h5.4L16 21h4L12 3Zm1.6 10H10.4L12 8.6 13.6 13Z"
+                            fill={isPreClearance ? '#94a3b8' : '#1f6feb'} />
                         </svg>
                       </div>
                       <div>
@@ -79,10 +96,12 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                           {device.manufacturers?.name || device.manufacturer_name || device.device_id}
                         </a>
                         <div className="appOrg">{device.device_id}</div>
-                        {dataSource === 'aletia_research' && (
+
+                        {/* Data-source badges — only shown for cleared devices */}
+                        {!isPreClearance && dataSource === 'aletia_research' && (
                           <span className="badge research" style={{ marginTop: 4 }}>ⓘ Aletia Research</span>
                         )}
-                        {dataSource === 'manufacturer_submitted' && (
+                        {!isPreClearance && dataSource === 'manufacturer_submitted' && (
                           <span className="badge research" style={{ marginTop: 4, background: '#f0fdf4', color: '#15803d', borderColor: 'rgba(21,128,61,.15)' }}>
                             ✓ Manufacturer Submitted
                           </span>
@@ -91,15 +110,15 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                           <span className="badge breakthrough" style={{ marginTop: 4, fontSize: 11, padding: '3px 8px' }}>⚡ Breakthrough</span>
                         )}
                         {device.autonomous_output_mode && (
-  <div style={{ marginTop: 4 }}>
-    <AutonomousBadge
-      description={device.autonomous_output_description}
-      riskClass={device.eu_risk_class}
-      dataSource={device.data_source}
-      deviceId={device.device_id}
-    />
-  </div>
-)}
+                          <div style={{ marginTop: 4 }}>
+                            <AutonomousBadge
+                              description={device.autonomous_output_description}
+                              riskClass={device.eu_risk_class}
+                              dataSource={device.data_source}
+                              deviceId={device.device_id}
+                            />
+                          </div>
+                        )}
                         <div className="small" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                           {device.intended_use}
                         </div>
@@ -113,9 +132,28 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                   {/* ── Regulatory Status ── */}
                   <td>
                     {isPreClearance ? (
-                      <span className="badge pipeline">
-                        ⚗ {PIPELINE_LABELS[device.pipeline_stage!] ?? device.pipeline_stage}
-                      </span>
+                      /* Pipeline: show pipeline stage + trial info */
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                        <span className="badge pipeline">
+                          ⚗ {PIPELINE_LABELS[device.pipeline_stage!] ?? device.pipeline_stage}
+                        </span>
+                        {pap?.trial_phase && (
+                          <span className="badge trial" style={{ fontSize: 11 }}>
+                            Phase {pap.trial_phase}
+                          </span>
+                        )}
+                        {pap?.nct_number && (
+                          <a
+                            href={`https://clinicaltrials.gov/study/${pap.nct_number}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ fontSize: 11, color: '#6366f1', fontWeight: 600, textDecoration: 'none', marginTop: 1 }}
+                            title="View on ClinicalTrials.gov"
+                          >
+                            {pap.nct_number} ↗
+                          </a>
+                        )}
+                      </div>
                     ) : device.regional_registrations?.length > 0 ? (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {device.regional_registrations.map(r => (
@@ -196,7 +234,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
         )}
       </div>
 
-      {/* ── Modal ── */}
+      {/* ── Quick-view Modal ── */}
       {selected && (
         <div className="modal-overlay" onClick={() => setSelected(null)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
@@ -207,13 +245,13 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                   {selected.aletia_verified && <span className="badge verified">✓ Aletia Verified</span>}
                   {selected.breakthrough_designation && <span className="badge breakthrough">⚡ Breakthrough</span>}
                   {selected.autonomous_output_mode && (
-  <AutonomousBadge
-    description={selected.autonomous_output_description}
-    riskClass={selected.eu_risk_class}
-    dataSource={selected.data_source}
-    deviceId={selected.device_id}
-  />
-)}
+                    <AutonomousBadge
+                      description={selected.autonomous_output_description}
+                      riskClass={selected.eu_risk_class}
+                      dataSource={selected.data_source}
+                      deviceId={selected.device_id}
+                    />
+                  )}
                   {selected.pipeline_stage
                     ? <span className="badge pipeline">⚗ {PIPELINE_LABELS[selected.pipeline_stage] ?? selected.pipeline_stage}</span>
                     : <span className={riskBadge(selected.health_status).cls}>{riskBadge(selected.health_status).label} Risk</span>
@@ -228,9 +266,38 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
             </div>
 
             <div className="modal-body">
+              {/* Pre-approval warning */}
               {selected.pipeline_stage && (
                 <div style={{ marginBottom: 16, padding: '12px 14px', background: '#fff9ec', border: '1px solid rgba(161,92,0,.25)', borderRadius: 12, fontSize: 13, color: '#a15c00' }}>
                   ⚠️ This device has not received regulatory clearance.
+                </div>
+              )}
+
+              {/* Trial details — shown only when in pipeline and data is available */}
+              {selected.pipeline_stage && (selected.pre_approval_profile?.trial_phase || selected.pre_approval_profile?.nct_number) && (
+                <div style={{ marginBottom: 16, padding: '12px 14px', background: '#f5f3ff', border: '1px solid rgba(109,40,217,.15)', borderRadius: 12 }}>
+                  <div className="modal-label" style={{ marginBottom: 6 }}>Clinical Trial Details</div>
+                  <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                    {selected.pre_approval_profile?.trial_phase && (
+                      <div>
+                        <div style={{ fontSize: 11, color: '#6d28d9', fontWeight: 700, marginBottom: 2 }}>Trial Phase</div>
+                        <span className="badge trial">Phase {selected.pre_approval_profile.trial_phase}</span>
+                      </div>
+                    )}
+                    {selected.pre_approval_profile?.nct_number && (
+                      <div>
+                        <div style={{ fontSize: 11, color: '#6d28d9', fontWeight: 700, marginBottom: 2 }}>NCT Number</div>
+                        <a
+                          href={`https://clinicaltrials.gov/study/${selected.pre_approval_profile.nct_number}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ fontSize: 13, color: '#6366f1', fontWeight: 700 }}
+                        >
+                          {selected.pre_approval_profile.nct_number} ↗
+                        </a>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
