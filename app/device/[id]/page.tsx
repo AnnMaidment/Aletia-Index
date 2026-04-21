@@ -4,6 +4,8 @@ import { Nav, Footer } from '@/components/NavFooter'
 import type { Metadata } from 'next'
 import type { CSSProperties } from 'react'
 import { AutonomousBadge } from '@/app/components/AutonomousBadge'
+import { LabelValue, PipelineStepper, PreClearanceBanner, DataSourceTag } from './shared'
+import PreApprovalDevicePage from './PreApprovalDevicePage'
 
 const BASE_URL = 'https://www.aletia-index.com'
 
@@ -22,27 +24,19 @@ const FLAG: Record<string, string> = {
   'Singapore': '🇸🇬',
 }
 
-// Pipeline stage config — order matters
-const PIPELINE_STAGES = [
-  { key: 'proof_of_concept', label: 'Proof of Concept' },
-  { key: 'pre_submission',   label: 'Pre-submission' },
-  { key: 'submitted',        label: 'Submitted' },
-  { key: 'under_review',     label: 'Under Review' },
-  { key: 'cleared',          label: 'Cleared' },
-]
-
 const fetchDevice = cache(async (id: string) => {
   const { data } = await supabase
     .from('device_master')
     .select(`
       *,
-      manufacturers(name, hq_location, tier, claimed_at, website),
+      manufacturers(name, hq_location, tier, claimed_at, website, contact_visible),
       regional_registrations(
         country, regulatory_body, clearance_type, device_class,
         gmdn_term, regulatory_expiry, recall_active, adverse_event_count
       ),
       tech_specs(api_type, ehr_compat, data_hosting, fhir_compatible, popia_compliant),
-      clinical_audits(*)
+      clinical_audits(*),
+      pre_approval_profile(*)
     `)
     .eq('device_id', id)
     .eq('excluded', false)
@@ -67,7 +61,11 @@ export async function generateMetadata(
   const fullTitle = mfrName
     ? `${deviceName} | ${mfrName} | Aletia Index`
     : `${deviceName} | Aletia Index`
-  const description = `${deviceName}. Regulatory clearance status across ${jurisdictions}. Clinical assurance data from Aletia Index.`
+
+  const isPreApproval = device.approval_status === 'pre_approval'
+  const description = isPreApproval
+    ? `${deviceName}${mfrName ? ` from ${mfrName}` : ''}. Pre-approval AI/ML medical device in the Aletia Index pipeline.`
+    : `${deviceName}. Regulatory clearance status across ${jurisdictions}. Clinical assurance data from Aletia Index.`
 
   return {
     title: { absolute: fullTitle },
@@ -99,114 +97,6 @@ function freshnessGap(syncDate: string | null, reviewDate: string | null): strin
   if (days < 30)  return `${days}d gap`
   if (days < 365) return `${Math.floor(days / 30)}mo gap`
   return `${(days / 365).toFixed(1)}yr gap`
-}
-
-function LabelValue({ label, value }: { label: string; value: string }) {
-  return (
-    <div style={{ padding: '12px 14px', background: '#f8fafc', borderRadius: 12, border: '1px solid var(--line)' }}>
-      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>
-        {label}
-      </div>
-      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)' }}>{value}</div>
-    </div>
-  )
-}
-
-// ── Pipeline stepper ──────────────────────────────────────────────────────────
-
-function PipelineStepper({ currentStage }: { currentStage: string }) {
-  const currentIdx = PIPELINE_STAGES.findIndex(s => s.key === currentStage)
-
-  return (
-    <div style={{ padding: '18px 0 4px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 0, overflowX: 'auto', paddingBottom: 4 }}>
-        {PIPELINE_STAGES.map((stage, i) => {
-          const isPast    = i < currentIdx
-          const isCurrent = i === currentIdx
-          const isFuture  = i > currentIdx
-
-          return (
-            <div key={stage.key} style={{ display: 'flex', alignItems: 'center', flex: i < PIPELINE_STAGES.length - 1 ? '1' : 'none' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-                <div style={{
-                  width: 28, height: 28, borderRadius: '50%', display: 'grid', placeItems: 'center',
-                  fontSize: 12, fontWeight: 800,
-                  background: isCurrent ? '#1f6feb' : isPast ? '#e9f9ef' : '#f1f5f9',
-                  color:      isCurrent ? '#fff'    : isPast ? '#137a3b' : '#94a3b8',
-                  border:     isCurrent ? '2px solid #1f6feb' : isPast ? '2px solid rgba(19,122,59,.3)' : '2px solid #e2e8f0',
-                  boxShadow:  isCurrent ? '0 0 0 4px rgba(31,111,235,.12)' : 'none',
-                  transition: 'all .2s',
-                }}>
-                  {isPast ? '✓' : i + 1}
-                </div>
-                <span style={{
-                  fontSize: 11, fontWeight: isCurrent ? 700 : 500, whiteSpace: 'nowrap',
-                  color: isCurrent ? '#1f6feb' : isFuture ? '#94a3b8' : '#475569',
-                }}>
-                  {stage.label}
-                </span>
-              </div>
-              {i < PIPELINE_STAGES.length - 1 && (
-                <div style={{
-                  flex: 1, height: 2, margin: '0 4px', marginBottom: 22,
-                  background: isPast ? 'rgba(19,122,59,.3)' : '#e2e8f0',
-                  minWidth: 16,
-                }} />
-              )}
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-// ── Pre-clearance disclaimer banner ──────────────────────────────────────────
-
-function PreClearanceBanner({ dataSource }: { dataSource: string }) {
-  const isManufacturerSubmitted = dataSource === 'manufacturer_submitted'
-  return (
-    <div style={{
-      width: '100%', padding: '14px 20px', marginBottom: 20,
-      background: '#fff9ec', border: '1px solid rgba(161,92,0,.25)',
-      borderRadius: 14, display: 'flex', gap: 12, alignItems: 'flex-start',
-    }}>
-      <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>⚠️</span>
-      <div>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#92400e', marginBottom: 4 }}>
-          This device has not received regulatory clearance
-        </div>
-        <div style={{ fontSize: 13, color: '#a15c00', lineHeight: 1.55 }}>
-          {isManufacturerSubmitted
-            ? 'This listing has been submitted by the manufacturer and reflects their stated regulatory status. It has not been independently verified by Aletia.'
-            : 'This listing is based on publicly available information and has not been verified by the manufacturer or any regulatory authority.'}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ── Data source provenance tag ────────────────────────────────────────────────
-
-function DataSourceTag({ source }: { source: string }) {
-  if (source === 'registry_sync') return null
-
-  const config: Record<string, { label: string; bg: string; color: string; border: string }> = {
-    aletia_research:        { label: 'Aletia Research — Unverified', bg: '#f0f4ff', color: '#1e40af', border: 'rgba(31,64,174,.15)' },
-    manufacturer_submitted: { label: 'Manufacturer Submitted',        bg: '#f0fdf4', color: '#15803d', border: 'rgba(21,128,61,.15)'  },
-  }
-  const c = config[source]
-  if (!c) return null
-
-  return (
-    <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: 5,
-      padding: '4px 10px', borderRadius: 999, fontSize: 12, fontWeight: 600,
-      background: c.bg, color: c.color, border: `1px solid ${c.border}`,
-    }}>
-      ⓘ {c.label}
-    </span>
-  )
 }
 
 // ── Claim this listing notice ─────────────────────────────────────────────────
@@ -266,6 +156,23 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
               It may have been removed or the link may be incorrect.
             </p>
             <a href="/" className="secondaryBtn" style={{ marginTop: 24, display: 'inline-block' }}>← Back to Index</a>
+          </div>
+        </main>
+        <Footer />
+      </>
+    )
+  }
+
+  // ── Pre-approval branch ─────────────────────────────────────────────────────
+  // Pre-approval devices get a dedicated template that leans on pre_approval_profile.
+  // Rendering below continues for cleared (approval_status === 'approved') devices.
+  if (device.approval_status === 'pre_approval') {
+    return (
+      <>
+        <Nav active="index" />
+        <main className="page">
+          <div className="container" style={{ maxWidth: 900 }}>
+            <PreApprovalDevicePage device={device} />
           </div>
         </main>
         <Footer />
