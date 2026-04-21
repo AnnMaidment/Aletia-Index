@@ -115,9 +115,16 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount }: P
           </span>
         )}
       </div>
-
-      {/* ── Mode row: PCCP | Autonomous | divider | Pipeline | All devices ── */}
+{/* ── Mode row: All devices | PCCP | Autonomous | divider | Pipeline ── */}
       <div className="pills" style={{ marginBottom: 8 }}>
+        {/* All devices — escape hatch from PCCP default */}
+        <span
+          className={`pill ${!isPipelineMode && pccp !== 'approved' && autonomous !== 'true' ? 'active' : 'light'}`}
+          onClick={activateAllDevices}
+        >
+          All devices
+        </span>
+
         {/* PCCP Authorized */}
         <span
           className={`pill ${!isPipelineMode && pccp === 'approved' ? 'active' : 'light'}`}
@@ -211,7 +218,7 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount }: P
               className={`pill light ${status === s || (s === 'All' && !['Green', 'Amber', 'Red'].includes(status)) ? 'active' : ''}`}
               onClick={() => pushParams({ status: s })}
             >
-              {s === 'All' ? 'All' : `${s} Status`}
+              {s === 'All' ? 'All Status' : `${s} Status`}
             </span>
           ))}
         </div>
