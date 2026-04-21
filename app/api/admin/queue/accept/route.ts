@@ -219,11 +219,11 @@ export async function POST(req: NextRequest) {
 // ---------------------------------------------------------------------
 
 function inferPipelineStage(raw: any): string {
-  const status = String(raw.overall_status || raw.overallStatus || '').toUpperCase();
-  if (status.includes('RECRUIT') || status.includes('ACTIVE')) return 'proof_of_concept';
-  if (status.includes('COMPLETE')) return 'pre_submission';
-  if (status.includes('NOT_YET')) return 'proof_of_concept';
-  return 'proof_of_concept';
+  const hasNct = !!(raw.nct_id || raw.nctId || raw?.protocolSection?.identificationModule?.nctId);
+  const hasStatus = !!(raw.overall_status || raw.overallStatus || raw?.protocolSection?.statusModule?.overallStatus);
+  const hasPhase = !!(raw.phase || raw.phases?.[0] || raw?.protocolSection?.designModule?.phases?.[0]);
+  if (hasNct || hasStatus || hasPhase) return 'clinical_trial';
+  return 'development';
 }
 
 function buildPreApprovalProfile(raw: any, deviceId: string, actorEmail: string) {
