@@ -72,7 +72,7 @@ export async function syncDeNovoDevice(deNovoNumber: string): Promise<SyncResult
 
     if (!clearanceData) {
       return {
-        device_id: deNovoNumber,
+        aletia_id: deNovoNumber,
         success: false,
         updated_fields: [],
         recall_alert: false,
@@ -87,7 +87,7 @@ export async function syncDeNovoDevice(deNovoNumber: string): Promise<SyncResult
 
     if (clearanceData.product_code && !classification) {
       return {
-        device_id: deNovoNumber,
+        aletia_id: deNovoNumber,
         success: false,
         updated_fields: [],
         recall_alert: false,
@@ -103,7 +103,7 @@ export async function syncDeNovoDevice(deNovoNumber: string): Promise<SyncResult
 
     // 5. Upsert DEVICE_MASTER
     const deviceUpsert: Record<string, unknown> = {
-      device_id: deNovoNumber,
+      aletia_id: deNovoNumber,
       health_status,
       last_automated_sync: new Date().toISOString(),
       data_source: 'registry_sync',
@@ -158,7 +158,7 @@ export async function syncDeNovoDevice(deNovoNumber: string): Promise<SyncResult
     }
 
     return {
-      device_id: deNovoNumber,
+      aletia_id: deNovoNumber,
       success: true,
       updated_fields: updatedFields,
       recall_alert: false,
@@ -167,7 +167,7 @@ export async function syncDeNovoDevice(deNovoNumber: string): Promise<SyncResult
     const message = err instanceof Error ? err.message : String(err)
     console.error(`[denovoSync] syncDeNovoDevice failed for ${deNovoNumber}:`, message)
     return {
-      device_id: deNovoNumber,
+      aletia_id: deNovoNumber,
       success: false,
       updated_fields: [],
       recall_alert: false,

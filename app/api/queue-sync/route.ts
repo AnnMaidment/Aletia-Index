@@ -27,7 +27,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { syncDeviceFromFDA } from '@/lib/fdaSync'
+import { syncExistingDeviceFromFDA } from '@/lib/fdaSync'
 import { syncDeNovoDevice } from '@/lib/denovoSync'
 
 // Delay between FDA API calls to respect rate limits
@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
     // 1. Sync device data from FDA
     let syncResult
     if (isKNumber(deviceId)) {
-      syncResult = await syncDeviceFromFDA(deviceId, { k_number: deviceId })
+      syncResult = await syncExistingDeviceFromFDA(deviceId, deviceId, 'fda_k_number')
     } else {
       syncResult = await syncDeNovoDevice(deviceId)
     }
