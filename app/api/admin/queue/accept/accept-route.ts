@@ -411,35 +411,43 @@ async function enrichFromClinicalTrial(
 
   const status = normaliseStatus(trial.status)
 
+  // Accept is a one-shot path: we just created (or merged into) the device,
+  // and a device_trials row for this (aletia_id, nct_id) doesn't exist yet.
+  // So this is a plain INSERT, not an upsert. (We can't UPSERT with onConflict
+  // here anyway — the uniqueness is enforced by a partial unique index, not
+  // a full unique constraint, and Supabase's onConflict targets full
+  // constraints only. Follow-up migration will convert the partial index to
+  // a full unique constraint for the CT.gov ingest path's benefit.)
   const { error } = await admin
     .from('device_trials')
-    .upsert(
-      {
-        aletia_id:            aletiaId,
-        nct_id:               trial.nctId,
-        trial_registry:       'ct_gov',
-        title:                trial.title ?? null,
-        brief_summary:        trial.briefSummary ?? null,
-        sponsor_name:         trial.sponsorName ?? null,
-        sponsor_type:         sponsorType ?? trial.sponsor_type ?? null,
-        status,
-        phase:                trial.phase ?? null,
-        enrollment:           typeof trial.enrollment === 'number' ? trial.enrollment : null,
-        start_date:           toDateOrNull(trial.startDate),
-        completion_date:      toDateOrNull(trial.completionDate),
-        jurisdictions:        Array.isArray(trial.locations) ? trial.locations : null,
-        conditions_raw:       Array.isArray(trial.conditions) ? trial.conditions : null,
-        is_device_trial:      typeof trial.isDeviceTrial === 'boolean' ? trial.isDeviceTrial : null,
-        irb_approved:         typeof trial.irbApproved === 'boolean' ? trial.irbApproved : null,
-        source_payload:       raw,
-        last_seen_at:         new Date().toISOString(),
-      },
-      { onConflict: 'aletia_id,nct_id' },
-    )
+    .insert({
+      aletia_id:            aletiaId,
+      nct_id:               trial.nctId,
+      trial_registry:       'ct_gov',
+      title:                trial.title ?? null,
+      brief_summary:        trial.briefSummary ?? null,
+      sponsor_name:         trial.sponsorName ?? null,
+      sponsor_type:         sponsorType ?? trial.sponsor_type ?? null,
+      status,
+      phase:                trial.phase ?? null,
+      enrollment:           typeof trial.enrollment === 'number' ? trial.enrollment : null,
+      start_date:           toDateOrNull(trial.startDate),
+      completion_date:      toDateOrNull(trial.completionDate),
+      jurisdictions:        Array.isArray(trial.locations) ? trial.locations : null,
+      conditions_raw:       Array.isArray(trial.conditions) ? trial.conditions : null,
+      is_device_trial:      typeof trial.isDeviceTrial === 'boolean' ? trial.isDeviceTrial : null,
+      irb_approved:         typeof trial.irbApproved === 'boolean' ? trial.irbApproved : null,
+      source_payload:       raw,
+      last_seen_at:         new Date().toISOString(),
+    })
 
   if (error) {
+    // If a device_trials row somehow already exists (e.g., an earlier failed
+    // accept attempt that partially succeeded), the insert will conflict with
+    // the partial unique index. In that case we silently skip — the existing
+    // row is already there. Log for triage either way.
     console.error(
-      `[queue.accept] device_trials upsert failed for ${aletiaId}/${trial.nctId}: ${error.message}`,
+      `[queue.accept] device_trials insert failed for ${aletiaId}/${trial.nctId}: ${error.message}`,
     )
   }
 }
