@@ -27,7 +27,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           total_fetched: result.total,
           passed_aiml_filter: result.filteredAsAIML,
           updated_existing: result.updatedExisting,
-          created_pre_approval: result.createdPreApproval,
+          created_new_device: result.createdNewDevice,
           queued_commercial: result.queuedCommercial,
           queued_academic: result.queuedAcademic,
           queued_for_review: result.queuedCommercial + result.queuedAcademic,

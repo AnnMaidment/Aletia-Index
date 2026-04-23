@@ -74,7 +74,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
 
               return (
                 <tr
-                  key={device.device_id}
+                  key={device.aletia_id}
                   className={isPreClearance ? 'pipelineRow' : ''}
                 >
                   {/* ── Tool ── */}
@@ -89,13 +89,13 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                       </div>
                       <div>
                         <a
-                          href={`/device/${device.device_id}`}
+                          href={`/device/${device.aletia_id}`}
                           className="appName"
                           style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
                         >
-                          {device.manufacturers?.name || device.manufacturer_name || device.device_id}
+                          {device.manufacturers?.name || device.manufacturer_name || device.aletia_id}
                         </a>
-                        <div className="appOrg">{device.device_id}</div>
+                        <div className="appOrg">{device.aletia_id}</div>
 
                         {/* Data-source badges — only shown for cleared devices */}
                         {!isPreClearance && dataSource === 'aletia_research' && (
@@ -115,7 +115,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                               description={device.autonomous_output_description}
                               riskClass={device.eu_risk_class}
                               dataSource={device.data_source}
-                              deviceId={device.device_id}
+                              deviceId={device.aletia_id}
                             />
                           </div>
                         )}
@@ -194,7 +194,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                           <circle cx="12" cy="12" r="3" stroke="#64748b" strokeWidth="1.8" />
                         </svg>
                       </button>
-                      <a href={`/device/${device.device_id}`} className="reportBtn">View</a>
+                      <a href={`/device/${device.aletia_id}`} className="reportBtn">View</a>
                     </div>
                   </td>
                 </tr>
@@ -241,7 +241,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
             <div className="modal-header">
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
-                  <span className="badge neutral">{selected.device_id}</span>
+                  <span className="badge neutral">{selected.aletia_id}</span>
                   {selected.aletia_verified && <span className="badge verified">✓ Aletia Verified</span>}
                   {selected.breakthrough_designation && <span className="badge breakthrough">⚡ Breakthrough</span>}
                   {selected.autonomous_output_mode && (
@@ -249,7 +249,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                       description={selected.autonomous_output_description}
                       riskClass={selected.eu_risk_class}
                       dataSource={selected.data_source}
-                      deviceId={selected.device_id}
+                      deviceId={selected.aletia_id}
                     />
                   )}
                   {selected.pipeline_stage
@@ -350,7 +350,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
               </div>
 
               <div style={{ marginTop: 16, textAlign: 'center' }}>
-                <a href={`/device/${selected.device_id}`} className="reportBtn" style={{ width: '100%', justifyContent: 'center' }}>
+                <a href={`/device/${selected.aletia_id}`} className="reportBtn" style={{ width: '100%', justifyContent: 'center' }}>
                   View full listing →
                 </a>
               </div>

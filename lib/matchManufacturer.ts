@@ -101,7 +101,7 @@ function normaliseSuffixes(name: string): string {
 
 // ── Dice coefficient bigram similarity ────────────────────────────────────────
 
-function stringSimilarity(a: string, b: string): number {
+export function stringSimilarity(a: string, b: string): number {
   if (a === b) return 1
   if (a.length < 2 || b.length < 2) return 0
 

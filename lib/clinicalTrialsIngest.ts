@@ -1,23 +1,47 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { fetchAllAIDeviceTrials, ClinicalTrial } from './clinicalTrials'
 import { matchManufacturer } from './matchManufacturer'
-import { ulid } from 'ulid'
+import {
+  processExternalIdentifier,
+  logIngestionAnomaly,
+  type IngestDecision,
+} from './ingestion'
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// =============================================================================
+// ClinicalTrials.gov ingest — rewritten for A2b (April 2026)
+//
+// What changed from the pre-A2b version:
+//   - Dropped the `ulid()` device_id synthesis. New devices get their
+//     aletia_id from the sequence DEFAULT in device_master.
+//   - Trial data lands in device_trials (not pre_approval_profile).
+//   - Identifier resolution goes through device_external_ids rather than
+//     pre_approval_profile.trial_identifier or intended_use matching.
+//   - The hybrid "commercial + high confidence → auto-create" branch is
+//     killed. Every path now goes through the 4d gate in lib/ingestion.
+//   - Academic sponsors never auto-create — they hit the same gate but
+//     with autoCreate=false, so a hospital running a trial on a commercial
+//     device no longer quietly invents a new device row.
+//
+// What didn't change:
+//   - Same entry point (runClinicalTrialsIngest) and same overall return shape.
+//   - Same AI/ML filter (text keywords + manufacturer fast-path).
+//   - Same academic sponsor detection.
+//   - Queue dedup (first run of this month doesn't re-queue rows from last
+//     month's run) is now handled inside processExternalIdentifier.
+// =============================================================================
 
 export type SponsorType = 'commercial' | 'academic'
 
 export interface ClinicalTrialsIngestResult {
   total: number
   filteredAsAIML: number
-  updatedExisting: number        // trial data added to existing device_master record
-  createdPreApproval: number     // new pre-approval listing created
-  queuedCommercial: number       // commercial sponsor, no confident match
-  queuedAcademic: number         // academic sponsor, no device match
+  updatedExisting: number        // trial data enriched on an existing device
+  createdNewDevice: number       // new commercial device created via 4d gate
+  queuedCommercial: number       // commercial trial, merge candidates found → admin review
+  queuedAcademic: number         // academic trial, no device match → admin review (never auto-create)
+  alreadyQueued: number          // trial was already in the queue from a previous run
   errors: string[]
 }
-
-// ── Main export ───────────────────────────────────────────────────────────────
 
 export async function runClinicalTrialsIngest(): Promise<ClinicalTrialsIngestResult> {
   const supabase = createClient(
@@ -29,13 +53,14 @@ export async function runClinicalTrialsIngest(): Promise<ClinicalTrialsIngestRes
     total: 0,
     filteredAsAIML: 0,
     updatedExisting: 0,
-    createdPreApproval: 0,
+    createdNewDevice: 0,
     queuedCommercial: 0,
     queuedAcademic: 0,
+    alreadyQueued: 0,
     errors: [],
   }
 
-  // ── Step 1: Fetch all trials from ClinicalTrials.gov ─────────────────────
+  // ── Fetch all trials ─────────────────────────────────────────────────────
   let trials: ClinicalTrial[]
   try {
     trials = await fetchAllAIDeviceTrials()
@@ -47,9 +72,8 @@ export async function runClinicalTrialsIngest(): Promise<ClinicalTrialsIngestRes
   result.total = trials.length
   console.log(`[clinical-trials-ingest] Fetched ${trials.length} device trials`)
 
-  // ── Step 2: Filter for AI/ML trials ──────────────────────────────────────
+  // ── Filter for AI/ML trials ──────────────────────────────────────────────
   const aimlTrials: ClinicalTrial[] = []
-
   for (const trial of trials) {
     try {
       const knownAIML = await sponsorHasAIMLDevices(trial.sponsorName, supabase)
@@ -66,7 +90,7 @@ export async function runClinicalTrialsIngest(): Promise<ClinicalTrialsIngestRes
   result.filteredAsAIML = aimlTrials.length
   console.log(`[clinical-trials-ingest] ${aimlTrials.length} trials passed AI/ML filter`)
 
-  // ── Step 3: Process each trial ────────────────────────────────────────────
+  // ── Process each trial ───────────────────────────────────────────────────
   for (const trial of aimlTrials) {
     try {
       await processTrial(trial, supabase, result)
@@ -81,252 +105,171 @@ export async function runClinicalTrialsIngest(): Promise<ClinicalTrialsIngestRes
   return result
 }
 
-// ── Four-path trial processor ─────────────────────────────────────────────────
-//
-// Path 1: Device found in device_master (any sponsor type)
-//         → enrich with trial data regardless of who's running the trial
-//         → academic validation of a known device is valuable clinical signal
-//
-// Path 2: Commercial sponsor, high-confidence manufacturer, no existing device
-//         → create new pre-approval listing
-//
-// Path 3: Commercial sponsor, no confident manufacturer match
-//         → queue as potential pipeline candidate for manual review
-//
-// Path 4: Academic sponsor, no device match
-//         → queue as academic validation signal, lower priority
-//         → reviewer can manually link to a device or dismiss
+// ─────────────────────────────────────────────────────────────────────────────
+// Per-trial processor — 4d gate dispatch + device_trials enrichment
+// ─────────────────────────────────────────────────────────────────────────────
 
 async function processTrial(
   trial: ClinicalTrial,
   supabase: SupabaseClient,
-  result: ClinicalTrialsIngestResult
+  result: ClinicalTrialsIngestResult,
 ): Promise<void> {
-  const sponsorType = isAcademicSponsor(trial.sponsorName) ? 'academic' : 'commercial'
-
-  // ── Attempt manufacturer match ────────────────────────────────────────────
-  const manufacturerMatch = await matchManufacturer(trial.sponsorName, supabase)
-
-  // ── Try to find an existing device regardless of sponsor type ────────────
-  // A trial run by a hospital on a known commercial device (e.g. DERM at
-  // Guy's Trust) should still enrich that device's record.
-  const existingDevice = manufacturerMatch
-    ? await findExistingDevice(trial, manufacturerMatch.id, supabase)
-    : await findExistingDeviceByTrialId(trial.nctId, supabase)
-
-  // ── Path 1: Known device — enrich it ─────────────────────────────────────
-  if (existingDevice) {
-    await updateExistingDevice(trial, existingDevice.device_id, supabase)
-    result.updatedExisting++
-    return
-  }
-
-  // ── Path 2: Commercial, high confidence, no existing device → create ──────
-  if (
-    sponsorType === 'commercial' &&
-    manufacturerMatch &&
-    manufacturerMatch.confidence === 'high'
-  ) {
-    await createPreApprovalListing(trial, manufacturerMatch.id, supabase)
-    result.createdPreApproval++
-    return
-  }
-
-  // ── Path 3: Commercial, no confident match → queue as pipeline candidate ──
-  if (sponsorType === 'commercial') {
-    await queueForReview(trial, supabase, 'no_confident_match', 'commercial')
-    result.queuedCommercial++
-    return
-  }
-
-  // ── Path 4: Academic, no device match → queue as validation signal ────────
-  await queueForReview(trial, supabase, 'academic_no_device_match', 'academic')
-  result.queuedAcademic++
-}
-
-// ── Find existing device by manufacturer + name ───────────────────────────────
-
-async function findExistingDevice(
-  trial: ClinicalTrial,
-  manufacturerId: string,
-  supabase: SupabaseClient
-): Promise<{ device_id: string } | null> {
-  // First: NCT number already linked in pre_approval_profile
-  const byNct = await findExistingDeviceByTrialId(trial.nctId, supabase)
-  if (byNct) return byNct
-
-  // Second: manufacturer + device name
-  if (trial.deviceName) {
-    const { data: exact } = await supabase
-      .from('device_master')
-      .select('device_id')
-      .eq('manufacturer_link', manufacturerId)
-      .ilike('intended_use', trial.deviceName)
-      .limit(1)
-      .single()
-
-    if (exact) return exact
-
-    const firstWord = trial.deviceName.split(/\s+/)[0]
-    if (firstWord.length >= 4) {
-      const { data: contains } = await supabase
-        .from('device_master')
-        .select('device_id')
-        .eq('manufacturer_link', manufacturerId)
-        .ilike('intended_use', `%${firstWord}%`)
-        .limit(2)
-
-      if (contains && contains.length === 1) return contains[0]
-    }
-  }
-
-  return null
-}
-
-// ── Find existing device by NCT number alone ──────────────────────────────────
-// Used when sponsor is academic and we have no manufacturer match —
-// the device may still be in the DB under its commercial manufacturer.
-
-async function findExistingDeviceByTrialId(
-  nctId: string,
-  supabase: SupabaseClient
-): Promise<{ device_id: string } | null> {
-  if (!nctId) return null
-
-  const { data } = await supabase
-    .from('pre_approval_profile')
-    .select('device_id')
-    .eq('trial_identifier', nctId)
-    .limit(1)
-    .single()
-
-  return data ?? null
-}
-
-// ── Update existing device ────────────────────────────────────────────────────
-
-async function updateExistingDevice(
-  trial: ClinicalTrial,
-  deviceId: string,
-  supabase: SupabaseClient
-): Promise<void> {
-  // Advance pipeline_stage if trial is completed
-  if (trial.status === 'completed') {
-    const { error: deviceError } = await supabase
-      .from('device_master')
-      .update({ pipeline_stage: 'under_review' })
-      .eq('device_id', deviceId)
-
-    if (deviceError) throw deviceError
-  }
-
-  const { error: profileError } = await supabase
-    .from('pre_approval_profile')
-    .upsert(
-      {
-        device_id: deviceId,
-        dev_stage: 'clinical_trial',
-        irb_approved: trial.irbApproved,
-        trial_identifier: trial.nctId,
-        trial_status: trial.status,
-        trial_phase: trial.phase,
-        trial_start_date: trial.startDate,
-        trial_completion_date: trial.completionDate,
-        trial_enrollment: trial.enrollment,
-        trial_locations: trial.locations,
+  // Shape sanity: an NCT from CT.gov should match NCT + 8 digits. If it
+  // doesn't, log an anomaly and skip — we don't want malformed IDs leaking
+  // into device_external_ids.
+  if (!/^NCT\d{8}$/.test(trial.nctId)) {
+    await logIngestionAnomaly(supabase, {
+      source: 'ct_gov_ingest',
+      anomaly_type: 'unknown_identifier_shape',
+      identifier_value: trial.nctId,
+      identifier_type_expected: 'nct',
+      context: {
+        trial_title: trial.title,
+        sponsor: trial.sponsorName,
       },
-      { onConflict: 'device_id' }
-    )
+    })
+    result.errors.push(`malformed NCT: ${trial.nctId}`)
+    return
+  }
 
-  if (profileError) throw profileError
+  const sponsorType: SponsorType = isAcademicSponsor(trial.sponsorName)
+    ? 'academic'
+    : 'commercial'
+
+  // Look up manufacturer for the device seed; findMergeCandidates will also
+  // use this via processExternalIdentifier, so no double work.
+  const manufacturerMatch = sponsorType === 'commercial'
+    ? await matchManufacturer(trial.sponsorName, supabase)
+    : null
+
+  // ── 4d gate ──────────────────────────────────────────────────────────────
+  const decision: IngestDecision = await processExternalIdentifier({
+    supabase,
+    id_type:      'nct',
+    id_value:     trial.nctId,
+    jurisdiction: null,              // NCT is non-jurisdictional
+    source:       'ct_gov_ingest',
+    queueSource:  'clinical_trials',
+    reviewReason: sponsorType === 'commercial'
+                    ? 'possible_merge'
+                    : 'academic_no_device_match',
+    manufacturerName: trial.sponsorName,
+    deviceName:       trial.deviceName ?? trial.title,
+    payload:          { ...trial, sponsor_type: sponsorType },
+    // Academic sponsors never auto-create — if no identifier hit, they queue.
+    autoCreate: sponsorType === 'commercial',
+    // deviceSeed only used when autoCreate=true + no candidates.
+    deviceSeed: sponsorType === 'commercial'
+      ? buildDeviceSeed(trial, manufacturerMatch?.id ?? null)
+      : undefined,
+  })
+
+  // ── Act on the decision ──────────────────────────────────────────────────
+  switch (decision.action) {
+    case 'updated_existing':
+      await upsertDeviceTrial(decision.aletia_id, trial, sponsorType, supabase)
+      result.updatedExisting++
+      return
+
+    case 'created_new':
+      await upsertDeviceTrial(decision.aletia_id, trial, sponsorType, supabase)
+      result.createdNewDevice++
+      return
+
+    case 'queued_for_review':
+      if (sponsorType === 'commercial') result.queuedCommercial++
+      else result.queuedAcademic++
+      return
+
+    case 'already_queued':
+      result.alreadyQueued++
+      return
+
+    case 'failed':
+      result.errors.push(`NCT ${trial.nctId}: ${decision.error}`)
+      return
+  }
 }
 
-// ── Create pre-approval listing ───────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// device_master seed for commercial auto-create path
+// ─────────────────────────────────────────────────────────────────────────────
 
-async function createPreApprovalListing(
+function buildDeviceSeed(
   trial: ClinicalTrial,
-  manufacturerId: string,
-  supabase: SupabaseClient
-): Promise<void> {
-  const deviceId = ulid()
-
-  const { error: deviceError } = await supabase
-    .from('device_master')
-    .insert({
-      device_id: deviceId,
-      manufacturer_link: manufacturerId,
-      manufacturer_name: trial.sponsorName,
-      intended_use: trial.deviceName ?? trial.title,
-      approval_status: 'pre_approval',
-      data_source: 'aletia_research',
-      pipeline_stage: trial.status === 'completed' ? 'under_review' : 'pre_submission',
-      excluded: false,
-      aletia_verified: false,
-      health_status: 'unreviewed',
-      ai_ml_integral: true,
-    })
-
-  if (deviceError) throw deviceError
-
-  const { error: profileError } = await supabase
-    .from('pre_approval_profile')
-    .insert({
-      device_id: deviceId,
-      dev_stage: 'clinical_trial',
-      irb_approved: trial.irbApproved,
-      trial_identifier: trial.nctId,
-      trial_status: trial.status,
-      trial_phase: trial.phase,
-      trial_start_date: trial.startDate,
-      trial_completion_date: trial.completionDate,
-      trial_enrollment: trial.enrollment,
-      trial_locations: trial.locations,
-    })
-
-  if (profileError) throw profileError
+  manufacturerId: string | null,
+): Record<string, unknown> {
+  return {
+    // aletia_id omitted — sequence DEFAULT allocates.
+    manufacturer_link: manufacturerId,
+    manufacturer_name: trial.sponsorName,
+    name:              trial.deviceName,
+    intended_use:      trial.deviceName ?? trial.title,
+    approval_status:   'pre_approval',
+    data_source:       'aletia_research',
+    pipeline_stage:    trial.status === 'completed' ? 'under_review' : 'pre_submission',
+    excluded:          false,
+    aletia_verified:   false,
+    health_status:     'Amber',
+    ai_ml_integral:    true,
+  }
 }
 
-// ── Review queue — with dedup and sponsor type ────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// device_trials upsert — called for both updated_existing and created_new paths
+// ─────────────────────────────────────────────────────────────────────────────
 
-async function queueForReview(
+async function upsertDeviceTrial(
+  aletiaId: string,
   trial: ClinicalTrial,
+  sponsorType: SponsorType,
   supabase: SupabaseClient,
-  reason: string,
-  sponsorType: SponsorType
 ): Promise<void> {
-  // Don't insert duplicates — check by NCT number
-  const { data: existing } = await supabase
-    .from('ingestion_review_queue')
-    .select('queue_id')
-    .eq('source', 'clinical_trials')
-    .eq('source_id', trial.nctId)
-    .limit(1)
-    .single()
-
-  if (existing) return
-
   const { error } = await supabase
-    .from('ingestion_review_queue')
-    .insert({
-      source: 'clinical_trials',
-      source_id: trial.nctId,
-      device_name: trial.deviceName ?? trial.title,
-      manufacturer: trial.sponsorName,
-      raw_data: {
-        ...trial,
-        review_reason: reason,
-        sponsor_type: sponsorType,
-      },
-      status: 'pending',
+    .from('device_trials')
+    .upsert({
+      aletia_id:            aletiaId,
+      nct_id:               trial.nctId,
+      trial_registry:       'ct_gov',
+      title:                trial.title,
+      brief_summary:        trial.briefSummary,
+      sponsor_name:         trial.sponsorName,
+      sponsor_type:         sponsorType,
+      status:               trial.status,
+      phase:                trial.phase,
+      enrollment:           trial.enrollment,
+      start_date:           trial.startDate,
+      completion_date:      trial.completionDate,
+      jurisdictions:        trial.locations,
+      conditions_raw:       trial.conditions,
+      is_device_trial:      trial.isDeviceTrial,
+      irb_approved:         trial.irbApproved,
+      source_payload:       trial as unknown as Record<string, unknown>,
+      last_seen_at:         new Date().toISOString(),
+    }, {
+      onConflict: 'aletia_id,nct_id',
     })
 
-  if (error) throw error
+  if (error) {
+    // Soft failure — the device row is fine, the trial enrichment failed.
+    // Surface for triage but don't halt the run.
+    console.error(
+      `[clinical-trials-ingest] device_trials upsert failed for ${aletiaId}/${trial.nctId}: ${error.message}`
+    )
+    await logIngestionAnomaly(supabase, {
+      source: 'ct_gov_ingest',
+      anomaly_type: 'classification_failed',
+      identifier_value: trial.nctId,
+      identifier_type_expected: 'nct',
+      aletia_id: aletiaId,
+      context: { stage: 'device_trials_upsert', error: error.message },
+    })
+  }
 }
 
-// ── Academic sponsor detection ────────────────────────────────────────────────
-// Identifies hospitals, universities, and other non-commercial sponsors.
-// These are tagged rather than excluded — academic validation of a known
-// device is valuable clinical signal and surfaced on the device listing.
+// ─────────────────────────────────────────────────────────────────────────────
+// Academic sponsor detection — unchanged from pre-A2b
+// ─────────────────────────────────────────────────────────────────────────────
 
 const ACADEMIC_PATTERNS = [
   /university/i,
@@ -371,7 +314,9 @@ function isAcademicSponsor(sponsorName: string): boolean {
   return ACADEMIC_PATTERNS.some((p) => p.test(sponsorName))
 }
 
-// ── AI/ML filter — text pass ──────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// AI/ML filter — unchanged text pass
+// ─────────────────────────────────────────────────────────────────────────────
 
 function isAIMLTrial(trial: ClinicalTrial): boolean {
   const text = [
@@ -383,7 +328,6 @@ function isAIMLTrial(trial: ClinicalTrial): boolean {
     .join(' ')
     .toLowerCase()
 
-  // Pass 1: negative filter — known non-AI/ML device categories
   const hardExclusions = [
     'antimicrobial susceptibility', 'breakpoint', 'minimum inhibitory concentration',
     'microbiology panel', 'culture media', 'susceptibility testing',
@@ -392,10 +336,8 @@ function isAIMLTrial(trial: ClinicalTrial): boolean {
     'hip replacement', 'knee replacement', 'dental implant',
     'face mask', 'respirator', 'rt-pcr', 'pcr assay', 'lateral flow', 'rapid antigen',
   ]
-
   if (hardExclusions.some((term) => text.includes(term))) return false
 
-  // Pass 2: positive keyword filter
   const positiveKeywords = [
     'artificial intelligence', 'machine learning', 'deep learning',
     'neural network', 'large language model', 'foundation model',
@@ -407,11 +349,13 @@ function isAIMLTrial(trial: ClinicalTrial): boolean {
     'ai-powered', 'ai/ml', 'ml model', 'natural language processing',
     'computer vision',
   ]
-
   return positiveKeywords.some((kw) => text.includes(kw))
 }
 
-// ── AI/ML filter — manufacturer fast path ────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Manufacturer fast path — "do we already know this sponsor has AI/ML devices?"
+// Updated: selects aletia_id instead of device_id (A2a rename).
+// ─────────────────────────────────────────────────────────────────────────────
 
 async function sponsorHasAIMLDevices(
   sponsorName: string,
@@ -422,12 +366,12 @@ async function sponsorHasAIMLDevices(
 
   const { data } = await supabase
     .from('device_master')
-    .select('device_id')
+    .select('aletia_id')
     .eq('manufacturer_link', manufacturerMatch.id)
     .eq('ai_ml_integral', true)
     .eq('excluded', false)
     .limit(1)
-    .single()
+    .maybeSingle()
 
   return !!data
 }

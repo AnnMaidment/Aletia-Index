@@ -5,7 +5,8 @@
       "Bash(npx next:*)",
       "Bash(curl:*)",
       "Bash(tracert:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git diff *)"
     ]
   }
 }
