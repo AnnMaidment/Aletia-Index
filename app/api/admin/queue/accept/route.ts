@@ -217,9 +217,12 @@ export async function POST(req: NextRequest) {
   } else {
     // ── Create mode ─────────────────────────────────────────────────────────
     // aletia_id is NOT included — the DB default allocates via aletia_id_seq.
+    // external_legacy_id mirrors the primary external ID (denormalised convenience)
+    // and is NOT NULL on the schema, inherited from pre-A2a when it was the PK.
     const { data: created, error: insErr } = await admin
       .from('device_master')
       .insert({
+        external_legacy_id: queueRow.source_id,
         manufacturer_link: manufacturerId,
         manufacturer_name: mfgName || null,
         name: body.device_name || null,

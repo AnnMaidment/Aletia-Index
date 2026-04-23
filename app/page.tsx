@@ -54,13 +54,30 @@ export default async function Home({
   if (search) {
     const { data: mfrData } = await supabase
       .from('device_master')
-      .select('device_id, manufacturers!inner(name)')
+      .select('aletia_id, manufacturers!inner(name)')
       .eq('excluded', false)
       .or(`name.ilike.%${search}%`, { referencedTable: 'manufacturers' })
       .range(0, 9999)
     manufacturerDeviceIds = (mfrData ?? []).map(
-      (d: { device_id: string }) => d.device_id,
+      (d: { aletia_id: string }) => d.aletia_id,
     )
+  }
+
+  // ── Secondary external-ID pre-query (A2b: Option 4 for cross-ID search) ────
+  // If the user types "K230001" or "MHRA-47392" or "NCT05386654" and that ID
+  // is a SECONDARY identifier on some device (not the primary external_legacy_id),
+  // we still want the search to hit. Pull matching aletia_ids from
+  // device_external_ids and include them in the main query's OR clause.
+  let secondaryIdMatches: string[] = []
+  if (search) {
+    const { data: extIdData } = await supabase
+      .from('device_external_ids')
+      .select('aletia_id')
+      .ilike('id_value', `%${search}%`)
+      .range(0, 999)
+    secondaryIdMatches = [...new Set(
+      (extIdData ?? []).map((r: { aletia_id: string }) => r.aletia_id),
+    )]
   }
 
   // ── Filtered + paginated query ──────────────────────────────────────────────
@@ -68,14 +85,14 @@ export default async function Home({
   let query: any = supabase
     .from('device_master')
     .select(
-      `device_id, intended_use, manufacturer_name, specialty_link,
+      `aletia_id, external_legacy_id, name, intended_use, manufacturer_name, specialty_link,
        health_status, pipeline_stage, data_source, excluded,
        aletia_verified, breakthrough_designation,
        ai_ml_type, accountability_tier, mode, autonomy,
        last_automated_sync, last_clinical_review,
        autonomous_output_mode, autonomous_output_description, eu_risk_class,
        manufacturers(name, hq_location),
-       regional_registrations(country, regulatory_body, clearance_type),
+       regional_registrations(country, regulatory_body, clearance_type, external_id_value),
        tech_specs(api_type, ehr_compat, data_hosting, fhir_compatible, popia_compliant)`,
             { count: 'exact' },
     )
@@ -111,11 +128,17 @@ export default async function Home({
 
   // ── Shared filters ──────────────────────────────────────────────────────────
   if (search) {
-    const idPart = manufacturerDeviceIds.length > 0
-      ? `,device_id.in.(${manufacturerDeviceIds.join(',')})`
+    // Collect all aletia_ids that match via either manufacturer name or
+    // secondary external identifiers. Dedupe.
+    const idMatches = [...new Set([...manufacturerDeviceIds, ...secondaryIdMatches])]
+    const idPart = idMatches.length > 0
+      ? `,aletia_id.in.(${idMatches.join(',')})`
       : ''
+    // Direct-column matches: aletia_id, external_legacy_id, name, intended_use,
+    // manufacturer_name. Plus the aletia_id.in.(…) subquery for any device
+    // whose manufacturer or secondary external ID matched.
     query = query.or(
-      `device_id.ilike.%${search}%,intended_use.ilike.%${search}%,manufacturer_name.ilike.%${search}%${idPart}`,
+      `aletia_id.ilike.%${search}%,external_legacy_id.ilike.%${search}%,name.ilike.%${search}%,intended_use.ilike.%${search}%,manufacturer_name.ilike.%${search}%${idPart}`,
     )
   }
 

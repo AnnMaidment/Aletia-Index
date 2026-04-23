@@ -201,6 +201,7 @@ function buildDeviceSeed(
 ): Record<string, unknown> {
   return {
     // aletia_id omitted — sequence DEFAULT allocates.
+    external_legacy_id: trial.nctId,     // denormalised mirror of primary external ID (NOT NULL column)
     manufacturer_link: manufacturerId,
     manufacturer_name: trial.sponsorName,
     name:              trial.deviceName,
