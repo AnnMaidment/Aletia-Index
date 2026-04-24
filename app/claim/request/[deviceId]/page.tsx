@@ -11,8 +11,8 @@ export default async function ClaimRequestPage({
 
   const { data: device, error } = await supabase
     .from('device_master')
-    .select('device_id, manufacturer_name, claimed_at, manufacturer_link')
-    .eq('device_id', deviceId)
+    .select('aletia_id, manufacturer_name, claimed_at, manufacturer_link')
+    .eq('aletia_id', deviceId)
     .single()
 
   console.log('deviceId param:', deviceId)
@@ -38,7 +38,7 @@ export default async function ClaimRequestPage({
         the Aletia Index. We will send a verification link to your email.
       </p>
       <ClaimRequestForm 
-        deviceId={device.device_id}
+        deviceId={device.aletia_id}
         manufacturerId={device.manufacturer_link || null}
       />
     </main>

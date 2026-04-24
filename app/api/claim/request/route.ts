@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       const { data: device } = await supabase
         .from('device_master')
         .select('claimed_at, claimed_by_email')
-        .eq('device_id', deviceId)
+        .eq('aletia_id', deviceId)
         .single()
 
       if (device?.claimed_at) {

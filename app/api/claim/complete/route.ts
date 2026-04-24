@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
           claimed_by_email: email,
           auth_user_id: user.id,
         })
-        .eq('device_id', request.device_id)
+        .eq('aletia_id', request.device_id)
     }
 
     return NextResponse.json({ 

@@ -51,8 +51,8 @@ export async function POST(req: NextRequest) {
     if (deviceId) {
       const { data: device, error } = await supabase
         .from('device_master')
-        .select('device_id, manufacturer_name, claim_token, claimed_at, manufacturer_link')
-        .eq('device_id', deviceId)
+        .select('aletia_id, manufacturer_name, claim_token, claimed_at, manufacturer_link')
+        .eq('aletia_id', deviceId)
         .single()
 
       if (error || !device) {

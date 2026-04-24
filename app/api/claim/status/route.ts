@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
       const { data, error } = await supabase
         .from('device_master')
         .select('claimed_at, claimed_by_email, auth_user_id')
-        .eq('device_id', deviceId)
+        .eq('aletia_id', deviceId)
         .single()
 
       if (error) return NextResponse.json({ error: 'Device not found' }, { status: 404 })
