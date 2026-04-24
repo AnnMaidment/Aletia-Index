@@ -25,11 +25,12 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       {
         ok: true,
         summary: {
-          total: result.total,
-          updated_existing: result.updatedExisting,
+          total:                result.total,
+          enriched_existing:    result.enrichedExisting,      // A2b rename from updatedExisting
           created_pre_approval: result.createdPreApproval,
-          queued_for_review: result.queuedForReview,
-          error_count: result.errors.length,
+          queued_for_review:    result.queuedForReview,
+          skipped_no_mfg_name:  result.skippedNoMfgName,       // new in A2b
+          error_count:          result.errors.length,
         },
         errors: result.errors.length > 0 ? result.errors : undefined,
       },
