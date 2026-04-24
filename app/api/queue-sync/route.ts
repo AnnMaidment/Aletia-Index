@@ -1,55 +1,48 @@
 /**
- * app/api/queue-sync/route.ts
+ * app/api/queue-sync/route.ts — A2b rewrite
  *
- * Batch-processes pending items in ingestion_review_queue.
- * Calls the appropriate sync function per device type, then:
- *   - On success: sets pccp_status = 'approved' on device_master
- *                 marks queue row as 'approved'
- *   - On failure: marks queue row as 'rejected' with error note
+ * Post-A2b, the purpose of this route is narrow and retention-focused:
  *
- * Handles two types:
- *   K numbers  → syncDeviceFromFDA (existing fdaSync logic)
- *   De Novo    → syncDeNovoDevice  (new denovoSync logic)
- *   PMA        → skipped (out of scope for now)
+ *   POST  → retry-enrich legacy pre-A2b PCCP queue rows now that
+ *           device_external_ids has been backfilled. For each 'pending' row
+ *           from the 'oleary_csv' source, look up its submission_number in
+ *           device_external_ids, and if it resolves to an aletia_id, apply
+ *           pccp_status/authorized_date/source to that device and mark the
+ *           queue row 'approved'. If no match, leave the row pending — the
+ *           admin queue UI (next session) handles review.
  *
- * Usage:
- *   POST /api/queue-sync
- *   Headers: { "x-sync-token": "your_sync_secret" }
+ *   GET   → queue summary counters, unchanged.
  *
- *   Optional body to limit which types are processed:
- *   { "types": ["k_numbers"] }           — K numbers only
- *   { "types": ["denovos"] }             — De Novo only
- *   { "types": ["k_numbers", "denovos"] } — both (default)
+ * What changed vs. pre-A2b:
+ *   - denovoSync removed entirely. ingestFdaDevice handles De Novo via idType.
+ *   - No longer calls syncExistingDeviceFromFDA(deviceId, deviceId, ...) —
+ *     that function now takes (aletiaId, externalIdValue) and looking the
+ *     first one up by shape (starts-with-K) is wrong in A2b.
+ *   - No longer writes device_master.device_id (the column doesn't exist).
+ *   - POST does NOT process freshly-ingested queue rows. PCCP no longer
+ *     queues anything under A2b (enrichment-only, see lib/pccpIngest.ts);
+ *     the only pending 'oleary_csv' rows are the ~487 inherited from the
+ *     first PCCP ingest run, which predates device_external_ids.
+ *
+ * Auth: SYNC_SECRET header (x-sync-token).
  *
  * PowerShell:
- *   try { $r = Invoke-WebRequest -Uri "http://localhost:3000/api/queue-sync" -Method POST -Headers @{"x-sync-token"="aletia-sync-2026-secret"}; $r.Content } catch { $_.Exception.Response.StatusCode; $_.Exception.Message }
+ *   Invoke-RestMethod -Uri "http://localhost:3000/api/queue-sync" `
+ *     -Method Post `
+ *     -Headers @{ "x-sync-token" = $env:SYNC_SECRET }
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import { syncExistingDeviceFromFDA } from '@/lib/fdaSync'
-import { syncDeNovoDevice } from '@/lib/denovoSync'
+import { createAdminClient } from '@/lib/supabase-admin'
 
-// Delay between FDA API calls to respect rate limits
-const RATE_LIMIT_DELAY_MS = 400
+const PCCP_SOURCE = 'oleary_csv'
 
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-function isKNumber(id: string) {
-  return id.startsWith('K')
-}
-
-function isDeNovo(id: string) {
-  return id.startsWith('DEN')
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// POST — retry-enrich legacy PCCP queue rows against device_external_ids
+// ─────────────────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+  const supabase = createAdminClient()
 
   // Auth
   const token = req.headers.get('x-sync-token')
@@ -57,149 +50,174 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Parse optional body
-  let types: string[] = ['k_numbers', 'denovos']
-  try {
-    const body = await req.json()
-    if (Array.isArray(body?.types)) types = body.types
-  } catch {
-    // No body or invalid JSON — use defaults
-  }
-
-  const processKNumbers = types.includes('k_numbers')
-  const processDenovos  = types.includes('denovos')
-
-  // ── Fetch pending queue items ──────────────────────────────────────────────
-  const { data: pendingItems, error: fetchError } = await supabase
+  // Fetch pending legacy PCCP queue rows.
+  const { data: pending, error: fetchErr } = await supabase
     .from('ingestion_review_queue')
     .select('queue_id, source_id, pccp_authorized_date')
-    .eq('status', 'pending')
-    .order('pccp_authorized_date', { ascending: true })
+    .eq('status',  'pending')
+    .eq('source',  PCCP_SOURCE)
 
-  if (fetchError) {
+  if (fetchErr) {
     return NextResponse.json(
-      { error: `Failed to fetch queue: ${fetchError.message}` },
-      { status: 500 }
+      { error: `Failed to fetch queue: ${fetchErr.message}` },
+      { status: 500 },
     )
   }
 
-  if (!pendingItems || pendingItems.length === 0) {
+  if (!pending?.length) {
     return NextResponse.json({
-      success: true,
-      message: 'No pending items in queue',
+      success:   true,
+      message:   'No pending PCCP queue rows to retry',
       processed: 0,
     })
   }
 
-  // ── Filter by type ─────────────────────────────────────────────────────────
-  const toProcess = pendingItems.filter(item => {
-    if (isKNumber(item.source_id) && processKNumbers) return true
-    if (isDeNovo(item.source_id)  && processDenovos)  return true
-    return false
-  })
+  // Bulk-look-up all submission numbers in device_external_ids in one query.
+  const submissionIds = pending
+    .map((row) => (row.source_id ?? '').toUpperCase().replace(/\s+/g, '').trim())
+    .filter(Boolean)
 
+  const { data: extIdHits, error: extErr } = await supabase
+    .from('device_external_ids')
+    .select('aletia_id, id_value')
+    .in('id_type', ['fda_k_number', 'fda_de_novo', 'fda_pma'])
+    .in('id_value', submissionIds)
+
+  if (extErr) {
+    return NextResponse.json(
+      { error: `device_external_ids fetch failed: ${extErr.message}` },
+      { status: 500 },
+    )
+  }
+
+  const aletiaIdByIdValue = new Map<string, string>()
+  for (const row of extIdHits ?? []) {
+    aletiaIdByIdValue.set(row.id_value, row.aletia_id)
+  }
+
+  // Process each pending row.
   const results = {
-    total_pending: pendingItems.length,
-    attempted: toProcess.length,
-    succeeded: 0,
-    failed: 0,
-    skipped_pma: pendingItems.filter(i => i.source_id.startsWith('P')).length,
-    errors: [] as string[],
+    total_pending:      pending.length,
+    enriched:           0,    // row resolved → pccp applied → queue approved
+    still_unresolved:   0,    // no device_external_ids hit → leave pending
+    errors:             [] as string[],
   }
 
-  // ── Process each device ────────────────────────────────────────────────────
-  for (const item of toProcess) {
-    const deviceId = item.source_id
-    await sleep(RATE_LIMIT_DELAY_MS)
+  const now = new Date().toISOString()
 
-    // 1. Sync device data from FDA
-    let syncResult
-    if (isKNumber(deviceId)) {
-      syncResult = await syncExistingDeviceFromFDA(deviceId, deviceId, 'fda_k_number')
-    } else {
-      syncResult = await syncDeNovoDevice(deviceId)
+  for (const row of pending) {
+    const submissionId = (row.source_id ?? '').toUpperCase().replace(/\s+/g, '').trim()
+    if (!submissionId) {
+      results.still_unresolved++
+      continue
     }
 
-    if (syncResult.success) {
-      // 2. Set pccp_status = 'approved' on the newly synced device
-      //    (syncDeviceFromFDA doesn't know about PCCP — we apply it here)
-      const { error: pccpError } = await supabase
-        .from('device_master')
-        .update({
-          pccp_status: 'approved',
-          pccp_authorized_date: item.pccp_authorized_date,
-          pccp_source: 'oleary_csv',
-        })
-        .eq('device_id', deviceId)
-
-      if (pccpError) {
-        console.warn(`[queueSync] pccp_status update failed for ${deviceId}: ${pccpError.message}`)
-      }
-
-      // 3. Mark queue row as approved
-      await supabase
-        .from('ingestion_review_queue')
-        .update({
-          status: 'approved',
-          reviewed_at: new Date().toISOString(),
-          reviewed_by: 'queue-sync-auto',
-        })
-        .eq('queue_id', item.queue_id)
-
-      results.succeeded++
-
-    } else {
-      // 4. Mark queue row as rejected with error note
-      await supabase
-        .from('ingestion_review_queue')
-        .update({
-          status: 'rejected',
-          review_note: syncResult.error ?? 'Sync failed',
-          reviewed_at: new Date().toISOString(),
-          reviewed_by: 'queue-sync-auto',
-        })
-        .eq('queue_id', item.queue_id)
-
-      results.failed++
-      results.errors.push(`${deviceId}: ${syncResult.error}`)
+    const aletiaId = aletiaIdByIdValue.get(submissionId)
+    if (!aletiaId) {
+      // Device not yet known to Aletia via any FDA identifier. Leave pending
+      // for admin review via Module 2 (next session). Don't log here — we'd
+      // spam the anomaly log every run; pccpIngest logs the first sighting.
+      results.still_unresolved++
+      continue
     }
+
+    // Apply PCCP enrichment to the resolved device.
+    const { error: updateErr } = await supabase
+      .from('device_master')
+      .update({
+        pccp_status:          'approved',
+        pccp_authorized_date: row.pccp_authorized_date,
+        pccp_source:          PCCP_SOURCE,
+      })
+      .eq('aletia_id', aletiaId)
+
+    if (updateErr) {
+      results.errors.push(`Update failed for ${aletiaId} (${submissionId}): ${updateErr.message}`)
+      continue
+    }
+
+    // Mark the queue row approved.
+    const { error: queueUpdErr } = await supabase
+      .from('ingestion_review_queue')
+      .update({
+        status:      'approved',
+        reviewed_at: now,
+        reviewed_by: 'queue-sync-retry',
+        review_note: `Auto-resolved via device_external_ids → ${aletiaId}`,
+      })
+      .eq('queue_id', row.queue_id)
+
+    if (queueUpdErr) {
+      results.errors.push(`Queue status update failed for ${row.queue_id}: ${queueUpdErr.message}`)
+      continue
+    }
+
+    results.enriched++
   }
 
-  return NextResponse.json({
-    success: results.failed === 0,
-    ...results,
-    ran_at: new Date().toISOString(),
-  }, { status: results.failed > 0 ? 207 : 200 })
+  return NextResponse.json(
+    {
+      success: results.errors.length === 0,
+      ...results,
+      ran_at: now,
+    },
+    { status: results.errors.length > 0 ? 207 : 200 },
+  )
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// GET — queue summary (counters only)
+// ─────────────────────────────────────────────────────────────────────────────
+
 export async function GET(req: NextRequest) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+  const supabase = createAdminClient()
 
   const token = req.headers.get('x-sync-token')
   if (token !== process.env.SYNC_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  // Show queue summary without processing anything
   const { data, error } = await supabase
     .from('ingestion_review_queue')
-    .select('status, source_id')
+    .select('status, source, source_id')
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  const pending = data.filter((r) => r.status === 'pending')
   const summary = {
-    total: data.length,
-    pending:  data.filter(r => r.status === 'pending').length,
-    approved: data.filter(r => r.status === 'approved').length,
-    rejected: data.filter(r => r.status === 'rejected').length,
-    pending_k_numbers: data.filter(r => r.status === 'pending' && r.source_id.startsWith('K')).length,
-    pending_denovos:   data.filter(r => r.status === 'pending' && r.source_id.startsWith('DEN')).length,
-    pending_pma:       data.filter(r => r.status === 'pending' && r.source_id.startsWith('P')).length,
+    total:    data.length,
+    pending:  pending.length,
+    approved: data.filter((r) => r.status === 'approved').length,
+    rejected: data.filter((r) => r.status === 'rejected').length,
+
+    // By-source breakdown, pending only — matches the sources we now support.
+    pending_by_source: {
+      oleary_csv:            pending.filter((r) => r.source === PCCP_SOURCE).length,
+      fda_sync:              pending.filter((r) => r.source === 'fda_sync').length,
+      mhra_sync:             pending.filter((r) => r.source === 'mhra_sync').length,
+      clinical_trials:       pending.filter((r) => r.source === 'clinical_trials').length,
+      fda_breakthrough:      pending.filter((r) => r.source === 'fda_breakthrough').length,
+      scarlet_eudamed_sync:  pending.filter((r) => r.source === 'scarlet_eudamed_sync').length,
+      other:                 pending.filter((r) =>
+        ![
+          PCCP_SOURCE,
+          'fda_sync',
+          'mhra_sync',
+          'clinical_trials',
+          'fda_breakthrough',
+          'scarlet_eudamed_sync',
+        ].includes(r.source ?? ''),
+      ).length,
+    },
+
+    // Back-compat breakdown for existing dashboards that keyed off submission-number shape.
+    pending_submission_shapes: {
+      k_numbers: pending.filter((r) => (r.source_id ?? '').startsWith('K')).length,
+      denovos:   pending.filter((r) => (r.source_id ?? '').startsWith('DEN')).length,
+      pma:       pending.filter((r) => (r.source_id ?? '').startsWith('P')).length,
+    },
   }
 
   return NextResponse.json(summary)
