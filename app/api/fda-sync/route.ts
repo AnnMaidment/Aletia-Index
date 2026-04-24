@@ -1,17 +1,17 @@
 /**
- * app/api/fda-sync/route.ts — A2b rewrite
+ * app/api/fda-sync/route.ts — A2b (MHRA portions updated 24 April)
  *
- * FDA endpoints (rewritten this turn):
+ * FDA endpoints:
  *   POST                              → sync one existing device by aletia_id + external id
  *   GET   ?bulk=true                  → bulk re-sync all FDA devices via device_external_ids
  *   PATCH                             → backfill manufacturer_name for rows missing it
  *   PUT                               → seed FDA devices through the 4d gate
  *   GET   (no params)                 → health check / endpoint listing
  *
- * MHRA endpoints (to be rewritten when lib/mhraSync.ts is refactored):
- *   POST  ?source=mhra                → sync one MHRA device
+ * MHRA endpoints (rewritten 24 April — no MHRA- prefix, 4d gate on seed):
+ *   POST  ?source=mhra                → resync one existing MHRA device by aletia_id
  *   GET   ?bulk=true&source=mhra      → bulk re-sync all MHRA devices
- *   PUT   ?source=mhra                → seed MHRA devices
+ *   PUT   ?source=mhra                → seed MHRA devices through the 4d gate
  *
  * Auth: SYNC_SECRET header (x-sync-token). Admin portal uses its own auth.
  */
@@ -32,14 +32,14 @@ function isAuthorised(req: NextRequest): boolean {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST — sync a single device
+// POST — sync a single existing device
 // ─────────────────────────────────────────────────────────────────────────────
 //
-// FDA body (A2b):
-//   { aletia_id: string, external_id_value: string, id_type: 'fda_k_number' | 'fda_de_novo' | 'fda_pma' }
+// FDA body:
+//   { aletia_id, external_id_value, id_type: 'fda_k_number'|'fda_de_novo'|'fda_pma' }
 //
-// MHRA body (unchanged, pending mhraSync rewrite):
-//   { device_id: string, gmdn_term: string }
+// MHRA body:
+//   { aletia_id, external_id_value, gmdn_term }
 //
 export async function POST(req: NextRequest) {
   if (!isAuthorised(req)) {
@@ -48,45 +48,25 @@ export async function POST(req: NextRequest) {
 
   const source = req.nextUrl.searchParams.get('source')
 
-  // ─── MHRA path: untouched until mhraSync refactor ───────────────────────
+  // ─── MHRA path (A2b) ────────────────────────────────────────────────────
   if (source === 'mhra') {
-    let body: { device_id?: string; gmdn_term?: string }
+    let body: { aletia_id?: string; external_id_value?: string; gmdn_term?: string }
     try {
       body = await req.json()
     } catch {
       return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
     }
 
-    const { device_id, gmdn_term } = body
-    if (!device_id || !gmdn_term) {
+    const { aletia_id, external_id_value, gmdn_term } = body
+    if (!aletia_id || !external_id_value || !gmdn_term) {
       return NextResponse.json(
-        { error: 'device_id and gmdn_term are required for MHRA sync' },
+        { error: 'aletia_id, external_id_value, and gmdn_term are all required for MHRA sync' },
         { status: 400 },
       )
     }
 
-    const { searchMhraDevicesByGmdn } = await import('@/lib/mhra')
-    const { syncDeviceFromMHRA } = await import('@/lib/mhraSync')
-
-    const devices = await searchMhraDevicesByGmdn(gmdn_term)
-    if (!devices?.length) {
-      return NextResponse.json(
-        { error: `No MHRA devices found for GMDN term: "${gmdn_term}"` },
-        { status: 404 },
-      )
-    }
-
-    const deviceIdNum = parseInt(device_id.replace('MHRA-', ''))
-    const device = devices.find((d) => d.DEVICE_ID === deviceIdNum)
-
-    if (!device) {
-      return NextResponse.json(
-        { error: `Device ${device_id} not found in PARD results for term "${gmdn_term}"` },
-        { status: 404 },
-      )
-    }
-
-    const result = await syncDeviceFromMHRA(device, null)
+    const { syncExistingDeviceFromMHRA } = await import('@/lib/mhraSync')
+    const result = await syncExistingDeviceFromMHRA(aletia_id, external_id_value, gmdn_term)
     return NextResponse.json(result, { status: result.success ? 200 : 500 })
   }
 
@@ -177,11 +157,11 @@ export async function GET(req: NextRequest) {
     const source = req.nextUrl.searchParams.get('source')
     const isBulk = req.nextUrl.searchParams.get('bulk') === 'true'
 
-    // ─── MHRA bulk re-sync: unchanged pending mhraSync refactor ───────────
+    // ─── MHRA bulk re-sync ────────────────────────────────────────────────
     if (source === 'mhra' && isBulk) {
       const { bulkSyncAllMhraDevices } = await import('@/lib/mhraSync')
       const results = await bulkSyncAllMhraDevices()
-      const succeeded = results.filter((r) => r.success).length
+      const succeeded   = results.filter((r) => r.success).length
       const staleAlerts = results.filter((r) => r.stale_registration_alert).length
 
       return NextResponse.json({
@@ -201,15 +181,15 @@ export async function GET(req: NextRequest) {
           'Aletia Multi-Jurisdiction Sync endpoint (A2b).',
           '',
           'FDA:',
-          '  POST                   — sync one existing device by aletia_id + external_id_value + id_type',
-          '  GET  ?bulk=true        — bulk re-sync all FDA devices',
-          '  PATCH                  — backfill manufacturer_name',
-          '  PUT                    — seed FDA AI/ML devices through the 4d gate',
+          '  POST                         — sync one existing device by aletia_id + external_id_value + id_type',
+          '  GET  ?bulk=true              — bulk re-sync all FDA devices',
+          '  PATCH                        — backfill manufacturer_name',
+          '  PUT                          — seed FDA AI/ML devices through the 4d gate',
           '',
-          'MHRA (pending mhraSync refactor):',
-          '  POST ?source=mhra          — sync single MHRA device',
-          '  GET  ?bulk=true&source=mhra — bulk re-sync all MHRA devices',
-          '  PUT  ?source=mhra          — seed MHRA devices',
+          'MHRA:',
+          '  POST ?source=mhra            — resync one existing MHRA device by aletia_id + external_id_value + gmdn_term',
+          '  GET  ?bulk=true&source=mhra  — bulk re-sync all MHRA devices',
+          '  PUT  ?source=mhra            — seed MHRA devices through the 4d gate',
         ].join('\n'),
       })
     }
@@ -237,12 +217,9 @@ export async function GET(req: NextRequest) {
 // PUT — seed / discovery
 // ─────────────────────────────────────────────────────────────────────────────
 //
-// Each returned K-number from openFDA goes through ingestFdaDevice — the 4d
-// gate decides whether to update an existing device, queue for merge review,
-// or create a new one.
-//
-// This replaces the pre-A2b raw upsert, which created devices with K-number
-// as primary key and bypassed any identity/merge logic.
+// Each returned device/identifier goes through the 4d gate (ingestFdaDevice /
+// ingestMhraDevice). The gate decides whether to update an existing device,
+// queue for merge review, or create a new one atomically.
 
 export async function PUT(req: NextRequest) {
   if (!isAuthorised(req)) {
@@ -251,10 +228,10 @@ export async function PUT(req: NextRequest) {
 
   const source = req.nextUrl.searchParams.get('source')
 
-  // ─── MHRA seed: unchanged pending mhraSync refactor ─────────────────────
+  // ─── MHRA seed — A2b 4d gate ────────────────────────────────────────────
   if (source === 'mhra') {
     const { searchAllMhraAIMLDevices } = await import('@/lib/mhra')
-    const { syncDeviceFromMHRA, resolveMhraManufacturer } = await import('@/lib/mhraSync')
+    const { ingestMhraDevice, resolveMhraManufacturer } = await import('@/lib/mhraSync')
 
     const devices = await searchAllMhraAIMLDevices()
     if (!devices.length) {
@@ -262,26 +239,35 @@ export async function PUT(req: NextRequest) {
     }
 
     const results = []
+    const counters = {
+      updated_existing: 0,
+      created_new: 0,
+      queued_for_review: 0,
+      already_queued: 0,
+      failed: 0,
+    }
+
     for (const device of devices) {
+      await new Promise((r) => setTimeout(r, 200))
+
       let manufacturer = null
       try {
         manufacturer = await resolveMhraManufacturer(device)
       } catch {
-        // Non-fatal — will use fallback manufacturer name
+        // Non-fatal — ingestMhraDevice falls back to "MHRA Manufacturer {ID}".
       }
-      const result = await syncDeviceFromMHRA(device, manufacturer)
+
+      const result = await ingestMhraDevice(device, manufacturer)
       results.push(result)
-      await new Promise((r) => setTimeout(r, 100))
+      counters[result.action]++
     }
 
-    const succeeded = results.filter((r) => r.success).length
     return NextResponse.json({
       source: 'MHRA',
-      message: `${succeeded} of ${devices.length} MHRA devices seeded`,
+      message: `Processed ${devices.length} MHRA device identifiers through the 4d gate`,
       total: devices.length,
-      succeeded,
-      failed: devices.length - succeeded,
-      results,
+      counters,
+      sample: results.slice(0, 20),
     })
   }
 
