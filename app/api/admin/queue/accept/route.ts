@@ -4,11 +4,14 @@
  * Accept a queued ingestion entry. Two modes:
  *
  *   1. Create mode (merge_into_aletia_id omitted):
- *      - Inserts a new device_master row (aletia_id auto-allocated by DB default)
- *      - Inserts the queue's identifier into device_external_ids as primary
- *      - For CT.gov source, inserts a device_trials row
- *      - For FDA/MHRA sources, inserts a regional_registrations row with
- *        external_id_value linked to the new device_external_ids entry
+ *      - Calls create_device_atomic RPC which, in a single transaction:
+ *        * inserts device_master (aletia_id auto-allocated by DB default)
+ *        * inserts the queue's identifier into device_external_ids as primary
+ *        * for CT.gov source, inserts a device_trials row
+ *      - If any of those three fail, the whole thing rolls back — no orphan.
+ *      - For FDA/MHRA sources, additionally inserts a regional_registrations
+ *        row with external_id_value (non-atomic, best-effort — regional enrichment
+ *        failing doesn't invalidate the device identity).
  *
  *   2. Merge mode (merge_into_aletia_id provided):
  *      - Target device must exist; target's claim state gates the merge
@@ -20,10 +23,10 @@
  *        across sources rather than overwriting
  *
  * Rewrite history:
- *   - Was: app/api/admin/queue/accept/route.ts (pre-A2b)
- *   - Resolves BUG-001 (trial data silently lost — wrong field names in raw_data read)
- *   - Resolves BUG-002 (device_name accepted but not written — now writes device_master.name)
- *   - Resolves BUG-005 (CT-${nct} synthesis — aletia_id comes from DB sequence)
+ *   - 23 Apr 2026 — Initial A2b rewrite. Resolved BUG-001, BUG-002, BUG-005.
+ *   - 24 Apr 2026 — Atomicity fix: create mode wraps its three writes in the
+ *     create_device_atomic RPC to prevent the partial-commit orphans we hit
+ *     on 23 Apr (ALT-006163 / ALT-006165).
  *
  * Request body:
  *   {
@@ -214,48 +217,100 @@ export async function POST(req: NextRequest) {
     if (updErr) {
       return NextResponse.json({ error: updErr.message }, { status: 500 })
     }
+
+    // On merge, append the identifier to device_external_ids (non-primary).
+    // The create path does this atomically via RPC; merge can't, because we
+    // already have the aletia_id and we're appending rather than creating.
+    // If the append fails (e.g. the identifier already belongs to another
+    // device via a race), we treat it as a warning — the device-level merge
+    // itself has already landed and is not invalidated.
+    const { error: extIdErr } = await admin
+      .from('device_external_ids')
+      .insert({
+        aletia_id:    aletiaId,
+        id_type:      classified.id_type,
+        id_value:     classified.id_value,
+        jurisdiction: classified.jurisdiction,
+        is_primary:   false,
+        source:       `queue_accept:${queueRow.source}`,
+      })
+
+    if (extIdErr) {
+      // Race or already-linked. Non-fatal; log and continue.
+      console.warn(
+        `[queue.accept] external_id append skipped (already exists?) for ${aletiaId} ${classified.id_type}/${classified.id_value}: ${extIdErr.message}`,
+      )
+    }
   } else {
-    // ── Create mode ─────────────────────────────────────────────────────────
-    // aletia_id is NOT included — the DB default allocates via aletia_id_seq.
-    // external_legacy_id mirrors the primary external ID (denormalised convenience)
-    // and is NOT NULL on the schema, inherited from pre-A2a when it was the PK.
-    //
-    // Fall back to the queue row's own fields when the request body doesn't
-    // include them. The list-row "Accept" shortcut in the admin UI sends
-    // only { queue_id }, so without this fallback the name / manufacturer
-    // would drop to null on every one-click accept (this was BUG-002's
-    // remaining failure mode even after A2b's first pass).
+    // ── Create mode (atomic via RPC) ────────────────────────────────────────
+    // The RPC wraps device_master + device_external_ids + optional
+    // device_trials in a single transaction. Fall back to the queue row's
+    // own fields when the request body doesn't include them. The list-row
+    // "Accept" shortcut in the admin UI sends only { queue_id }, so without
+    // this fallback the name / manufacturer would drop to null on every
+    // one-click accept (this was BUG-002's remaining failure mode even after
+    // A2b's first pass).
     const deviceName     = body.device_name     ?? queueRow.device_name  ?? null
-    const specialtyName  = body.specialty       ?? null                                   // queue has specialty_inferred but we leave unfilled
+    const specialtyName  = body.specialty       ?? null
     const approvalStatus = body.approval_status ?? 'pre_approval'
 
-    const { data: created, error: insErr } = await admin
-      .from('device_master')
-      .insert({
-        external_legacy_id: queueRow.source_id,
-        manufacturer_link: manufacturerId,
-        manufacturer_name: mfgName || null,
-        name: deviceName,
-        intended_use: deviceName,
-        specialty_link: specialtyName,
-        approval_status: approvalStatus,
-        data_source: 'aletia_research',
-        health_status: 'Amber',
-        pipeline_stage: inferPipelineStage(raw),
-        last_automated_sync: now,
-        ai_ml_integral: true,
-      })
-      .select('aletia_id')
-      .single()
+    const deviceSeed: Record<string, unknown> = {
+      external_legacy_id:  classified.id_value,       // explicit, though RPC would default it
+      manufacturer_link:   manufacturerId,
+      manufacturer_name:   mfgName || null,
+      name:                deviceName,
+      intended_use:        deviceName,
+      specialty_link:      specialtyName,
+      approval_status:     approvalStatus,
+      data_source:         'aletia_research',
+      health_status:       'Amber',
+      pipeline_stage:      inferPipelineStage(raw),
+      last_automated_sync: now,
+      ai_ml_integral:      true,
+    }
 
-    if (insErr || !created) {
+    // CT.gov source: pass a trial payload so the RPC inserts device_trials
+    // in the same transaction. Other sources pass null — no trial to record.
+    const trialSeed =
+      queueRow.source === 'clinical_trials'
+        ? buildTrialSeedFromQueue(raw, queueRow.sponsor_type)
+        : null
+
+    const { data: newAletiaId, error: rpcErr } = await admin.rpc(
+      'create_device_atomic',
+      {
+        p_device:      deviceSeed,
+        p_external_id: {
+          id_type:      classified.id_type,
+          id_value:     classified.id_value,
+          jurisdiction: classified.jurisdiction,
+          source:       `queue_accept:${queueRow.source}`,
+          is_primary:   true,
+        },
+        p_trial:       trialSeed,
+      },
+    )
+
+    if (rpcErr || !newAletiaId) {
+      const code = (rpcErr as { code?: string } | null)?.code
+      // SQLSTATE 23505 = unique_violation. Most likely the identifier already
+      // belongs to another device (identifier collision) — surface cleanly.
+      if (code === '23505') {
+        return NextResponse.json(
+          {
+            error:  `Identifier ${classified.id_type}/${classified.id_value} already belongs to another device.`,
+            detail: rpcErr?.message ?? 'unique violation',
+          },
+          { status: 409 },
+        )
+      }
       return NextResponse.json(
-        { error: `Could not create device: ${insErr?.message ?? 'unknown'}` },
+        { error: `Could not create device: ${rpcErr?.message ?? 'unknown'}` },
         { status: 500 },
       )
     }
 
-    aletiaId = created.aletia_id
+    aletiaId = typeof newAletiaId === 'string' ? newAletiaId : String(newAletiaId)
     isMerge = false
 
     await writeAudit({
@@ -268,42 +323,11 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // ── Append the external identifier to device_external_ids ─────────────────
-  // Primary if this was a create (first ID on the device); non-primary if merge.
-  // Conflict on (id_type, id_value) means the identifier is already known —
-  // treat as non-fatal for merge (someone may have raced us) but fatal for
-  // create (uniqueness violation means the identifier already belongs to
-  // another device, which is a contradiction).
-  const { error: extIdErr } = await admin
-    .from('device_external_ids')
-    .insert({
-      aletia_id:    aletiaId,
-      id_type:      classified.id_type,
-      id_value:     classified.id_value,
-      jurisdiction: classified.jurisdiction,
-      is_primary:   !isMerge,
-      source:       `queue_accept:${queueRow.source}`,
-    })
-
-  if (extIdErr) {
-    if (isMerge) {
-      // Race condition or already-linked. Log, continue to mark queue.
-      console.warn(
-        `[queue.accept] external_id append skipped (already exists?) for ${aletiaId} ${classified.id_type}/${classified.id_value}: ${extIdErr.message}`,
-      )
-    } else {
-      return NextResponse.json(
-        {
-          error: `Identifier ${classified.id_type}/${classified.id_value} already belongs to another device.`,
-          detail: extIdErr.message,
-        },
-        { status: 409 },
-      )
-    }
-  }
-
   // ── Source-specific enrichment ────────────────────────────────────────────
-  if (queueRow.source === 'clinical_trials') {
+  // Trial enrichment for merge mode only — create mode already inserted it
+  // atomically via the RPC. FDA/MHRA regional registration enrichment runs
+  // for both modes (create + merge); failures here are warnings, not errors.
+  if (queueRow.source === 'clinical_trials' && isMerge) {
     await enrichFromClinicalTrial(admin, aletiaId, raw, queueRow.sponsor_type)
   } else if (queueRow.source === 'fda_sync') {
     await enrichFromFdaQueue(admin, aletiaId, classified, raw)
@@ -389,8 +413,27 @@ function classifyQueueIdentifier(queueRow: {
       return { id_type: 'scarlet_pccp_id', id_value: sourceId, jurisdiction: null }
 
     case 'pccp_ingest':
-      // PCCP is enrichment-only — shouldn't normally land here. Defensive.
+      // Post-A2b PCCP ingest is enrichment-only; it should no longer create
+      // queue rows. This arm is kept for legacy pre-A2b queue rows where
+      // source_id is an FDA K-number (or DEN/PMA).
+      if (/^K[0-9]+$/.test(sourceId))   return { id_type: 'fda_k_number', id_value: sourceId, jurisdiction: 'US' }
+      if (/^DEN[0-9]+$/.test(sourceId)) return { id_type: 'fda_de_novo',  id_value: sourceId, jurisdiction: 'US' }
+      if (/^P[0-9]+$/.test(sourceId))   return { id_type: 'fda_pma',      id_value: sourceId, jurisdiction: 'US' }
       return { id_type: 'fda_k_number', id_value: sourceId, jurisdiction: 'US' }
+
+    // 'oleary_csv' is an alternate legacy source name for PCCP queue rows.
+    case 'oleary_csv':
+      if (/^K[0-9]+$/.test(sourceId))   return { id_type: 'fda_k_number', id_value: sourceId, jurisdiction: 'US' }
+      if (/^DEN[0-9]+$/.test(sourceId)) return { id_type: 'fda_de_novo',  id_value: sourceId, jurisdiction: 'US' }
+      if (/^P[0-9]+$/.test(sourceId))   return { id_type: 'fda_pma',      id_value: sourceId, jurisdiction: 'US' }
+      return { id_type: 'fda_k_number', id_value: sourceId, jurisdiction: 'US' }
+
+    case 'fda_breakthrough':
+      // Breakthrough queue rows have no canonical external ID (no K-number
+      // at designation time). source_id is a synthetic "company__device"
+      // string. Classify as legacy_unclassified until the device lands a
+      // real submission number that we'd then append separately.
+      return { id_type: 'legacy_unclassified', id_value: sourceId, jurisdiction: 'US' }
 
     default:
       return null
@@ -398,13 +441,52 @@ function classifyQueueIdentifier(queueRow: {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Enrichment: clinical_trials queue row → device_trials upsert
+// Enrichment: build trial seed from clinical_trials queue row for RPC insert
 //
-// This is the BUG-001 fix. The queue's raw_data is a spread of the
-// normalised ClinicalTrial object — see lib/clinicalTrialsIngest.ts. That
-// means the fields are status, startDate, completionDate, locations (as
-// string[] of ISO codes), NOT overall_status/start_date/etc. Reading the
-// old paths silently returns undefined for everything.
+// This is the create-mode equivalent of enrichFromClinicalTrial. The queue's
+// raw_data is a spread of the normalised ClinicalTrial object (see
+// lib/clinicalTrialsIngest.ts) — fields are nctId / startDate / completionDate
+// / status / locations (string[] of ISO codes), NOT overall_status etc.
+// BUG-001 is the historical regression from reading the wrong field names.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function buildTrialSeedFromQueue(
+  raw: Record<string, unknown>,
+  sponsorType: string | null,
+): Record<string, unknown> | null {
+  const trial = raw as Partial<ClinicalTrial> & { sponsor_type?: string }
+
+  // If no NCT, nothing to record in device_trials.
+  if (!trial.nctId) return null
+
+  return {
+    nct_id:               trial.nctId,
+    trial_registry:       'ct_gov',
+    title:                trial.title ?? null,
+    brief_summary:        trial.briefSummary ?? null,
+    sponsor_name:         trial.sponsorName ?? null,
+    sponsor_type:         sponsorType ?? trial.sponsor_type ?? null,
+    status:               normaliseStatus(trial.status),
+    phase:                trial.phase ?? null,
+    enrollment:           typeof trial.enrollment === 'number' ? trial.enrollment : null,
+    start_date:           toDateOrNull(trial.startDate),
+    completion_date:      toDateOrNull(trial.completionDate),
+    jurisdictions:        Array.isArray(trial.locations)  ? trial.locations  : null,
+    conditions_raw:       Array.isArray(trial.conditions) ? trial.conditions : null,
+    is_device_trial:      typeof trial.isDeviceTrial === 'boolean' ? trial.isDeviceTrial : null,
+    irb_approved:         typeof trial.irbApproved === 'boolean'   ? trial.irbApproved   : null,
+    source_payload:       raw,
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enrichment: clinical_trials queue row → device_trials upsert (merge path)
+//
+// Only called on merge. On create, the RPC has already inserted device_trials.
+// Here, the trial data needs to be appended to an existing device that might
+// already have trials. UPSERT on (aletia_id, nct_id) now works — the follow-up
+// migration 20260424120100 converted the partial index to a full unique
+// constraint.
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function enrichFromClinicalTrial(
@@ -413,51 +495,40 @@ async function enrichFromClinicalTrial(
   raw: Record<string, unknown>,
   sponsorType: string | null,
 ): Promise<void> {
-  // raw is a ClinicalTrial shape plus { sponsor_type, review_reason, ... }
   const trial = raw as Partial<ClinicalTrial> & { sponsor_type?: string }
-
-  // If no NCT, nothing to record in device_trials.
   if (!trial.nctId) return
 
   const status = normaliseStatus(trial.status)
 
-  // Accept is a one-shot path: we just created (or merged into) the device,
-  // and a device_trials row for this (aletia_id, nct_id) doesn't exist yet.
-  // So this is a plain INSERT, not an upsert. (We can't UPSERT with onConflict
-  // here anyway — the uniqueness is enforced by a partial unique index, not
-  // a full unique constraint, and Supabase's onConflict targets full
-  // constraints only. Follow-up migration will convert the partial index to
-  // a full unique constraint for the CT.gov ingest path's benefit.)
   const { error } = await admin
     .from('device_trials')
-    .insert({
-      aletia_id:            aletiaId,
-      nct_id:               trial.nctId,
-      trial_registry:       'ct_gov',
-      title:                trial.title ?? null,
-      brief_summary:        trial.briefSummary ?? null,
-      sponsor_name:         trial.sponsorName ?? null,
-      sponsor_type:         sponsorType ?? trial.sponsor_type ?? null,
-      status,
-      phase:                trial.phase ?? null,
-      enrollment:           typeof trial.enrollment === 'number' ? trial.enrollment : null,
-      start_date:           toDateOrNull(trial.startDate),
-      completion_date:      toDateOrNull(trial.completionDate),
-      jurisdictions:        Array.isArray(trial.locations) ? trial.locations : null,
-      conditions_raw:       Array.isArray(trial.conditions) ? trial.conditions : null,
-      is_device_trial:      typeof trial.isDeviceTrial === 'boolean' ? trial.isDeviceTrial : null,
-      irb_approved:         typeof trial.irbApproved === 'boolean' ? trial.irbApproved : null,
-      source_payload:       raw,
-      last_seen_at:         new Date().toISOString(),
-    })
+    .upsert(
+      {
+        aletia_id:            aletiaId,
+        nct_id:               trial.nctId,
+        trial_registry:       'ct_gov',
+        title:                trial.title ?? null,
+        brief_summary:        trial.briefSummary ?? null,
+        sponsor_name:         trial.sponsorName ?? null,
+        sponsor_type:         sponsorType ?? trial.sponsor_type ?? null,
+        status,
+        phase:                trial.phase ?? null,
+        enrollment:           typeof trial.enrollment === 'number' ? trial.enrollment : null,
+        start_date:           toDateOrNull(trial.startDate),
+        completion_date:      toDateOrNull(trial.completionDate),
+        jurisdictions:        Array.isArray(trial.locations)  ? trial.locations  : null,
+        conditions_raw:       Array.isArray(trial.conditions) ? trial.conditions : null,
+        is_device_trial:      typeof trial.isDeviceTrial === 'boolean' ? trial.isDeviceTrial : null,
+        irb_approved:         typeof trial.irbApproved === 'boolean'   ? trial.irbApproved   : null,
+        source_payload:       raw,
+        last_seen_at:         new Date().toISOString(),
+      },
+      { onConflict: 'aletia_id,nct_id' },
+    )
 
   if (error) {
-    // If a device_trials row somehow already exists (e.g., an earlier failed
-    // accept attempt that partially succeeded), the insert will conflict with
-    // the partial unique index. In that case we silently skip — the existing
-    // row is already there. Log for triage either way.
     console.error(
-      `[queue.accept] device_trials insert failed for ${aletiaId}/${trial.nctId}: ${error.message}`,
+      `[queue.accept] device_trials upsert failed for ${aletiaId}/${trial.nctId}: ${error.message}`,
     )
   }
 }

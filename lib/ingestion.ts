@@ -15,11 +15,19 @@ import type { ExternalIdType, AnomalyType } from './types'
 //      → YES: insert a queue row with possible_merge_candidates populated,
 //             return queued_for_review. Admin decides.
 //
-//   3. Neither: insert a new device_master row (aletia_id auto-allocated),
-//      insert primary device_external_ids row, return created_new.
+//   3. Neither: call create_device_atomic RPC (atomic device_master +
+//      device_external_ids insert), return created_new.
 //
 // This is the "never auto-merge" discipline: the only auto-action is on
 // exact identifier match; everything else routes through admin.
+//
+// Atomicity note (24 April):
+//   The create branch used to do device_master.insert() followed by a
+//   separate device_external_ids.insert(), which surfaced twice on staging
+//   as orphan device_master rows when the second insert failed. The create
+//   branch now calls create_device_atomic(...) RPC which wraps both writes
+//   (and optionally a device_trials insert) in a single transaction. If any
+//   step fails, the whole transaction rolls back.
 // =============================================================================
 
 export type IngestDecision =
@@ -52,13 +60,26 @@ export interface ProcessExternalIdentifierInput {
   /**
    * Fields to insert into device_master when creating a new device.
    * aletia_id is auto-allocated by the DB default; don't include it here.
+   * external_legacy_id defaults to id_value if omitted — the RPC fills it.
    * Callers should include manufacturer_link, manufacturer_name, name,
-   * intended_use, data_source, pipeline_stage, approval_status etc. — the
-   * shape that their source naturally populates.
+   * intended_use, data_source, pipeline_stage, approval_status etc.
    *
    * Ignored when autoCreate is false. Can be omitted in that case.
    */
   deviceSeed?: Record<string, unknown>
+
+  /**
+   * Optional trial payload for CT.gov-style ingest paths. When present,
+   * create_device_atomic inserts a matching device_trials row in the same
+   * transaction. Keys must match device_trials columns (see RPC contract).
+   *
+   * Only meaningful when we're creating a new device. On updated_existing
+   * / queued paths, the trial payload is ignored by this helper; the
+   * relevant ingest path should handle it separately (via its own UPSERT
+   * into device_trials for updated_existing, or the queue row's raw_data
+   * for queued_for_review).
+   */
+  trialSeed?: Record<string, unknown>
 
   /**
    * If false, the "no hit, no candidates" branch queues for review instead
@@ -84,7 +105,7 @@ export async function processExternalIdentifier(
     id_type, id_value, jurisdiction,
     source, queueSource, reviewReason,
     manufacturerName, deviceName,
-    payload, deviceSeed,
+    payload, deviceSeed, trialSeed,
     autoCreate = true,
   } = input
 
@@ -180,8 +201,9 @@ export async function processExternalIdentifier(
   }
 
   // ── 4. No hit, no candidates, autoCreate allowed → create new device ─────
-  //     device_master.aletia_id is auto-allocated via the sequence DEFAULT.
-  //     Do NOT include aletia_id in deviceSeed.
+  //     Call create_device_atomic RPC. It does device_master insert +
+  //     device_external_ids insert (+ optional device_trials insert) in a
+  //     single transaction. Atomic. If anything fails, all roll back.
   if (!deviceSeed) {
     // Sanity check: with autoCreate=true we expect a deviceSeed. Not passing
     // one is a programming error.
@@ -191,49 +213,51 @@ export async function processExternalIdentifier(
     }
   }
 
-  const { data: newDevice, error: createErr } = await supabase
-    .from('device_master')
-    .insert(deviceSeed)
-    .select('aletia_id')
-    .single()
+  const { data: newAletiaId, error: rpcErr } = await supabase.rpc(
+    'create_device_atomic',
+    {
+      p_device:      deviceSeed,
+      p_external_id: {
+        id_type,
+        id_value,
+        jurisdiction,
+        source,
+        is_primary: true,
+      },
+      p_trial:       trialSeed ?? null,
+    },
+  )
 
-  if (createErr || !newDevice) {
-    return {
-      action: 'failed',
-      error: `device_master insert failed: ${createErr?.message ?? 'unknown'}`,
-    }
-  }
+  if (rpcErr || !newAletiaId) {
+    // The RPC rolled the transaction back; no orphan row exists. Surface the
+    // error to the caller. Unique-violation on (id_type, id_value) comes
+    // through as SQLSTATE 23505 in rpcErr.code — callers may want to map
+    // that to a user-facing "identifier already belongs to another device"
+    // error, but at this layer it's just another failure.
+    const msg = rpcErr?.message ?? 'create_device_atomic returned null'
 
-  const { error: extIdErr } = await supabase
-    .from('device_external_ids')
-    .insert({
-      aletia_id:     newDevice.aletia_id,
-      id_type,
-      id_value,
-      jurisdiction,
-      is_primary:    true,
-      source,
-    })
-
-  if (extIdErr) {
-    // This is bad — we created a device but couldn't attach its primary ID.
-    // Could arguably be a hard error, but we have an aletia_id and the device
-    // is in the DB. Surface loudly and let caller decide.
-    console.error(
-      `[ingestion] CRITICAL: created device_master ${newDevice.aletia_id} ` +
-      `but failed to insert primary device_external_ids row (${id_type}/${id_value}): ${extIdErr.message}`
-    )
+    // Log anomaly so we can see patterns of RPC failures in ingestion_anomalies.
     await logIngestionAnomaly(supabase, {
-      source: queueSource,
-      anomaly_type: 'classification_failed',
-      identifier_value: id_value,
+      source:                   queueSource,
+      anomaly_type:             'classification_failed',
+      identifier_value:         id_value,
       identifier_type_expected: id_type,
-      context: { error: extIdErr.message, aletia_id: newDevice.aletia_id },
-      aletia_id: newDevice.aletia_id,
+      context: {
+        error:        msg,
+        error_code:   (rpcErr as { code?: string } | null)?.code ?? null,
+        phase:        'create_device_atomic',
+      },
     })
+
+    return { action: 'failed', error: `create_device_atomic failed: ${msg}` }
   }
 
-  return { action: 'created_new', aletia_id: newDevice.aletia_id }
+  // RPC returns text (the new aletia_id) as RETURNS text; Supabase SDK gives
+  // us a string directly. Defensive cast in case a future shape change makes
+  // it an object.
+  const aletiaId = typeof newAletiaId === 'string' ? newAletiaId : String(newAletiaId)
+
+  return { action: 'created_new', aletia_id: aletiaId }
 }
 
 // =============================================================================
