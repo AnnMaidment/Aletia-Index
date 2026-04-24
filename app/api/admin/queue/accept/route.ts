@@ -85,6 +85,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'queue_id required' }, { status: 400 })
   }
 
+  // Temporary diagnostic — A2b debugging: capture exactly what the UI sent so
+  // we can track down the BUG-002 (device_name drop) regression. Remove once
+  // the name-write is confirmed working end-to-end.
+  console.log('[queue.accept] received body:', JSON.stringify(body))
+
   const admin = getServiceClient()
 
   // ── Load queue row ────────────────────────────────────────────────────────
