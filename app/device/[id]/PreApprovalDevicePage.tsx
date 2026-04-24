@@ -1,20 +1,21 @@
-import type { CSSProperties } from 'react'
-import { LabelValue, PipelineStepper, PreClearanceBanner, DataSourceTag } from './shared'
+import {
+  LabelValue, PipelineStepper, PreClearanceBanner, DataSourceTag,
+  AllIdentifiersPanel, TrialCard, sortTrials,
+} from './shared'
 import InterestButton from './InterestButton'
+import type { DeviceExternalId, DeviceTrial } from '@/lib/types'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+//
+// PreApprovalProfile still carries the opt-in manufacturer-supplied data
+// (funding, team, contacts, IRB). The trial_* fields are A2a-era; A2b moves
+// trial data into device_trials. We still read PreApprovalProfile for
+// non-trial fields, and pull trials from device.trials instead.
 
 type PreApprovalProfile = {
   dev_stage: string | null
   irb_approved: boolean | null
   irb_institution: string | null
-  trial_identifier: string | null
-  trial_status: string | null
-  trial_phase: string | null
-  trial_start_date: string | null
-  trial_completion_date: string | null
-  trial_enrollment: number | null
-  trial_locations: string[] | null
   target_jurisdictions: string[] | null
   company_stage: string | null
   total_raised_usd: number | null
@@ -39,8 +40,9 @@ type Manufacturer = {
 }
 
 type Device = {
-  device_id: string
-  device_name?: string | null
+  aletia_id: string
+  external_legacy_id: string | null
+  name: string | null
   intended_use: string | null
   manufacturer_name: string | null
   specialty_link: string | null
@@ -51,6 +53,8 @@ type Device = {
   claimed_at: string | null
   manufacturers: Manufacturer | null
   pre_approval_profile: PreApprovalProfile | PreApprovalProfile[] | null
+  external_ids?: DeviceExternalId[]
+  trials?: DeviceTrial[]
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -68,21 +72,6 @@ const fmtUsd = (n: number | null) => {
 const titleise = (s: string | null) =>
   s ? s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : null
 
-const TRIAL_STATUS_STYLE: Record<string, CSSProperties> = {
-  recruiting:           { background: '#e9f9ef', color: '#137a3b', border: '1px solid rgba(19,122,59,.2)' },
-  active:               { background: '#e9f9ef', color: '#137a3b', border: '1px solid rgba(19,122,59,.2)' },
-  not_yet_recruiting:   { background: '#eff6ff', color: '#1d4ed8', border: '1px solid rgba(29,78,216,.2)' },
-  completed:            { background: '#f0f4ff', color: '#1e40af', border: '1px solid rgba(31,64,174,.2)' },
-  terminated:           { background: '#ffecec', color: '#9f1d1d', border: '1px solid rgba(159,29,29,.2)' },
-  suspended:            { background: '#fff4e5', color: '#a15c00', border: '1px solid rgba(161,92,0,.2)' },
-  withdrawn:            { background: '#f1f5f9', color: '#475569', border: '1px solid var(--line)' },
-}
-
-function trialStatusStyle(s: string | null): CSSProperties {
-  if (!s) return { background: '#f1f5f9', color: '#475569', border: '1px solid var(--line)' }
-  return TRIAL_STATUS_STYLE[s.toLowerCase()] ?? { background: '#f1f5f9', color: '#475569', border: '1px solid var(--line)' }
-}
-
 function EmptyHint({ text }: { text: string }) {
   return (
     <div style={{ fontSize: 13, color: 'var(--muted)', fontStyle: 'italic' }}>
@@ -96,7 +85,7 @@ function EmptyHint({ text }: { text: string }) {
 export default function PreApprovalDevicePage({ device }: { device: Device }) {
   const mfr = device.manufacturers
   const companyName = mfr?.name ?? device.manufacturer_name ?? 'Unknown Company'
-  const deviceName  = device.device_name ?? device.intended_use ?? 'Pre-approval device'
+  const deviceName  = device.name ?? device.intended_use ?? 'Pre-approval device'
 
   // pre_approval_profile may come back as object (single FK) or array — normalise
   const rawProfile = device.pre_approval_profile
@@ -107,16 +96,11 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
   const isClaimed   = !!device.claimed_at || !!mfr?.claimed_at
   const dataSource  = (device.data_source ?? 'registry_sync')
 
-  // Trial signal — which fields are present?
-  const hasTrial = !!(
-    profile?.trial_identifier ||
-    profile?.trial_status ||
-    profile?.trial_phase ||
-    profile?.trial_enrollment ||
-    profile?.trial_start_date ||
-    profile?.trial_completion_date ||
-    profile?.trial_locations?.length
-  )
+  // Trials — sourced from device_trials now, not pre_approval_profile.trial_*.
+  const trials: DeviceTrial[] = device.trials ?? []
+  const sortedTrials = sortTrials(trials)
+  const hasTrials = sortedTrials.length > 0
+  const externalIds: DeviceExternalId[] = device.external_ids ?? []
 
   // Company facts — which are present?
   const companyFacts = profile ? [
@@ -160,13 +144,13 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
       {/* ── Header card ──────────────────────────────────────────────────── */}
       <div className="card cardPad" style={{ marginBottom: 16 }}>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginBottom: 14 }}>
-          {/* Device ID */}
+          {/* Canonical Aletia ID — prominent */}
           <span style={{
-            fontSize: 12, fontWeight: 700, color: 'var(--muted)',
-            background: '#f1f5f9', border: '1px solid var(--line)',
+            fontSize: 12, fontWeight: 700, color: 'var(--text)',
+            background: '#eff6ff', border: '1px solid rgba(31,111,235,.2)',
             borderRadius: 8, padding: '4px 10px', fontFamily: 'ui-monospace,monospace',
           }}>
-            {device.device_id}
+            {device.aletia_id}
           </span>
 
           {/* Pre-approval pill — identifies the template unambiguously */}
@@ -218,6 +202,9 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
         )}
       </div>
 
+      {/* ── All identifiers panel ────────────────────────────────────────── */}
+      <AllIdentifiersPanel aletiaId={device.aletia_id} externalIds={externalIds} />
+
       {/* ── Unclaimed-and-sparse empty state ─────────────────────────────── */}
       {isSparseUnclaimed && (
         <div className="card cardPad" style={{ marginBottom: 16, background: '#f8fafc' }}>
@@ -229,7 +216,7 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
             you can claim this listing to add funding, team, and contact details.
           </div>
           <a
-            href={`/claim/request/${device.device_id}`}
+            href={`/claim/request/${device.aletia_id}`}
             style={{
               display: 'inline-block', padding: '9px 16px', borderRadius: 12,
               background: 'var(--primary)', color: '#fff',
@@ -241,73 +228,28 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
         </div>
       )}
 
-      {/* ── Clinical Trial Signal — the credibility anchor ───────────────── */}
+      {/* ── Clinical trials — the credibility anchor ─────────────────────── */}
       <div className="card cardPad" style={{ marginBottom: 16 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
-          <h2 style={{ fontSize: 15, fontWeight: 700, margin: 0 }}>Clinical Trial Signal</h2>
-          {profile?.trial_status && (
-            <span style={{
-              display: 'inline-flex', alignItems: 'center',
-              padding: '5px 12px', borderRadius: 999, fontSize: 12, fontWeight: 700,
-              ...trialStatusStyle(profile.trial_status),
-            }}>
-              {titleise(profile.trial_status)}
-            </span>
-          )}
-        </div>
+        <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14 }}>
+          {hasTrials && sortedTrials.length > 1
+            ? `Clinical Trials (${sortedTrials.length})`
+            : 'Clinical Trial Signal'}
+        </h2>
 
-        {hasTrial ? (
+        {hasTrials ? (
           <>
-            <div className="three" style={{ marginTop: 0 }}>
-              {profile?.trial_identifier && (
-                <div style={{ padding: '12px 14px', background: '#f8fafc', borderRadius: 12, border: '1px solid var(--line)' }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>
-                    NCT Identifier
-                  </div>
-                  <a
-                    href={`https://clinicaltrials.gov/study/${profile.trial_identifier}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ fontSize: 14, fontWeight: 600, color: 'var(--primary)', textDecoration: 'none', fontFamily: 'ui-monospace,monospace' }}
-                  >
-                    {profile.trial_identifier} ↗
-                  </a>
-                </div>
-              )}
-              {profile?.trial_phase && <LabelValue label="Phase" value={titleise(profile.trial_phase) ?? profile.trial_phase} />}
-              {profile?.trial_enrollment != null && <LabelValue label="Enrolment" value={`${profile.trial_enrollment} participants`} />}
-              {profile?.trial_start_date && <LabelValue label="Started" value={fmtMonthYear(profile.trial_start_date) ?? ''} />}
-              {profile?.trial_completion_date && <LabelValue label="Completion (est.)" value={fmtMonthYear(profile.trial_completion_date) ?? ''} />}
-              {profile?.irb_approved && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {sortedTrials.map(t => <TrialCard key={t.id} t={t} />)}
+            </div>
+
+            {/* IRB approval badge, if set — still lives on pre_approval_profile. */}
+            {profile?.irb_approved && (
+              <div style={{ marginTop: 12 }}>
                 <LabelValue
                   label="IRB Approved"
                   value={profile.irb_institution ? `✓ ${profile.irb_institution}` : '✓ Yes'}
                 />
-              )}
-            </div>
-
-            {profile?.trial_locations && profile.trial_locations.length > 0 && (
-              <>
-                <hr className="sep" />
-                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 10 }}>
-                  Trial Sites ({profile.trial_locations.length})
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                  {profile.trial_locations.slice(0, 12).map((loc, i) => (
-                    <span key={i} style={{
-                      padding: '4px 10px', borderRadius: 999, fontSize: 12, fontWeight: 500,
-                      background: '#f1f5f9', color: '#334155', border: '1px solid var(--line)',
-                    }}>
-                      {loc}
-                    </span>
-                  ))}
-                  {profile.trial_locations.length > 12 && (
-                    <span style={{ padding: '4px 10px', fontSize: 12, color: 'var(--muted)' }}>
-                      + {profile.trial_locations.length - 12} more
-                    </span>
-                  )}
-                </div>
-              </>
+              </div>
             )}
 
             {jurisdictions.length > 0 && (
@@ -396,7 +338,7 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
               Signal to the team that this device is on your radar. Anonymous — the manufacturer sees the count, not your identity.
             </p>
           </div>
-          <InterestButton deviceId={device.device_id} initialCount={interestCount} />
+          <InterestButton deviceId={device.aletia_id} initialCount={interestCount} />
         </div>
       </div>
 
@@ -413,7 +355,7 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
               </div>
             </div>
             <a
-              href={`/claim/request/${device.device_id}`}
+              href={`/claim/request/${device.aletia_id}`}
               style={{
                 flexShrink: 0, padding: '9px 16px', borderRadius: 12,
                 background: 'var(--primary)', color: '#fff',
@@ -437,8 +379,8 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
                 Data on this page is maintained by {companyName}.
               </div>
             </div>
-            {/* TODO (piece 3 / follow-up): gate Edit to authenticated owner server-side.
-                For now, dashboard auth gates the actual editing. */}
+            {/* TODO: gate Edit to authenticated owner server-side. For now,
+                dashboard auth gates the actual editing. */}
             <a
               href="/dashboard"
               style={{

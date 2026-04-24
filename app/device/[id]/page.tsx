@@ -1,11 +1,21 @@
 import { cache } from 'react'
+import { permanentRedirect } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Nav, Footer } from '@/components/NavFooter'
 import type { Metadata } from 'next'
 import type { CSSProperties } from 'react'
 import { AutonomousBadge } from '@/app/components/AutonomousBadge'
-import { LabelValue, PipelineStepper, PreClearanceBanner, DataSourceTag } from './shared'
+import {
+  LabelValue, PipelineStepper, PreClearanceBanner, DataSourceTag,
+  AllIdentifiersPanel, TrialCard, sortTrials, primaryExternalId,
+} from './shared'
 import PreApprovalDevicePage from './PreApprovalDevicePage'
+import {
+  normaliseIdentifierInput,
+  isAletiaId,
+  canonicaliseAletiaId,
+} from '@/lib/identifierNormalisation'
+import type { DeviceExternalId, DeviceTrial } from '@/lib/types'
 
 const BASE_URL = 'https://www.aletia-index.com'
 
@@ -24,7 +34,59 @@ const FLAG: Record<string, string> = {
   'Singapore': '🇸🇬',
 }
 
-const fetchDevice = cache(async (id: string) => {
+// ── ID resolution ────────────────────────────────────────────────────────────
+//
+// The URL segment can be:
+//   (a) a canonical Aletia ID (ALT-NNNNNN) — serve directly
+//   (b) a legacy external identifier — look up via device_external_ids and
+//       308-redirect to canonical
+//   (c) a legacy external identifier that still lives on device_master
+//       .external_legacy_id but somehow missed the device_external_ids
+//       backfill — defensive fallback, also 308-redirect
+//
+// normaliseIdentifierInput handles shape quirks (BUG-009: `MHRA-47392` is
+// stored as raw `47392`).
+
+/** Return canonical aletia_id for any valid device identifier, or null. */
+const resolveToAletiaId = cache(async (rawId: string): Promise<string | null> => {
+  if (isAletiaId(rawId)) {
+    // Canonical-shaped. Confirm it exists and isn't excluded.
+    const { data } = await supabase
+      .from('device_master')
+      .select('aletia_id')
+      .eq('aletia_id', canonicaliseAletiaId(rawId))
+      .eq('excluded', false)
+      .maybeSingle()
+    return data?.aletia_id ?? null
+  }
+
+  // Non-canonical: treat as external identifier.
+  const normalised = normaliseIdentifierInput(rawId)
+  if (!normalised) return null
+
+  // Primary lookup: device_external_ids is the single source of truth.
+  const { data: extRow } = await supabase
+    .from('device_external_ids')
+    .select('aletia_id')
+    .eq('id_value', normalised)
+    .maybeSingle()
+  if (extRow?.aletia_id) return extRow.aletia_id
+
+  // Defensive fallback: direct match on external_legacy_id. Post-backfill
+  // every device should have a device_external_ids row for its primary
+  // external ID, so this is an insurance path rather than a normal one.
+  const { data: legRow } = await supabase
+    .from('device_master')
+    .select('aletia_id')
+    .eq('external_legacy_id', normalised)
+    .eq('excluded', false)
+    .maybeSingle()
+  return legRow?.aletia_id ?? null
+})
+
+// ── Fetch ────────────────────────────────────────────────────────────────────
+
+const fetchDeviceByAletiaId = cache(async (aletiaId: string) => {
   const { data } = await supabase
     .from('device_master')
     .select(`
@@ -32,23 +94,38 @@ const fetchDevice = cache(async (id: string) => {
       manufacturers(name, hq_location, tier, claimed_at, website, contact_visible),
       regional_registrations(
         country, regulatory_body, clearance_type, device_class,
-        gmdn_term, regulatory_expiry, recall_active, adverse_event_count
+        gmdn_term, regulatory_expiry, recall_active, adverse_event_count,
+        external_id_value
       ),
       tech_specs(api_type, ehr_compat, data_hosting, fhir_compatible, popia_compliant),
       clinical_audits(*),
-      pre_approval_profile(*)
+      pre_approval_profile(*),
+      external_ids:device_external_ids(
+        id, id_type, id_value, jurisdiction, is_primary, source,
+        first_seen_at, last_seen_at, created_at, aletia_id
+      ),
+      trials:device_trials(*)
     `)
-    .eq('device_id', id)
+    .eq('aletia_id', aletiaId)
     .eq('excluded', false)
     .single()
   return data
 })
 
+// External-ID display helpers (EXT_ID_LABEL, formatExternalIdLabel,
+// primaryExternalId, AllIdentifiersPanel) live in ./shared so PreApproval­Device­Page
+// can reuse them without duplication.
+
+// ── generateMetadata ─────────────────────────────────────────────────────────
+
 export async function generateMetadata(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<Metadata> {
   const { id } = await params
-  const device = await fetchDevice(id)
+  const aletiaId = await resolveToAletiaId(id)
+  if (!aletiaId) return { title: 'Device Not Found' }
+
+  const device = await fetchDeviceByAletiaId(aletiaId)
   if (!device) return { title: 'Device Not Found' }
 
   const mfrName = device.manufacturers?.name ?? device.manufacturer_name ?? ''
@@ -57,7 +134,7 @@ export async function generateMetadata(
     ? regs.map((r: { regulatory_body: string }) => r.regulatory_body).join(', ')
     : 'FDA, MHRA, CE Mark and SAHPRA'
 
-  const deviceName = device.device_name ?? device.intended_use
+  const deviceName = device.name ?? device.intended_use ?? 'AI/ML medical device'
   const fullTitle = mfrName
     ? `${deviceName} | ${mfrName} | Aletia Index`
     : `${deviceName} | Aletia Index`
@@ -67,16 +144,18 @@ export async function generateMetadata(
     ? `${deviceName}${mfrName ? ` from ${mfrName}` : ''}. Pre-approval AI/ML medical device in the Aletia Index pipeline.`
     : `${deviceName}. Regulatory clearance status across ${jurisdictions}. Clinical assurance data from Aletia Index.`
 
+  const canonicalUrl = `${BASE_URL}/device/${aletiaId}`
+
   return {
     title: { absolute: fullTitle },
     description,
-    alternates: { canonical: `${BASE_URL}/device/${id}` },
-    openGraph: { title: fullTitle, description, url: `${BASE_URL}/device/${id}` },
+    alternates: { canonical: canonicalUrl },
+    openGraph: { title: fullTitle, description, url: canonicalUrl },
     twitter: { card: 'summary_large_image', title: fullTitle, description },
   }
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Helpers (cleared-device template) ────────────────────────────────────────
 
 function statusStyle(s: string): CSSProperties {
   if (s === 'Green') return { background: '#e9f9ef', color: '#137a3b', border: '1px solid rgba(19,122,59,.15)' }
@@ -99,9 +178,9 @@ function freshnessGap(syncDate: string | null, reviewDate: string | null): strin
   return `${(days / 365).toFixed(1)}yr gap`
 }
 
-// ── Claim this listing notice ─────────────────────────────────────────────────
+// ── Claim this listing notice ────────────────────────────────────────────────
 
-function ClaimNotice({ deviceId, manufacturerName }: { deviceId: string; manufacturerName: string }) {
+function ClaimNotice({ aletiaId, manufacturerName }: { aletiaId: string; manufacturerName: string }) {
   return (
     <div style={{
       marginTop: 8, padding: '16px 20px',
@@ -118,7 +197,7 @@ function ClaimNotice({ deviceId, manufacturerName }: { deviceId: string; manufac
         </div>
       </div>
       <a
-      href={`/claim/request/${deviceId}`}
+        href={`/claim/request/${aletiaId}`}
         style={{
           flexShrink: 0, padding: '9px 16px', borderRadius: 12,
           background: 'var(--surface)', border: '1px solid var(--line)',
@@ -132,13 +211,29 @@ function ClaimNotice({ deviceId, manufacturerName }: { deviceId: string; manufac
   )
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// AllIdentifiersPanel, sortTrials, and TrialCard live in ./shared so they
+// can be reused by PreApprovalDevicePage.
+
+// ── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function DevicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const device = await fetchDevice(id)
 
-  if (!device) {
+  // 1. Resolve to canonical Aletia ID.
+  const aletiaId = await resolveToAletiaId(id)
+
+  // 2. Redirect non-canonical URLs to canonical.
+  //    Cases that redirect:
+  //      - id is a legacy external identifier (K230001, MHRA-47392, NCT-...)
+  //      - id is an Aletia ID in non-canonical casing (alt-001000)
+  //    Case that does NOT redirect:
+  //      - id is already canonical ALT-NNNNNN — render.
+  if (aletiaId && id !== aletiaId) {
+    permanentRedirect(`/device/${aletiaId}`)
+  }
+
+  // 3. Not found.
+  if (!aletiaId) {
     return (
       <>
         <Nav active="" />
@@ -163,9 +258,24 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
     )
   }
 
+  // 4. Fetch — we now have a confirmed canonical aletia_id.
+  const device = await fetchDeviceByAletiaId(aletiaId)
+  if (!device) {
+    return (
+      <>
+        <Nav active="" />
+        <main className="page">
+          <div className="container" style={{ maxWidth: 640 }}>
+            <h1 className="h1">Device not available</h1>
+            <a href="/" className="secondaryBtn" style={{ marginTop: 24, display: 'inline-block' }}>← Back to Index</a>
+          </div>
+        </main>
+        <Footer />
+      </>
+    )
+  }
+
   // ── Pre-approval branch ─────────────────────────────────────────────────────
-  // Pre-approval devices get a dedicated template that leans on pre_approval_profile.
-  // Rendering below continues for cleared (approval_status === 'approved') devices.
   if (device.approval_status === 'pre_approval') {
     return (
       <>
@@ -180,7 +290,7 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
     )
   }
 
-  // ── Derived values ──────────────────────────────────────────────────────────
+  // ── Derived values (cleared-device template) ────────────────────────────────
 
   const mfrJoin   = device.manufacturers as { name: string; hq_location: string; tier?: string; claimed_at?: string; website?: string } | null
   const mfr       = { name: mfrJoin?.name ?? device.manufacturer_name ?? 'Unknown Manufacturer', hq_location: mfrJoin?.hq_location ?? null }
@@ -190,6 +300,7 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
     country: string; regulatory_body: string; clearance_type: string
     device_class?: string; gmdn_term?: string; regulatory_expiry?: string
     recall_active?: boolean; adverse_event_count?: number
+    external_id_value?: string | null
   }> = device.regional_registrations ?? []
 
   const tech = device.tech_specs as {
@@ -198,6 +309,9 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
   } | null
 
   const audits: Array<Record<string, unknown>> = device.clinical_audits ?? []
+  const externalIds: DeviceExternalId[] = device.external_ids ?? []
+  const trials: DeviceTrial[] = device.trials ?? []
+  const sortedTrials = sortTrials(trials)
 
   const isPreClearance  = !!device.pipeline_stage
   const dataSource      = (device.data_source ?? 'registry_sync') as string
@@ -226,14 +340,28 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
     { label: 'POPIA Compliant',   value: tech.popia_compliant  ? '✓ Compliant' : '✗ Not confirmed' },
   ].filter((f): f is { label: string; value: string } => f.value != null) : []
 
-  const jsonLd = {
+  // Header echo: small "aka K230001" next to the Aletia ID badge.
+  const primaryExt = primaryExternalId(externalIds)
+
+  // JSON-LD: identifier = aletia_id. alternateName = flat array of all external
+  // id_values. Primary external ID first, then other regulatory IDs, then NCTs.
+  const alternateNames = (() => {
+    const primary = externalIds.filter(e => e.is_primary).map(e => e.id_value)
+    const otherReg = externalIds.filter(e => !e.is_primary && e.id_type !== 'nct').map(e => e.id_value)
+    const ncts = externalIds.filter(e => e.id_type === 'nct').map(e => e.id_value)
+    return [...primary, ...otherReg, ...ncts]
+  })()
+
+  const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'MedicalDevice',
-    name: device.intended_use,
+    name: device.name ?? device.intended_use,
     manufacturer: { '@type': 'Organization', name: mfr.name },
-    description: `${device.intended_use} — regulatory status: ${jurisdictions || 'Not disclosed'}`,
-    url: `${BASE_URL}/device/${device.device_id}`,
+    description: `${device.intended_use ?? device.name ?? 'AI/ML medical device'} — regulatory status: ${jurisdictions || 'Not disclosed'}`,
+    url: `${BASE_URL}/device/${aletiaId}`,
+    identifier: aletiaId,
   }
+  if (alternateNames.length > 0) jsonLd.alternateName = alternateNames
 
   return (
     <>
@@ -242,7 +370,6 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
       <main className="page">
         <div className="container" style={{ maxWidth: 900 }}>
 
-          {/* Pre-clearance disclaimer — shown before anything else */}
           {isPreClearance && <PreClearanceBanner dataSource={dataSource} />}
 
           {/* Breadcrumb */}
@@ -256,16 +383,26 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
           <div className="card cardPad" style={{ marginBottom: 16 }}>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', marginBottom: 14 }}>
 
-              {/* Device ID */}
+              {/* Canonical Aletia ID — prominent */}
               <span style={{
-                fontSize: 12, fontWeight: 700, color: 'var(--muted)',
-                background: '#f1f5f9', border: '1px solid var(--line)',
+                fontSize: 12, fontWeight: 700, color: 'var(--text)',
+                background: '#eff6ff', border: '1px solid rgba(31,111,235,.2)',
                 borderRadius: 8, padding: '4px 10px', fontFamily: 'ui-monospace,monospace',
               }}>
-                {device.device_id}
+                {aletiaId}
               </span>
 
-              {/* Aletia Verified */}
+              {/* Secondary echo: primary external ID, if any */}
+              {primaryExt && (
+                <span style={{
+                  fontSize: 12, fontWeight: 600, color: 'var(--muted)',
+                  background: '#f1f5f9', border: '1px solid var(--line)',
+                  borderRadius: 8, padding: '4px 10px', fontFamily: 'ui-monospace,monospace',
+                }}>
+                  {primaryExt.id_value}
+                </span>
+              )}
+
               {device.aletia_verified && (
                 <span style={{
                   display: 'inline-flex', alignItems: 'center', gap: 5,
@@ -276,7 +413,6 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
                 </span>
               )}
 
-              {/* Breakthrough Designation */}
               {device.breakthrough_designation && (
                 <span style={{
                   display: 'inline-flex', alignItems: 'center', gap: 5,
@@ -287,7 +423,6 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
                 </span>
               )}
 
-              {/* Active recall warning */}
               {hasRecall && (
                 <span style={{
                   display: 'inline-flex', alignItems: 'center', gap: 5,
@@ -298,7 +433,6 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
                 </span>
               )}
 
-              {/* Health status — only for cleared devices */}
               {!isPreClearance && (
                 <span style={{
                   display: 'inline-flex', alignItems: 'center',
@@ -309,28 +443,25 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
                 </span>
               )}
 
-              {/* Data source provenance */}
               <DataSourceTag source={dataSource} />
 
-              {/* Autonomous output mode badge */}
               {device.autonomous_output_mode && (
                 <AutonomousBadge
                   description={device.autonomous_output_description}
                   riskClass={device.eu_risk_class}
                   dataSource={device.data_source}
-                  deviceId={device.device_id}
+                  deviceId={aletiaId}
                 />
               )}
 
             </div>
 
             <h1 className="h1" style={{ marginBottom: 6 }}>{mfr.name}</h1>
-            <p className="subhead">{device.intended_use}</p>
+            <p className="subhead">{device.name ?? device.intended_use}</p>
             {mfr.hq_location && (
               <p style={{ marginTop: 10, fontSize: 13, color: 'var(--muted)' }}>📍 {mfr.hq_location}</p>
             )}
 
-            {/* Pipeline stepper — replaces health status for pre-clearance */}
             {isPreClearance && (
               <>
                 <hr className="sep" style={{ marginTop: 16 }} />
@@ -341,6 +472,9 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
               </>
             )}
           </div>
+
+          {/* ── All identifiers panel (collapsible) ───────────────────── */}
+          <AllIdentifiersPanel aletiaId={aletiaId} externalIds={externalIds} />
 
           {/* ── Overview ────────────────────────────────────────────────── */}
           {facts.length > 0 && (
@@ -373,6 +507,14 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
                       <div style={{ flex: 1, minWidth: 120 }}>
                         <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{r.country}</div>
                         <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>{r.regulatory_body}</div>
+                        {r.external_id_value && (
+                          <div style={{
+                            fontSize: 11, color: 'var(--muted)', marginTop: 3,
+                            fontFamily: 'ui-monospace,monospace',
+                          }}>
+                            ID: {r.external_id_value}
+                          </div>
+                        )}
                       </div>
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                         {r.clearance_type && (
@@ -409,6 +551,18 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
                     </div>
                   )
                 })}
+              </div>
+            </div>
+          )}
+
+          {/* ── Clinical trials (from device_trials) ─────────────────────── */}
+          {sortedTrials.length > 0 && (
+            <div className="card cardPad" style={{ marginBottom: 16 }}>
+              <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 14 }}>
+                Clinical Trials ({sortedTrials.length})
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {sortedTrials.map(t => <TrialCard key={t.id} t={t} />)}
               </div>
             </div>
           )}
@@ -452,7 +606,7 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
                   {audits.map((a, i) => (
                     <div key={i} style={{ padding: '12px 14px', background: '#f8fafc', borderRadius: 12, border: '1px solid var(--line)' }}>
                       {Object.entries(a)
-                        .filter(([k]) => !['id', 'device_id'].includes(k))
+                        .filter(([k]) => !['id', 'device_link', 'audit_id'].includes(k))
                         .map(([k, v]) => (
                           <div key={k} style={{ display: 'flex', gap: 10, marginBottom: 4, fontSize: 13 }}>
                             <span style={{ color: 'var(--muted)', minWidth: 160, fontWeight: 600, textTransform: 'capitalize' }}>
@@ -470,7 +624,7 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
 
           {/* ── Claim notice ─────────────────────────────────────────────── */}
           {showClaimNotice && (
-            <ClaimNotice deviceId={device.device_id} manufacturerName={mfr.name} />
+            <ClaimNotice aletiaId={aletiaId} manufacturerName={mfr.name} />
           )}
 
           <a href="/" className="secondaryBtn" style={{ marginTop: 24, display: 'inline-block' }}>← Back to Index</a>
