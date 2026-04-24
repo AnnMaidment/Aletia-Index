@@ -291,8 +291,10 @@ function Drawer({
           {mode === 'accept' && (
             <>
               <p style={{ fontSize: 13, color: '#475569', marginTop: 0 }}>
-                Accepting creates a <code>device_master</code> row and a <code>pre_approval_profile</code> row
-                linked to it. If the manufacturer isn't found, you'll be prompted to create one.
+                Accepting creates a <code>device_master</code> row plus rows in{' '}
+                <code>device_external_ids</code> and (for trial-sourced entries){' '}
+                <code>device_trials</code>. If the manufacturer isn&apos;t found, you&apos;ll be
+                prompted to create one.
               </p>
 
               <label className="kv" style={{ display: 'block', marginBottom: 8 }}>
@@ -336,13 +338,13 @@ function Drawer({
               </label>
               <label className="kv" style={{ display: 'block', marginBottom: 8 }}>
                 <div style={{ fontSize: 12, color: '#64748b', marginBottom: 4 }}>
-                  Merge into existing device_id (optional)
+                  Merge into existing device (Aletia ID, optional)
                 </div>
                 <input
                   type="text"
                   value={mergeIntoDeviceId}
                   onChange={(e) => setMergeIntoDeviceId(e.target.value)}
-                  placeholder="e.g. K203345 — leave blank to create new"
+                  placeholder="e.g. ALT-001234 — leave blank to create new"
                   style={inputStyle}
                 />
               </label>
@@ -410,7 +412,7 @@ function Drawer({
                   manufacturer_name: manufacturerName.trim(),
                   specialty: specialty.trim() || null,
                   approval_status: approvalStatus,
-                  merge_into_device_id: mergeIntoDeviceId.trim() || null,
+                  merge_into_aletia_id: mergeIntoDeviceId.trim() || null,
                   review_note: note.trim() || null,
                 })}
               >

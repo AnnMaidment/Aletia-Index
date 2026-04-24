@@ -73,8 +73,8 @@ export async function POST(req: NextRequest) {
   // 2. Verify target device exists
   const { data: device, error: dErr } = await admin
     .from('device_master')
-    .select('device_id, manufacturer_name')
-    .eq('device_id', targetDeviceId)
+    .select('aletia_id, manufacturer_name')
+    .eq('aletia_id', targetDeviceId)
     .single();
 
   if (dErr || !device) {

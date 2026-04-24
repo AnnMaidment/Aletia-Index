@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
     await admin
       .from('device_master')
       .update({ claimed_by_email: reqRow.requester_email })
-      .eq('device_id', reqRow.device_id)
+      .eq('aletia_id', reqRow.device_id)
       .is('claimed_at', null);   // don't overwrite if already completed
   } else if (reqRow.manufacturer_id) {
     targetTable = 'manufacturers';
