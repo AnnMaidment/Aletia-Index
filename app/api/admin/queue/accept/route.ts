@@ -85,11 +85,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'queue_id required' }, { status: 400 })
   }
 
-  // Temporary diagnostic — A2b debugging: capture exactly what the UI sent so
-  // we can track down the BUG-002 (device_name drop) regression. Remove once
-  // the name-write is confirmed working end-to-end.
-  console.log('[queue.accept] received body:', JSON.stringify(body))
-
   const admin = getServiceClient()
 
   // ── Load queue row ────────────────────────────────────────────────────────
@@ -224,16 +219,26 @@ export async function POST(req: NextRequest) {
     // aletia_id is NOT included — the DB default allocates via aletia_id_seq.
     // external_legacy_id mirrors the primary external ID (denormalised convenience)
     // and is NOT NULL on the schema, inherited from pre-A2a when it was the PK.
+    //
+    // Fall back to the queue row's own fields when the request body doesn't
+    // include them. The list-row "Accept" shortcut in the admin UI sends
+    // only { queue_id }, so without this fallback the name / manufacturer
+    // would drop to null on every one-click accept (this was BUG-002's
+    // remaining failure mode even after A2b's first pass).
+    const deviceName     = body.device_name     ?? queueRow.device_name  ?? null
+    const specialtyName  = body.specialty       ?? null                                   // queue has specialty_inferred but we leave unfilled
+    const approvalStatus = body.approval_status ?? 'pre_approval'
+
     const { data: created, error: insErr } = await admin
       .from('device_master')
       .insert({
         external_legacy_id: queueRow.source_id,
         manufacturer_link: manufacturerId,
         manufacturer_name: mfgName || null,
-        name: body.device_name || null,
-        intended_use: body.device_name || null,
-        specialty_link: body.specialty || null,
-        approval_status: body.approval_status ?? 'pre_approval',
+        name: deviceName,
+        intended_use: deviceName,
+        specialty_link: specialtyName,
+        approval_status: approvalStatus,
         data_source: 'aletia_research',
         health_status: 'Amber',
         pipeline_stage: inferPipelineStage(raw),
