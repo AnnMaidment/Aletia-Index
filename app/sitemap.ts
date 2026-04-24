@@ -37,7 +37,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const { data: devices, error } = await supabase
     .from('device_master')
-    .select('device_id, last_automated_sync')
+    .select('aletia_id, last_automated_sync')
+    .eq('excluded', false)
 
   console.log('[sitemap] device count:', devices?.length ?? 0)
   if (error) {
@@ -45,7 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   const devicePages: MetadataRoute.Sitemap = (devices ?? []).map((device) => ({
-    url: `https://www.aletia-index.com/device/${device.device_id}`,
+    url: `https://www.aletia-index.com/device/${device.aletia_id}`,
     lastModified: device.last_automated_sync
       ? new Date(device.last_automated_sync)
       : new Date(),

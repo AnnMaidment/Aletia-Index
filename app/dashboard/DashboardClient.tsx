@@ -39,7 +39,7 @@ console.log('Dashboard error:', error)
 
       const { data: devs } = await supabase
         .from('device_master')
-        .select('device_id, manufacturer_name, health_status, claimed_at')
+        .select('aletia_id, manufacturer_name, health_status, claimed_at')
         .eq('claimed_by_email', user.email)
 
       if (devs) setDevices(devs)
@@ -101,15 +101,15 @@ console.log('Dashboard error:', error)
             Your Devices ({devices.length})
           </h2>
           {devices.map(device => (
-            <div key={device.device_id} style={{
+            <div key={device.aletia_id} style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               padding: '12px 0', borderBottom: '1px solid #e6ebf3'
             }}>
               <div>
                 <p style={{ margin: 0, fontWeight: 500 }}>{device.manufacturer_name}</p>
-                <p style={{ margin: '2px 0 0', fontSize: 13, color: '#64748b' }}>{device.device_id}</p>
+                <p style={{ margin: '2px 0 0', fontSize: 13, color: '#64748b' }}>{device.aletia_id}</p>
               </div>
-              <a href={`/device/${device.device_id}`} style={{
+              <a href={`/device/${device.aletia_id}`} style={{
                 fontSize: 13, color: '#1f6feb', textDecoration: 'none', fontWeight: 500
               }}>
                 View listing →

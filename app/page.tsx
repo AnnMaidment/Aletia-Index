@@ -5,6 +5,7 @@ import FiltersBar   from './components/FiltersBar'
 import DeviceGrid   from './components/DeviceGrid'
 import QuickFilters from './components/QuickFilters'
 import type { Device } from '@/lib/types'
+import { normaliseIdentifierInput } from '@/lib/identifierNormalisation'
 export const dynamic = 'force-dynamic'
 
 const PAGE_SIZE = 25
@@ -68,12 +69,18 @@ export default async function Home({
   // is a SECONDARY identifier on some device (not the primary external_legacy_id),
   // we still want the search to hit. Pull matching aletia_ids from
   // device_external_ids and include them in the main query's OR clause.
+  //
+  // BUG-009 (24 Apr 2026): post-A2b, MHRA device IDs live raw in
+  // device_external_ids (e.g. "47392", not "MHRA-47392"). Users who type the
+  // legacy prefixed form would miss. normaliseIdentifierInput strips the
+  // known historical prefixes before lookup.
   let secondaryIdMatches: string[] = []
+  const normalisedSearch = search ? normaliseIdentifierInput(search) : ''
   if (search) {
     const { data: extIdData } = await supabase
       .from('device_external_ids')
       .select('aletia_id')
-      .ilike('id_value', `%${search}%`)
+      .ilike('id_value', `%${normalisedSearch}%`)
       .range(0, 999)
     secondaryIdMatches = [...new Set(
       (extIdData ?? []).map((r: { aletia_id: string }) => r.aletia_id),
