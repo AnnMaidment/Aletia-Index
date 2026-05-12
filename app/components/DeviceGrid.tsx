@@ -31,6 +31,18 @@ const riskBadge = (status: string) => {
   return                         { cls: 'badge warn',   label: 'Moderate' }
 }
 
+// Country code → regulatory body label for the row-level jurisdiction chips.
+// The country codes come from regional_registrations.country (ISO-2 in the
+// schema). Users recognise the body name (FDA, MHRA) not the country code,
+// so we render the body. Unknown codes fall through to the raw value so no
+// jurisdiction is ever silently dropped.
+const BODY_LABEL: Record<string, string> = {
+  US: 'FDA',
+  GB: 'MHRA',
+  EU: 'EU MDR',
+  ZA: 'SAHPRA',
+}
+
 const fmtDate = (d: string | null) =>
   d ? new Date(d).toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }) : 'Not reviewed'
 
@@ -55,7 +67,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
               <th style={{ minWidth: '140px' }}>Use Case</th>
               <th style={{ minWidth: '180px' }}>Regulatory Status</th>
               <th style={{ minWidth: '100px' }}>Risk</th>
-              <th style={{ minWidth: '180px' }}>Lifecycle Signals</th>
+              <th style={{ minWidth: '180px' }}>Last sync</th>
               <th style={{ minWidth: '110px', textAlign: 'right' }}> </th>
             </tr>
           </thead>
@@ -69,7 +81,6 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
             ) : devices.map(device => {
               const isPreClearance = !!device.pipeline_stage
               const dataSource     = device.data_source ?? 'registry_sync'
-              const risk           = riskBadge(device.health_status)
               const pap            = device.pre_approval_profile   // may be null for cleared devices
 
               return (
@@ -97,6 +108,24 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                         </a>
                         <div className="appOrg">{device.aletia_id}</div>
 
+                        {/* Jurisdiction chip strip — only when the device has regional_registrations.
+                            Pipeline-only devices have none and get no strip. Devices cleared in
+                            multiple regions get one chip per region. Country code → body label
+                            via BODY_LABEL; unknown codes fall through to the raw value. */}
+                        {!isPreClearance && (device.regional_registrations?.length ?? 0) > 0 && (
+                          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginTop: 4 }}>
+                            {[...new Set(device.regional_registrations.map(r => r.country))].map(code => (
+                              <span
+                                key={code}
+                                className="badge neutral"
+                                style={{ fontSize: 10.5, padding: '2px 7px', fontWeight: 700, letterSpacing: '.3px' }}
+                              >
+                                {BODY_LABEL[code] ?? code}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
                         {/* Data-source badges — only shown for cleared devices */}
                         {!isPreClearance && dataSource === 'aletia_research' && (
                           <span className="badge research" style={{ marginTop: 4 }}>ⓘ Aletia Research</span>
@@ -119,7 +148,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                             />
                           </div>
                         )}
-                        <div className="small" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        <div className="small" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                           {device.intended_use}
                         </div>
                       </div>
@@ -168,21 +197,24 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                   </td>
 
                   {/* ── Risk ── */}
+                  {/* Per honesty cleanup (May 2026): the badge was derived from
+                      health_status, which defaults to Amber on every device. Showing
+                      "Moderate" on every cleared row was theatre. Until per-device risk
+                      data is real, render — uniformly. The modal still uses riskBadge
+                      where the user has actively opted in to detail. */}
                   <td>
-                    {isPreClearance
-                      ? <span style={{ fontSize: 12, color: 'var(--muted)' }}>—</span>
-                      : <span className={risk.cls}>{risk.label}</span>
-                    }
+                    <span style={{ fontSize: 12, color: 'var(--muted)' }}>—</span>
                   </td>
 
-                  {/* ── Lifecycle Signals ── */}
+                  {/* ── Last sync ── */}
                   <td>
-                    <div style={{ fontSize: '13px', fontWeight: 600 }}>
-                      {isPreClearance ? 'Pipeline entry' : `Reviewed ${fmtDate(device.last_clinical_review)}`}
-                    </div>
-                    <div className="small">
-                      {device.aletia_verified ? '✓ Aletia Verified' : 'Pending verification'}
-                    </div>
+                    {isPreClearance ? (
+                      <div style={{ fontSize: '13px', color: 'var(--muted)' }}>Pipeline entry</div>
+                    ) : (
+                      <div style={{ fontSize: '13px', color: 'var(--text)' }}>
+                        {fmtDate(device.last_automated_sync)}
+                      </div>
+                    )}
                   </td>
 
                   {/* ── Actions ── */}
