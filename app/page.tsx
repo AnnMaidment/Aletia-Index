@@ -195,10 +195,13 @@ export default async function Home({
   )) as { data: Device[] | null; count: number | null }
 
   // ── Global stats (unfiltered) + specialties ─────────────────────────────────
-  const [{ data: statsData }, { data: specData }] = await Promise.all([
+  // statsData is intentionally lean — only the fields the stats strip and the
+  // pipeline pill in FiltersBar need. Health-status and aletia_verified were
+  // pulled when the sidebar donut existed; both are gone now.
+  const [{ data: statsData }, { data: specData }, { count: pccpCount }] = await Promise.all([
     supabase
       .from('device_master')
-      .select('health_status, pipeline_stage, aletia_verified, regional_registrations(country)')
+      .select('pipeline_stage, regional_registrations(country)')
       .eq('excluded', false)
       .range(0, 9999),
     supabase
@@ -207,29 +210,33 @@ export default async function Home({
       .eq('excluded', false)
       .not('specialty_link', 'is', null)
       .range(0, 9999),
+    supabase
+      .from('device_master')
+      .select('aletia_id', { count: 'exact', head: true })
+      .eq('excluded', false)
+      .eq('pccp_status', 'approved'),
   ])
 
   const all      = statsData ?? []
-  const cleared  = all.filter((d: { pipeline_stage: string | null }) => !d.pipeline_stage)
   const pipelineDevices = all.filter((d: { pipeline_stage: string | null }) =>  d.pipeline_stage)
-  const green    = cleared.filter((d: { health_status: string }) => d.health_status === 'Green').length
-  const amber    = cleared.filter((d: { health_status: string }) => d.health_status === 'Amber').length
-  const red      = cleared.filter((d: { health_status: string }) => d.health_status === 'Red').length
-  const verified = all.filter((d: { aletia_verified: boolean }) => d.aletia_verified).length
-  const sahpra   = all.filter((d: { regional_registrations?: { country: string }[] }) =>
-    d.regional_registrations?.some(r => r.country === 'South Africa'),
-  ).length
+
+  // Jurisdiction coverage — a device cleared in two regions counts toward
+  // both buckets. This is coverage, not partition; the totals deliberately
+  // sum to more than `corpusTotal`.
+  type RegRow = { country: string }
+  type DeviceRegs = { regional_registrations?: RegRow[] }
+  const hasCountry = (d: DeviceRegs, code: string) =>
+    d.regional_registrations?.some(r => r.country === code) ?? false
+
+  const fdaCount  = all.filter((d: DeviceRegs) => hasCountry(d, 'US')).length
+  const mhraCount = all.filter((d: DeviceRegs) => hasCountry(d, 'GB')).length
+  const euCount   = all.filter((d: DeviceRegs) => hasCountry(d, 'EU')).length
+
+  const corpusTotal = all.length
 
   const specialties = [...new Set(
     (specData ?? []).map((d: { specialty_link: string }) => d.specialty_link),
   )].sort() as string[]
-
-  // ── Donut chart offsets ─────────────────────────────────────────────────────
-  const circ      = 251
-  const total     = cleared.length || 1
-  const greenDash = Math.round((green / total) * circ)
-  const amberDash = Math.round((amber / total) * circ)
-  const redDash   = Math.round((red   / total) * circ)
 
   // ── filterQuery — passed to DeviceGrid for Link-based pagination ────────────
   const fq = new URLSearchParams()
@@ -295,6 +302,27 @@ export default async function Home({
         .heroTitle span{background:linear-gradient(135deg,#1f6feb,#0b7f7d);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .heroSub{font-size:16px;color:var(--muted);max-width:58ch;margin:0 auto 28px;line-height:1.6}
         .heroActions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+        /* ── INTRO (page-level, between nav and main grid) ── */
+        .intro{padding:28px 0 20px}
+        .introInner{max-width:68ch}
+        .introLead{font-size:15.5px;color:var(--text);line-height:1.6;font-weight:500}
+        .introNote{font-size:13.5px;color:var(--muted);line-height:1.55;margin-top:8px}
+
+        /* ── STATS STRIP (sidebar, replaces donut card) ── */
+        .statsHead{margin-bottom:14px}
+        .statsHead h3{font-size:15px;font-weight:800;color:var(--text)}
+        .statsHead p{font-size:12px;color:var(--muted);margin-top:3px}
+        .statsList{display:flex;flex-direction:column;gap:10px}
+        .statRow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line)}
+        .statRow:last-child{border-bottom:none}
+        .statLabel{font-size:12.5px;color:var(--muted);font-weight:500}
+        .statValue{font-size:18px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+        .statSub{display:flex;flex-direction:column;gap:6px;padding:8px 0 6px}
+        .statSubLabel{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+        .statSubRows{display:flex;flex-direction:column;gap:5px}
+        .statSubRow{display:flex;align-items:baseline;justify-content:space-between;font-size:13px;color:var(--text)}
+        .statSubRow .statValue{font-size:14px;font-weight:700}
 
         /* ── LAYOUT ── */
         .container{max-width:1240px;margin:0 auto;padding:0 20px}
@@ -383,20 +411,7 @@ export default async function Home({
         .kpiHead{margin-bottom:16px}
         .kpiHead h3{font-size:15px;font-weight:800;color:var(--text)}
         .kpiHead p{font-size:12px;color:var(--muted);margin-top:3px}
-        .donutWrap{display:flex;gap:18px;align-items:center}
-        .legend{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--text)}
-        .legendRow{display:flex;align-items:center;gap:8px}
-        .swatch{width:10px;height:10px;border-radius:3px;flex-shrink:0}
         .sideSection{font-size:10.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-
-        /* ── INFO CARDS ── */
-        .three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
-        @media(max-width:700px){.three{grid-template-columns:1fr}}
-        .infoCard{padding:14px 16px}
-        .infoTop{display:flex;gap:12px;align-items:flex-start}
-        .infoIcon{width:36px;height:36px;border-radius:10px;background:#f0f4ff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-        .infoCard h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
-        .infoCard p{font-size:12px;line-height:1.5}
 
         /* ── BANNER ── */
         .banner{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;padding:16px 18px;background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border-radius:var(--radius);border:1px solid rgba(31,111,235,.12)}
@@ -450,6 +465,22 @@ export default async function Home({
         </div>
       </div>
 
+      {/* ── INTRO (page-level honesty block) ── */}
+      <section className="intro">
+        <div className="container">
+          <div className="introInner">
+            <p className="introLead">
+              A live index of AI/ML-enabled medical devices cleared by the FDA, MHRA, and under EU MDR.
+              Searchable by specialty, jurisdiction, regulatory class, and lifecycle stage.
+            </p>
+            <p className="introNote">
+              Independent clinical assurance reviews are in progress; the Aletia Verified badge
+              will appear on devices as those reviews land.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ── MAIN ── */}
       <main className="page">
         <div className="container">
@@ -462,6 +493,7 @@ export default async function Home({
                   specialties={specialties}
                   totalCount={totalCount ?? 0}
                   pipelineCount={pipelineDevices.length}
+                  corpusTotal={corpusTotal}
                 />
               </Suspense>
 
@@ -497,30 +529,6 @@ export default async function Home({
                 />
               </Suspense>
 
-              {/* Info cards */}
-              <div className="three">
-                {[
-                  { title: 'Structured Assessment', desc: 'Documented review of regulatory posture, evidence claims, and post‑market oversight signals.',           color: '#1f6feb' },
-                  { title: 'Evidence Signals',       desc: 'Summary of validation data, stability, and outcomes evidence—kept readable for clinicians.',            color: '#0ea5e9' },
-                  { title: 'Lifecycle Transparency', desc: 'Indicators for change control, monitoring, and transparency practices across the product lifecycle.',  color: '#1f6feb' },
-                ].map(item => (
-                  <div key={item.title} className="card infoCard">
-                    <div className="infoTop">
-                      <div className="infoIcon">
-                        <svg viewBox="0 0 24 24" fill="none" width="18" height="18">
-                          <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke={item.color} strokeWidth="1.8" />
-                          <path d="M8 8h8M8 12h8M8 16h6" stroke={item.color} strokeWidth="1.8" strokeLinecap="round" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h4>{item.title}</h4>
-                        <p>{item.desc}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
               <div className="banner">
                 <div>
                   <b>Transparent Methodology</b><br />
@@ -533,41 +541,39 @@ export default async function Home({
             {/* ── RIGHT: SIDEBAR ── */}
             <aside className="sidebar">
               <div className="card cardPad">
-                <div className="kpiHead">
-                  <h3>Analysis Overview</h3>
-                  <p>Distribution of cleared devices by health status.</p>
+                <div className="statsHead">
+                  <h3>The Index</h3>
+                  <p>Live counts across the corpus.</p>
                 </div>
-                <div className="donutWrap">
-                  <svg width="120" height="120" viewBox="0 0 120 120" style={{ flexShrink: 0 }}>
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#e6ebf3" strokeWidth="16" />
-                    {/* Green */}
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#137a3b" strokeWidth="16"
-                      strokeDasharray={`${greenDash} ${circ}`}
-                      strokeDashoffset="0"
-                      transform="rotate(-90 60 60)" />
-                    {/* Amber */}
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#a15c00" strokeWidth="16"
-                      strokeDasharray={`${amberDash} ${circ}`}
-                      strokeDashoffset={`-${greenDash}`}
-                      transform="rotate(-90 60 60)" />
-                    {/* Red */}
-                    <circle cx="60" cy="60" r="40" fill="none" stroke="#9f1d1d" strokeWidth="16"
-                      strokeDasharray={`${redDash} ${circ}`}
-                      strokeDashoffset={`-${greenDash + amberDash}`}
-                      transform="rotate(-90 60 60)" />
-                    <circle cx="60" cy="60" r="28" fill="white" />
-                    <text x="60" y="56" textAnchor="middle" fontSize="13" fontWeight="800" fill="#0f172a">{cleared.length}</text>
-                    <text x="60" y="68" textAnchor="middle" fontSize="9" fill="#64748b">cleared</text>
-                  </svg>
-                  <div className="legend">
-                    <div className="legendRow"><span className="swatch" style={{ background: '#137a3b' }} />{green} · Green</div>
-                    <div className="legendRow"><span className="swatch" style={{ background: '#a15c00' }} />{amber} · Amber</div>
-                    <div className="legendRow"><span className="swatch" style={{ background: '#9f1d1d' }} />{red} · Red</div>
-                    <div className="legendRow"><span className="swatch" style={{ background: '#0b7f7d' }} />{verified} · Verified</div>
-                    <div className="legendRow"><span className="swatch" style={{ background: '#1e40af' }} />{sahpra} · SAHPRA</div>
-                    {pipelineDevices.length > 0 && (
-                      <div className="legendRow"><span className="swatch" style={{ background: '#6366f1' }} />{pipelineDevices.length} · Pipeline</div>
-                    )}
+                <div className="statsList">
+                  <div className="statRow">
+                    <span className="statLabel">Total indexed</span>
+                    <span className="statValue">{corpusTotal.toLocaleString()}</span>
+                  </div>
+                  <div className="statRow">
+                    <span className="statLabel">PCCP-authorised</span>
+                    <span className="statValue">{(pccpCount ?? 0).toLocaleString()}</span>
+                  </div>
+                  <div className="statSub">
+                    <span className="statSubLabel">By jurisdiction</span>
+                    <div className="statSubRows">
+                      <div className="statSubRow">
+                        <span>FDA</span>
+                        <span className="statValue">{fdaCount.toLocaleString()}</span>
+                      </div>
+                      <div className="statSubRow">
+                        <span>MHRA</span>
+                        <span className="statValue">{mhraCount.toLocaleString()}</span>
+                      </div>
+                      <div className="statSubRow">
+                        <span>EU MDR</span>
+                        <span className="statValue">{euCount.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="statRow">
+                    <span className="statLabel">In pipeline</span>
+                    <span className="statValue">{pipelineDevices.length.toLocaleString()}</span>
                   </div>
                 </div>
               </div>

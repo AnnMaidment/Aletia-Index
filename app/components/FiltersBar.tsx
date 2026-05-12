@@ -8,6 +8,7 @@ interface Props {
   specialties:   string[]
   totalCount:    number
   pipelineCount: number
+  corpusTotal:   number
 }
 
 // Sub-stage pill labels for Pipeline mode — must match PIPELINE_STAGE_MAP in page.tsx
@@ -23,7 +24,7 @@ const MIN_SEARCH_LENGTH = 2
 // mid-pause for fast typists; higher values feel laggy.
 const SEARCH_DEBOUNCE_MS = 500
 
-export default function FiltersBar({ specialties, totalCount, pipelineCount }: Props) {
+export default function FiltersBar({ specialties, totalCount, pipelineCount, corpusTotal }: Props) {
   const router       = useRouter()
   const pathname     = usePathname()
   const searchParams = useSearchParams()
@@ -33,6 +34,20 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount }: P
 
   const [inputValue, setInputValue] = useState(search)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  // Browse-all href — preserves the user's other filters (specialty, status,
+  // source, search) but flips off the PCCP-only mode and any conflicting
+  // pipeline / autonomous mode flags. Computed here so it's available to the
+  // count line below.
+  const browseAllHref = (() => {
+    const next = new URLSearchParams(searchParams.toString())
+    next.set('pccp', 'all')
+    next.delete('autonomous')
+    next.delete('pipeline')
+    next.delete('page')
+    const qs = next.toString()
+    return qs ? `/?${qs}` : '/?pccp=all'
+  })()
 
   useEffect(() => {
     setInputValue(searchParams.get('search') ?? '')
@@ -124,10 +139,25 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount }: P
       {/* ── Count line ── */}
       <div className="metaLine">
         <span style={{ width: '8px', height: '8px', borderRadius: '99px', background: 'var(--blue)', display: 'inline-block', flexShrink: 0 }} />
-        <b style={{ color: 'var(--text)' }}>{totalCount}</b> Technologies listed
+        {totalCount === corpusTotal ? (
+          <>
+            <b style={{ color: 'var(--text)' }}>{corpusTotal.toLocaleString()}</b> technologies indexed
+          </>
+        ) : (
+          <>
+            Showing <b style={{ color: 'var(--text)' }}>{totalCount.toLocaleString()}</b> of {corpusTotal.toLocaleString()} indexed
+            {' · '}
+            <a
+              href={browseAllHref}
+              style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}
+            >
+              Browse all {corpusTotal.toLocaleString()} →
+            </a>
+          </>
+        )}
         {pipelineCount > 0 && (
           <span style={{ marginLeft: 4 }}>
-            · <span style={{ color: '#1e40af', fontWeight: 600 }}>{pipelineCount} in pipeline</span>
+            · <span style={{ color: '#1e40af', fontWeight: 600 }}>{pipelineCount.toLocaleString()} in pipeline</span>
           </span>
         )}
       </div>
