@@ -2,6 +2,7 @@
 
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import { getCurrentFilterState } from '@/lib/filterState'
 
 interface Props {
   specialties:   string[]
@@ -27,15 +28,8 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount }: P
   const pathname     = usePathname()
   const searchParams = useSearchParams()
 
-  const search     = searchParams.get('search')     ?? ''
-  const specialty  = searchParams.get('specialty')  ?? 'All'
-  const status     = searchParams.get('status')     ?? 'All'
-  const source     = searchParams.get('source')     ?? 'All'
-  const pccp       = searchParams.get('pccp') || 'approved'
-  const autonomous = searchParams.get('autonomous') ?? ''
-  const pipeline   = searchParams.get('pipeline')   ?? ''   // 'true' when Pipeline mode active
-
-  const isPipelineMode = pipeline === 'true'
+  const { search, specialty, status, source, pccp, autonomous, isPipelineMode } =
+    getCurrentFilterState(searchParams)
 
   const [inputValue, setInputValue] = useState(search)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
