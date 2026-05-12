@@ -12,6 +12,16 @@ interface Props {
 // Sub-stage pill labels for Pipeline mode — must match PIPELINE_STAGE_MAP in page.tsx
 const PIPELINE_SUBSTAGES = ['Development', 'Pre-Submission', 'Clinical Trial', 'Under Review'] as const
 
+// Minimum characters before search fires. Single-letter searches return too
+// many results to be useful AND make the server-side query expensive.
+// Empty input (length 0) is still allowed — backspace-to-empty resets the filter.
+const MIN_SEARCH_LENGTH = 2
+
+// Debounce delay for search input. 500ms is the standard for search-as-you-type
+// where each keystroke triggers a network round-trip. Lower values fire
+// mid-pause for fast typists; higher values feel laggy.
+const SEARCH_DEBOUNCE_MS = 500
+
 export default function FiltersBar({ specialties, totalCount, pipelineCount }: Props) {
   const router       = useRouter()
   const pathname     = usePathname()
@@ -47,8 +57,20 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount }: P
   function handleSearchInput(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value
     setInputValue(val)
+
+    // Always clear any pending debounce — we're either superseding it with a
+    // new keystroke (covered below) or cancelling because the input is now
+    // too short.
     clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => pushParams({ search: val }), 350)
+
+    // Min-length guard. Empty input (val.length === 0) is allowed through so
+    // backspace-to-empty clears the URL search param. Anything between 1 and
+    // MIN_SEARCH_LENGTH-1 is held back — no query runs, current results stay.
+    if (val.length > 0 && val.length < MIN_SEARCH_LENGTH) {
+      return
+    }
+
+    debounceRef.current = setTimeout(() => pushParams({ search: val }), SEARCH_DEBOUNCE_MS)
   }
 
   // ── Pill click handlers ────────────────────────────────────────────────────

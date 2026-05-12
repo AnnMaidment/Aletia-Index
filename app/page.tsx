@@ -10,6 +10,11 @@ export const dynamic = 'force-dynamic'
 
 const PAGE_SIZE = 25
 
+// Minimum search length enforced server-side. Mirrors the client-side guard
+// in FiltersBar — defends against hand-crafted URLs like ?search=e that
+// would otherwise trigger the full query pipeline.
+const MIN_SEARCH_LENGTH_SERVER = 2
+
 function getSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,6 +28,14 @@ function strParam(
 ): string {
   const v = params[key]
   return typeof v === 'string' ? v : Array.isArray(v) ? v[0] : ''
+}
+
+// Strip PostgREST OR-clause delimiters (%, comma, parens, asterisk) from a
+// raw search term before splicing into .or() / ilike strings. Supabase's JS
+// client does NOT escape these for you when you hand-build OR strings.
+// Without this, searches like "K(230001)" or "drug,test" break the query.
+function sanitiseSearch(raw: string): string {
+  return raw.replace(/[%,()*]/g, '').trim()
 }
 
 // Maps the UI pill labels to pipeline_stage column values.
@@ -39,7 +52,7 @@ export default async function Home({
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
   const params     = await searchParams
-  const search     = strParam(params, 'search')
+  const rawSearch  = strParam(params, 'search')
   const specialty  = strParam(params, 'specialty') || 'All'
   const status     = strParam(params, 'status')    || 'All'
   const source     = strParam(params, 'source')    || 'All'
@@ -48,9 +61,19 @@ export default async function Home({
   const pipeline   = strParam(params, 'pipeline')          // 'true' when Pipeline mode active
   const page       = Math.max(1, parseInt(strParam(params, 'page') || '1') || 1)
 
+  // Sanitise + length-guard the search term. If empty or below the minimum
+  // length, treat as no search — every downstream `if (search)` becomes false
+  // and the pre-queries are skipped entirely.
+  const sanitised = sanitiseSearch(rawSearch)
+  const search    = sanitised.length >= MIN_SEARCH_LENGTH_SERVER ? sanitised : ''
+
   const supabase = getSupabase()
 
   // ── Manufacturer name pre-query ─────────────────────────────────────────────
+  // Capped at 200 rows. If a search matches >200 manufacturer-name hits, the
+  // search is too vague to be useful — the user needs to type more characters.
+  // Previous cap was 10,000 which made every keystroke wait on a large
+  // round-trip even for short searches.
   let manufacturerDeviceIds: string[] = []
   if (search) {
     const { data: mfrData } = await supabase
@@ -58,7 +81,7 @@ export default async function Home({
       .select('aletia_id, manufacturers!inner(name)')
       .eq('excluded', false)
       .or(`name.ilike.%${search}%`, { referencedTable: 'manufacturers' })
-      .range(0, 9999)
+      .range(0, 199)
     manufacturerDeviceIds = (mfrData ?? []).map(
       (d: { aletia_id: string }) => d.aletia_id,
     )
@@ -74,14 +97,18 @@ export default async function Home({
   // device_external_ids (e.g. "47392", not "MHRA-47392"). Users who type the
   // legacy prefixed form would miss. normaliseIdentifierInput strips the
   // known historical prefixes before lookup.
+  //
+  // Capped at 100 rows. External-ID matches are typically 1–5 hits for a
+  // well-formed identifier search (K230001 → one device). 100 is more than
+  // sufficient and keeps the round-trip fast.
   let secondaryIdMatches: string[] = []
-  const normalisedSearch = search ? normaliseIdentifierInput(search) : ''
+  const normalisedSearch = search ? sanitiseSearch(normaliseIdentifierInput(search)) : ''
   if (search) {
     const { data: extIdData } = await supabase
       .from('device_external_ids')
       .select('aletia_id')
       .ilike('id_value', `%${normalisedSearch}%`)
-      .range(0, 999)
+      .range(0, 99)
     secondaryIdMatches = [...new Set(
       (extIdData ?? []).map((r: { aletia_id: string }) => r.aletia_id),
     )]
@@ -144,6 +171,7 @@ export default async function Home({
     // Direct-column matches: aletia_id, external_legacy_id, name, intended_use,
     // manufacturer_name. Plus the aletia_id.in.(…) subquery for any device
     // whose manufacturer or secondary external ID matched.
+    // `search` is pre-sanitised — no further escaping needed here.
     query = query.or(
       `aletia_id.ilike.%${search}%,external_legacy_id.ilike.%${search}%,name.ilike.%${search}%,intended_use.ilike.%${search}%,manufacturer_name.ilike.%${search}%${idPart}`,
     )
