@@ -82,6 +82,14 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount, cor
     debounceRef.current = setTimeout(() => pushParams({ search: val }), SEARCH_DEBOUNCE_MS)
   }
 
+  // Clear-search ✕ — empties the input immediately and resets the URL search
+  // param without waiting for the debounce. Cancels any pending debounced push.
+  function clearSearch() {
+    clearTimeout(debounceRef.current)
+    setInputValue('')
+    pushParams({ search: '' })
+  }
+
   // ── Pill click handlers ────────────────────────────────────────────────────
 
   function activatePccp() {
@@ -105,16 +113,19 @@ export default function FiltersBar({ specialties, totalCount, pipelineCount, cor
     <>
       {/* ── Search + dropdowns ── */}
       <div className="searchRow">
-        <div className="search">
+        <div className={`search${inputValue.length > 0 ? ' hasText' : ''}`}>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-            <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="#94a3b8" strokeWidth="1.8" />
-            <path d="M16.2 16.2 21 21" stroke="#94a3b8" strokeWidth="1.8" strokeLinecap="round" />
+            <path className="mag" d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" strokeWidth="1.8" />
+            <path className="mag" d="M16.2 16.2 21 21" strokeWidth="1.8" strokeLinecap="round" />
           </svg>
           <input
             placeholder="Search by technology name, use case, developer, regulatory class…"
             value={inputValue}
             onChange={handleSearchInput}
           />
+          {inputValue.length > 0 && (
+            <button type="button" className="clearBtn" aria-label="Clear search" onClick={clearSearch}>✕</button>
+          )}
         </div>
         <select
           className="secondaryBtn"

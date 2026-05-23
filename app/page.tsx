@@ -3,7 +3,6 @@ import { Suspense } from 'react'
 import MobileMenu   from './components/MobileMenu'
 import FiltersBar   from './components/FiltersBar'
 import DeviceGrid   from './components/DeviceGrid'
-import QuickFilters from './components/QuickFilters'
 import type { Device } from '@/lib/types'
 import { normaliseIdentifierInput } from '@/lib/identifierNormalisation'
 export const dynamic = 'force-dynamic'
@@ -266,6 +265,8 @@ export default async function Home({
           --blue:#1f6feb; --blue2:#0ea5e9;
           --chip:#f0f4ff; --chipText:#1e40af;
           --tealChip:#d8f0ec; --tealChipText:#0b6b5f; --tealChipBorder:#9fd9cf;
+          --cardBorder:#d8e0ec;
+          --tealBtn:#0b8276; --tealBtn2:#0ea5a3;
           --successBg:#e9f9ef; --successText:#137a3b;
           --warnBg:#fff4e5; --warnText:#a15c00;
           --dangerBg:#ffecec; --dangerText:#9f1d1d;
@@ -297,45 +298,40 @@ export default async function Home({
         .navRight{display:flex;align-items:center;gap:10px}
 
         /* ── HERO ── */
-        .hero{padding:48px 0 30px}
-        .heroInner{max-width:74ch}
-        .heroEyebrow{display:inline-flex;align-items:center;gap:7px;padding:6px 15px;background:var(--tealChip);color:var(--tealChipText);border:1px solid var(--tealChipBorder);border-radius:99px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px}
+        .hero{padding:34px 0 26px}
+        .heroGrid{display:grid;grid-template-columns:minmax(280px,0.85fr) 1.15fr;gap:40px;align-items:center}
+        .heroEyebrow{align-self:flex-start;display:inline-flex;align-items:center;gap:7px;padding:6px 15px;background:var(--tealChip);color:var(--tealChipText);border:1px solid var(--tealChipBorder);border-radius:99px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px}
         .heroEyebrow .dot{width:7px;height:7px;border-radius:99px;background:var(--secondary2);box-shadow:0 0 0 3px rgba(14,165,163,.25)}
-        .heroTitle{font-size:clamp(28px,4.5vw,44px);font-weight:900;color:var(--text);letter-spacing:-.5px;line-height:1.12;margin-bottom:16px}
+        .heroTitle{font-size:clamp(28px,3.6vw,40px);font-weight:900;color:var(--text);letter-spacing:-.5px;line-height:1.1;margin:0}
         .heroTitle span{background:linear-gradient(135deg,#1f6feb,#0b7f7d);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .heroSub{font-size:16px;color:var(--muted);line-height:1.6;max-width:64ch}
 
-        /* ── STATS STRIP (sidebar, replaces donut card) ── */
-        .statsHead{margin-bottom:14px}
-        .statsHead h3{font-size:15px;font-weight:800;color:var(--text)}
-        .statsHead p{font-size:12px;color:var(--muted);margin-top:3px}
-        .statsList{display:flex;flex-direction:column;gap:10px}
-        .statRow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line)}
-        .statRow:last-child{border-bottom:none}
-        .statLabel{font-size:12.5px;color:var(--muted);font-weight:500}
-        .statValue{font-size:18px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:-.2px}
-        .statSub{display:flex;flex-direction:column;gap:6px;padding:8px 0 6px}
-        .statSubLabel{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-        .statSubRows{display:flex;flex-direction:column;gap:5px}
-        .statSubRow{display:flex;align-items:baseline;justify-content:space-between;font-size:13px;color:var(--text)}
-        .statSubRow .statValue{font-size:14px;font-weight:700}
+        /* ── STAT STRIP (hero, replaces sidebar stats) ── */
+        .statStrip{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+        .statCard{background:var(--surface);border:1px solid var(--cardBorder);border-radius:12px;padding:12px 14px}
+        .statCard .lbl{font-size:10.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+        .statCard .num{font-size:23px;font-weight:900;color:var(--text);letter-spacing:-.5px;line-height:1.1;margin:3px 0 2px;font-variant-numeric:tabular-nums}
+        .statCard .sub{font-size:11px;color:var(--muted)}
+        @media(max-width:980px){.heroGrid{grid-template-columns:1fr;gap:22px}.statStrip{grid-template-columns:repeat(3,1fr)}}
+        @media(max-width:560px){.statStrip{grid-template-columns:repeat(2,1fr)}}
 
         /* ── LAYOUT ── */
         .container{max-width:1240px;margin:0 auto;padding:0 20px}
         .page{padding-bottom:60px}
-        .mainGrid{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
-        @media(max-width:900px){.mainGrid{grid-template-columns:1fr}.sidebar{display:none}}
 
         /* ── CARD ── */
-        .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius2);box-shadow:var(--shadow2)}
+        .card{background:var(--surface);border:1.5px solid var(--cardBorder);border-radius:var(--radius2);box-shadow:var(--shadow2)}
         .cardPad{padding:20px}
 
         /* ── FILTERS ── */
         .searchRow{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-        .search{flex:1;min-width:200px;display:flex;align-items:center;gap:10px;padding:0 14px;background:#f8fafc;border:1.5px solid var(--line);border-radius:12px;transition:border-color .15s}
-        .search:focus-within{border-color:var(--primary)}
+        .search{flex:1;min-width:200px;display:flex;align-items:center;gap:10px;padding:0 14px;background:#f1f3f7;border:1.5px solid transparent;border-radius:12px;transition:background .15s,border-color .15s,box-shadow .15s}
+        .search:focus-within,.search.hasText{background:#fff;border-color:var(--secondary);box-shadow:0 0 0 3px rgba(11,127,125,.14)}
+        .search .mag{stroke:#94a3b8;transition:stroke .15s}
+        .search:focus-within .mag,.search.hasText .mag{stroke:var(--secondary)}
         .search input{flex:1;border:none;background:transparent;outline:none;font-size:14px;color:var(--text);padding:10px 0}
         .search input::placeholder{color:#94a3b8}
+        .clearBtn{flex-shrink:0;width:22px;height:22px;border-radius:99px;border:none;background:#e2e8f0;color:#64748b;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;line-height:1;transition:background .12s,color .12s}
+        .clearBtn:hover{background:#cbd5e1;color:#334155}
         .metaLine{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px}
         .pills{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
         .pill{padding:6px 13px;border-radius:99px;font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .15s;white-space:nowrap;user-select:none}
@@ -379,6 +375,18 @@ export default async function Home({
         /* ── BUTTONS ── */
         .primaryBtn{padding:9px 18px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;font-weight:700;font-size:13.5px;border:none;cursor:pointer;transition:opacity .15s;display:inline-flex;align-items:center;gap:7px}
         .primaryBtn:hover{opacity:.88}
+
+        /* ── NAV GRADIENT PILLS (Take tour + Request Review) ── */
+        /* Twins: matched gradient pills with hover-lift and a slow click-invert
+           to white + coloured outline. 2px transparent border reserved at rest
+           so the outline appears without shifting layout. */
+        .tourBtn,.reviewBtn{padding:9px 18px;border-radius:12px;color:#fff;font-weight:700;font-size:13.5px;border:2px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:7px;text-decoration:none;transition:transform .12s,box-shadow .12s,background .28s ease,color .28s ease,border-color .28s ease}
+        .tourBtn{background:linear-gradient(135deg,var(--tealBtn),var(--tealBtn2));box-shadow:0 2px 10px rgba(11,130,118,.22)}
+        .reviewBtn{background:linear-gradient(135deg,var(--primary),var(--primary2));box-shadow:0 2px 10px rgba(31,111,235,.22)}
+        .tourBtn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(11,130,118,.28)}
+        .reviewBtn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(31,111,235,.28)}
+        .tourBtn:active{background:#fff;color:var(--tealBtn);border-color:var(--tealBtn);box-shadow:none;transform:translateY(0)}
+        .reviewBtn:active{background:#fff;color:var(--primary);border-color:var(--primary);box-shadow:none;transform:translateY(0)}
         .secondaryBtn{padding:9px 14px;border-radius:12px;background:#f1f5f9;color:var(--text);font-weight:600;font-size:13.5px;border:1.5px solid var(--line);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
         .secondaryBtn:hover{background:#e2e8f0}
         .quickViewBtn{width:30px;height:30px;border-radius:8px;background:#f1f5f9;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;transition:all .15s}
@@ -401,13 +409,6 @@ export default async function Home({
         .closeBtn{width:32px;height:32px;border-radius:8px;background:#f1f5f9;border:none;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted);flex-shrink:0;cursor:pointer}
         .closeBtn:hover{background:#e2e8f0}
         .sep{border:none;border-top:1px solid var(--line);margin:14px 0}
-
-        /* ── SIDEBAR ── */
-        .sidebar{display:flex;flex-direction:column;gap:16px;position:sticky;top:80px}
-        .kpiHead{margin-bottom:16px}
-        .kpiHead h3{font-size:15px;font-weight:800;color:var(--text)}
-        .kpiHead p{font-size:12px;color:var(--muted);margin-top:3px}
-        .sideSection{font-size:10.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
 
         /* ── BANNER ── */
         .banner{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px;padding:16px 18px;background:linear-gradient(135deg,#f0f4ff,#e8f0fe);border-radius:var(--radius);border:1px solid rgba(31,111,235,.12)}
@@ -454,7 +455,11 @@ export default async function Home({
               <a href="/clinicians">For Clinicians</a>
             </div>
             <div className="navRight">
-              <a href="/request-review" className="primaryBtn">Request Review</a>
+              <button type="button" className="tourBtn" aria-label="Take a tour">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 3.5v17l13-8.5-13-8.5Z" fill="currentColor" /></svg>
+                Take tour
+              </button>
+              <a href="/request-review" className="reviewBtn">Request Review</a>
               <MobileMenu />
             </div>
           </div>
@@ -464,13 +469,19 @@ export default async function Home({
       {/* ── HERO ── */}
       <section className="hero">
         <div className="container">
-          <div className="heroInner">
-            <span className="heroEyebrow"><span className="dot" />Live Regulatory Index</span>
-            <h1 className="heroTitle">AI/ML Medical Device <span>Index</span></h1>
-            <p className="heroSub">
-              A live index of AI/ML-enabled medical devices cleared by the FDA, MHRA, and under EU MDR —
-              searchable by specialty, jurisdiction, regulatory class, and lifecycle stage.
-            </p>
+          <div className="heroGrid">
+            <div>
+              <span className="heroEyebrow"><span className="dot" />Live Regulatory Index</span>
+              <h1 className="heroTitle">AI/ML Medical Device <span>Index</span></h1>
+            </div>
+            <div className="statStrip">
+              <div className="statCard"><div className="lbl">Total</div><div className="num">{corpusTotal.toLocaleString()}</div><div className="sub">indexed records</div></div>
+              <div className="statCard"><div className="lbl">FDA</div><div className="num">{fdaCount.toLocaleString()}</div><div className="sub">US records</div></div>
+              <div className="statCard"><div className="lbl">MHRA</div><div className="num">{mhraCount.toLocaleString()}</div><div className="sub">UK records</div></div>
+              <div className="statCard"><div className="lbl">EU MDR</div><div className="num">{euCount.toLocaleString()}</div><div className="sub">EU records</div></div>
+              <div className="statCard"><div className="lbl">PCCP</div><div className="num">{(pccpCount ?? 0).toLocaleString()}</div><div className="sub">authorised</div></div>
+              <div className="statCard"><div className="lbl">Pipeline</div><div className="num">{pipelineDevices.length.toLocaleString()}</div><div className="sub">trial / review</div></div>
+            </div>
           </div>
         </div>
       </section>
@@ -478,11 +489,10 @@ export default async function Home({
       {/* ── MAIN ── */}
       <main className="page">
         <div className="container">
-          <div className="mainGrid">
 
-            {/* ── LEFT: TABLE ── */}
-            <section className="card cardPad">
-              <Suspense fallback={null}>
+          {/* ── DEVICE TABLE (full-width since sidebar removed) ── */}
+          <section className="card cardPad">
+            <Suspense fallback={null}>
                 <FiltersBar
                   specialties={specialties}
                   totalCount={totalCount ?? 0}
@@ -496,12 +506,12 @@ export default async function Home({
                   <table className="table">
                     <thead>
                       <tr>
-                        <th style={{ minWidth: '260px' }}>Tool</th>
-                        <th style={{ minWidth: '140px' }}>Use Case</th>
-                        <th style={{ minWidth: '180px' }}>Regulatory Status</th>
-                        <th style={{ minWidth: '100px' }}>Risk</th>
-                        <th style={{ minWidth: '180px' }}>Lifecycle Signals</th>
-                        <th style={{ minWidth: '110px', textAlign: 'right' }}> </th>
+                        <th style={{ minWidth: '230px' }}>Tool</th>
+                        <th style={{ minWidth: '340px' }}>Description</th>
+                        <th style={{ minWidth: '170px' }}>Regulatory Status</th>
+                        <th style={{ minWidth: '90px' }}>Risk</th>
+                        <th style={{ minWidth: '130px' }}>Last sync</th>
+                        <th style={{ minWidth: '100px', textAlign: 'right' }}> </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -532,60 +542,6 @@ export default async function Home({
               </div>
             </section>
 
-            {/* ── RIGHT: SIDEBAR ── */}
-            <aside className="sidebar">
-              <div className="card cardPad">
-                <div className="statsHead">
-                  <h3>The Index</h3>
-                  <p>Live counts across the corpus.</p>
-                </div>
-                <div className="statsList">
-                  <div className="statRow">
-                    <span className="statLabel">Total indexed</span>
-                    <span className="statValue">{corpusTotal.toLocaleString()}</span>
-                  </div>
-                  <div className="statRow">
-                    <span className="statLabel">PCCP-authorised</span>
-                    <span className="statValue">{(pccpCount ?? 0).toLocaleString()}</span>
-                  </div>
-                  <div className="statSub">
-                    <span className="statSubLabel">By jurisdiction</span>
-                    <div className="statSubRows">
-                      <div className="statSubRow">
-                        <span>FDA</span>
-                        <span className="statValue">{fdaCount.toLocaleString()}</span>
-                      </div>
-                      <div className="statSubRow">
-                        <span>MHRA</span>
-                        <span className="statValue">{mhraCount.toLocaleString()}</span>
-                      </div>
-                      <div className="statSubRow">
-                        <span>EU MDR</span>
-                        <span className="statValue">{euCount.toLocaleString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="statRow">
-                    <span className="statLabel">In pipeline</span>
-                    <span className="statValue">{pipelineDevices.length.toLocaleString()}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="card cardPad">
-                <div className="sideSection">QUICK FILTERS</div>
-                <Suspense fallback={null}>
-                  <QuickFilters />
-                </Suspense>
-                <hr className="sep" />
-                <div className="sideSection">ABOUT</div>
-                <p style={{ fontSize: '12.5px', color: 'var(--muted)', lineHeight: 1.55, marginTop: '6px' }}>
-                  The Aletia Index provides independent clinical assurance for AI/ML medical devices. Data is verified by our clinical team against the 10-Point Assurance Checklist.
-                </p>
-              </div>
-            </aside>
-
-          </div>
         </div>
       </main>
 
