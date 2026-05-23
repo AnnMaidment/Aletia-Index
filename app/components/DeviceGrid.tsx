@@ -64,7 +64,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
           <thead>
             <tr>
               <th style={{ minWidth: '260px' }}>Tool</th>
-              <th style={{ minWidth: '140px' }}>Use Case</th>
+              <th style={{ minWidth: '340px' }}>Description</th>
               <th style={{ minWidth: '180px' }}>Regulatory Status</th>
               <th style={{ minWidth: '100px' }}>Risk</th>
               <th style={{ minWidth: '180px' }}>Last sync</th>
@@ -148,15 +148,26 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                             />
                           </div>
                         )}
-                        <div className="small" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                          {device.intended_use}
-                        </div>
                       </div>
                     </div>
                   </td>
 
-                  {/* ── Use Case ── */}
-                  <td style={{ color: 'var(--muted)', fontSize: '13px' }}>{device.specialty_link}</td>
+                  {/* ── Description ── */}
+                  <td>
+                    <div
+                      style={{
+                        fontSize: '13px',
+                        color: 'var(--text)',
+                        lineHeight: 1.5,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {device.intended_use}
+                    </div>
+                  </td>
 
                   {/* ── Regulatory Status ── */}
                   <td>

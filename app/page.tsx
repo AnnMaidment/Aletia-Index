@@ -265,6 +265,7 @@ export default async function Home({
           --shadow2:0 4px 16px rgba(15,23,42,.06);
           --blue:#1f6feb; --blue2:#0ea5e9;
           --chip:#f0f4ff; --chipText:#1e40af;
+          --tealChip:#d8f0ec; --tealChipText:#0b6b5f; --tealChipBorder:#9fd9cf;
           --successBg:#e9f9ef; --successText:#137a3b;
           --warnBg:#fff4e5; --warnText:#a15c00;
           --dangerBg:#ffecec; --dangerText:#9f1d1d;
@@ -296,18 +297,13 @@ export default async function Home({
         .navRight{display:flex;align-items:center;gap:10px}
 
         /* ── HERO ── */
-        .hero{padding:52px 0 40px;text-align:center}
-        .heroEyebrow{display:inline-flex;align-items:center;gap:7px;padding:5px 14px;background:var(--chip);color:var(--chipText);border-radius:99px;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:18px}
-        .heroTitle{font-size:clamp(28px,4.5vw,46px);font-weight:900;color:var(--text);letter-spacing:-.5px;line-height:1.12;margin-bottom:14px}
+        .hero{padding:48px 0 30px}
+        .heroInner{max-width:74ch}
+        .heroEyebrow{display:inline-flex;align-items:center;gap:7px;padding:6px 15px;background:var(--tealChip);color:var(--tealChipText);border:1px solid var(--tealChipBorder);border-radius:99px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px}
+        .heroEyebrow .dot{width:7px;height:7px;border-radius:99px;background:var(--secondary2);box-shadow:0 0 0 3px rgba(14,165,163,.25)}
+        .heroTitle{font-size:clamp(28px,4.5vw,44px);font-weight:900;color:var(--text);letter-spacing:-.5px;line-height:1.12;margin-bottom:16px}
         .heroTitle span{background:linear-gradient(135deg,#1f6feb,#0b7f7d);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .heroSub{font-size:16px;color:var(--muted);max-width:58ch;margin:0 auto 28px;line-height:1.6}
-        .heroActions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-
-        /* ── INTRO (page-level, between nav and main grid) ── */
-        .intro{padding:28px 0 20px}
-        .introInner{max-width:68ch}
-        .introLead{font-size:15.5px;color:var(--text);line-height:1.6;font-weight:500}
-        .introNote{font-size:13.5px;color:var(--muted);line-height:1.55;margin-top:8px}
+        .heroSub{font-size:16px;color:var(--muted);line-height:1.6;max-width:64ch}
 
         /* ── STATS STRIP (sidebar, replaces donut card) ── */
         .statsHead{margin-bottom:14px}
@@ -465,17 +461,15 @@ export default async function Home({
         </div>
       </div>
 
-      {/* ── INTRO (page-level honesty block) ── */}
-      <section className="intro">
+      {/* ── HERO ── */}
+      <section className="hero">
         <div className="container">
-          <div className="introInner">
-            <p className="introLead">
-              A live index of AI/ML-enabled medical devices cleared by the FDA, MHRA, and under EU MDR.
-              Searchable by specialty, jurisdiction, regulatory class, and lifecycle stage.
-            </p>
-            <p className="introNote">
-              Independent clinical assurance reviews are in progress; the Aletia Verified badge
-              will appear on devices as those reviews land.
+          <div className="heroInner">
+            <span className="heroEyebrow"><span className="dot" />Live Regulatory Index</span>
+            <h1 className="heroTitle">AI/ML Medical Device <span>Index</span></h1>
+            <p className="heroSub">
+              A live index of AI/ML-enabled medical devices cleared by the FDA, MHRA, and under EU MDR —
+              searchable by specialty, jurisdiction, regulatory class, and lifecycle stage.
             </p>
           </div>
         </div>
