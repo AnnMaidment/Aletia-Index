@@ -194,44 +194,57 @@ export default async function Home({
   )) as { data: Device[] | null; count: number | null }
 
   // ── Global stats (unfiltered) + specialties ─────────────────────────────────
-  // statsData is intentionally lean — only the fields the stats strip and the
-  // pipeline pill in FiltersBar need. Health-status and aletia_verified were
-  // pulled when the sidebar donut existed; both are gone now.
-  const [{ data: statsData }, { data: specData }, { count: pccpCount }] = await Promise.all([
+  // All six numbers are HEAD counts ({ count: 'exact', head: true }) — zero row
+  // transfer, so none are subject to Supabase's server-side db-max-rows cap
+  // (the old .range(0, 9999) + count-in-JS approach silently truncated at the
+  // 1000-row cap, capping corpusTotal/fda/mhra/eu/pipeline at ~1000). Jurisdiction
+  // counts are coverage, not partition: a device cleared in two regions counts
+  // toward both buckets, so the three deliberately sum to more than corpusTotal.
+  const [
+    { count: corpusTotal },
+    { count: pipelineCount },
+    { count: pccpCount },
+    { count: fdaCount },
+    { count: mhraCount },
+    { count: euCount },
+    { data: specData },
+  ] = await Promise.all([
     supabase
       .from('device_master')
-      .select('pipeline_stage, regional_registrations(country)')
+      .select('aletia_id', { count: 'exact', head: true })
+      .eq('excluded', false),
+    supabase
+      .from('device_master')
+      .select('aletia_id', { count: 'exact', head: true })
       .eq('excluded', false)
-      .range(0, 9999),
+      .not('pipeline_stage', 'is', null),
+    supabase
+      .from('device_master')
+      .select('aletia_id', { count: 'exact', head: true })
+      .eq('excluded', false)
+      .eq('pccp_status', 'approved'),
+    supabase
+      .from('device_master')
+      .select('aletia_id, regional_registrations!inner(country)', { count: 'exact', head: true })
+      .eq('excluded', false)
+      .eq('regional_registrations.country', 'US'),
+    supabase
+      .from('device_master')
+      .select('aletia_id, regional_registrations!inner(country)', { count: 'exact', head: true })
+      .eq('excluded', false)
+      .eq('regional_registrations.country', 'GB'),
+    supabase
+      .from('device_master')
+      .select('aletia_id, regional_registrations!inner(country)', { count: 'exact', head: true })
+      .eq('excluded', false)
+      .eq('regional_registrations.country', 'EU'),
     supabase
       .from('device_master')
       .select('specialty_link')
       .eq('excluded', false)
       .not('specialty_link', 'is', null)
       .range(0, 9999),
-    supabase
-      .from('device_master')
-      .select('aletia_id', { count: 'exact', head: true })
-      .eq('excluded', false)
-      .eq('pccp_status', 'approved'),
   ])
-
-  const all      = statsData ?? []
-  const pipelineDevices = all.filter((d: { pipeline_stage: string | null }) =>  d.pipeline_stage)
-
-  // Jurisdiction coverage — a device cleared in two regions counts toward
-  // both buckets. This is coverage, not partition; the totals deliberately
-  // sum to more than `corpusTotal`.
-  type RegRow = { country: string }
-  type DeviceRegs = { regional_registrations?: RegRow[] }
-  const hasCountry = (d: DeviceRegs, code: string) =>
-    d.regional_registrations?.some(r => r.country === code) ?? false
-
-  const fdaCount  = all.filter((d: DeviceRegs) => hasCountry(d, 'US')).length
-  const mhraCount = all.filter((d: DeviceRegs) => hasCountry(d, 'GB')).length
-  const euCount   = all.filter((d: DeviceRegs) => hasCountry(d, 'EU')).length
-
-  const corpusTotal = all.length
 
   const specialties = [...new Set(
     (specData ?? []).map((d: { specialty_link: string }) => d.specialty_link),
@@ -475,12 +488,12 @@ export default async function Home({
               <h1 className="heroTitle">AI/ML Medical Device <span>Index</span></h1>
             </div>
             <div className="statStrip">
-              <div className="statCard"><div className="lbl">Total</div><div className="num">{corpusTotal.toLocaleString()}</div><div className="sub">indexed records</div></div>
-              <div className="statCard"><div className="lbl">FDA</div><div className="num">{fdaCount.toLocaleString()}</div><div className="sub">US records</div></div>
-              <div className="statCard"><div className="lbl">MHRA</div><div className="num">{mhraCount.toLocaleString()}</div><div className="sub">UK records</div></div>
-              <div className="statCard"><div className="lbl">EU MDR</div><div className="num">{euCount.toLocaleString()}</div><div className="sub">EU records</div></div>
+              <div className="statCard"><div className="lbl">Total</div><div className="num">{(corpusTotal ?? 0).toLocaleString()}</div><div className="sub">indexed records</div></div>
+              <div className="statCard"><div className="lbl">FDA</div><div className="num">{(fdaCount ?? 0).toLocaleString()}</div><div className="sub">US records</div></div>
+              <div className="statCard"><div className="lbl">MHRA</div><div className="num">{(mhraCount ?? 0).toLocaleString()}</div><div className="sub">UK records</div></div>
+              <div className="statCard"><div className="lbl">EU MDR</div><div className="num">{(euCount ?? 0).toLocaleString()}</div><div className="sub">EU records</div></div>
               <div className="statCard"><div className="lbl">PCCP</div><div className="num">{(pccpCount ?? 0).toLocaleString()}</div><div className="sub">authorised</div></div>
-              <div className="statCard"><div className="lbl">Pipeline</div><div className="num">{pipelineDevices.length.toLocaleString()}</div><div className="sub">trial / review</div></div>
+              <div className="statCard"><div className="lbl">Pipeline</div><div className="num">{(pipelineCount ?? 0).toLocaleString()}</div><div className="sub">trial / review</div></div>
             </div>
           </div>
         </div>
@@ -496,8 +509,8 @@ export default async function Home({
                 <FiltersBar
                   specialties={specialties}
                   totalCount={totalCount ?? 0}
-                  pipelineCount={pipelineDevices.length}
-                  corpusTotal={corpusTotal}
+                  pipelineCount={pipelineCount ?? 0}
+                  corpusTotal={corpusTotal ?? 0}
                 />
               </Suspense>
 
