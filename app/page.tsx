@@ -311,9 +311,9 @@ export default async function Home({
         .navRight{display:flex;align-items:center;gap:10px}
 
         /* ── HERO ── */
-        .hero{padding:34px 0}
+        .hero{padding:20px 0}
         .heroGrid{display:grid;grid-template-columns:minmax(280px,0.85fr) 1.15fr;gap:40px;align-items:center}
-        .heroEyebrow{align-self:flex-start;display:inline-flex;align-items:center;gap:7px;padding:6px 15px;background:var(--tealChip);color:var(--tealChipText);border:1px solid var(--tealChipBorder);border-radius:99px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px}
+        .heroEyebrow{align-self:flex-start;display:inline-flex;align-items:center;gap:7px;padding:6px 15px;background:var(--tealChip);color:var(--tealChipText);border:1px solid var(--tealChipBorder);border-radius:99px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
         .heroEyebrow .dot{width:7px;height:7px;border-radius:99px;background:var(--secondary2);box-shadow:0 0 0 3px rgba(14,165,163,.25)}
         .heroTitle{font-size:clamp(28px,3.6vw,40px);font-weight:900;color:var(--text);letter-spacing:-.5px;line-height:1.1;margin:0}
         .heroTitle span{background:linear-gradient(135deg,#1f6feb,#0b7f7d);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
