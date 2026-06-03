@@ -300,15 +300,16 @@ export default async function Home({
         button{cursor:pointer;font-family:inherit}
 
         /* ── NAV ── */
-        .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+        .nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid rgba(148,163,184,.18)}
         .navInner{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
         .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
         .logoWrap{width:38px;height:38px;border-radius:11px;overflow:hidden;display:flex;align-items:center;justify-content:center}
         .logoText{font-size:16px;font-weight:800;color:var(--text);letter-spacing:.3px}
         .logoBadge{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-top:1px}
-        .navLinks{display:flex;gap:24px;font-size:13.5px;font-weight:500}
-        .navLinks a{color:var(--muted);transition:color .15s}
-        .navLinks a:hover{color:var(--text)}
+        .navLinks{display:flex;gap:24px;font-size:13.5px}
+        .navLinks a{color:#52627a;font-weight:600;text-decoration:none;padding-bottom:3px;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+        .navLinks a:hover{color:var(--primary)}
+        .navLinks a.active{color:var(--primary);border-bottom-color:var(--primary)}
         .navRight{display:flex;align-items:center;gap:10px}
 
         /* ── HERO ── */
@@ -464,6 +465,7 @@ export default async function Home({
               </div>
             </a>
             <div className="navLinks">
+              <a href="/" className="active">Index</a>
               <a href="/about">About</a>
               <a href="/methodology">Methodology</a>
               <a href="/clinicians">For Clinicians</a>
