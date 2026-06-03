@@ -15,6 +15,13 @@ type PreApprovalProfile = {
 
 type DeviceWithPipeline = Device & {
   pre_approval_profile?: PreApprovalProfile | null
+  description?: string | null
+  device_trials?: {
+    title: string | null
+    brief_summary: string | null
+    status: string | null
+    trial_role: string | null
+  }[]
 }
 
 interface Props {
