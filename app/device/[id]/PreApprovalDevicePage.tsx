@@ -174,7 +174,7 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
 
         </div>
 
-        <h1 className="h1" style={{ marginBottom: 6 }}>{technologyName(device.name)}</h1>
+        <h1 className="h1" style={{ marginBottom: 6 }}>{technologyName(device.name, device.intended_use)}</h1>
         <p className="subhead">{companyName} · Sponsor</p>
         {!isRealTechnologyName(device.name) && (
           <p style={{ marginTop: 4, fontSize: 13, color: 'var(--muted)', fontStyle: 'italic' }}>

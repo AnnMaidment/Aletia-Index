@@ -454,7 +454,7 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
 
             </div>
 
-            <h1 className="h1" style={{ marginBottom: 6 }}>{technologyName(device.name)}</h1>
+            <h1 className="h1" style={{ marginBottom: 6 }}>{technologyName(device.name, device.intended_use)}</h1>
             <p className="subhead">{mfr.name} · Manufacturer</p>
             {mfr.hq_location && (
               <p style={{ marginTop: 10, fontSize: 13, color: 'var(--muted)' }}>📍 {mfr.hq_location}</p>

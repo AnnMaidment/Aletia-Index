@@ -111,7 +111,7 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                           className="appName"
                           style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
                         >
-                          {technologyName(device.name)}
+                          {technologyName(device.name, device.intended_use)}
                         </a>
                         <div className="appOrg">
                           {device.manufacturers?.name || device.manufacturer_name || '—'}

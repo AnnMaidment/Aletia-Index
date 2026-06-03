@@ -34,7 +34,9 @@ export function isRealTechnologyName(name: string | null | undefined): boolean {
 }
 
 /** The technology name to show in the primary slot, with the honest placeholder fallback. */
-export function technologyName(name: string | null | undefined): string {
-  const n = name?.trim()
-  return isRealTechnologyName(n) ? n! : UNNAMED_TECHNOLOGY
+export function technologyName(...candidates: (string | null | undefined)[]): string {
+  for (const c of candidates) {
+    if (isRealTechnologyName(c)) return c!.trim()
+  }
+  return UNNAMED_TECHNOLOGY
 }
