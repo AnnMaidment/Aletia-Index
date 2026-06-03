@@ -118,7 +118,7 @@ export default async function Home({
   let query: any = supabase
     .from('device_master')
     .select(
-      `aletia_id, external_legacy_id, name, intended_use, manufacturer_name, specialty_link,
+      `aletia_id, external_legacy_id, name, intended_use, description, manufacturer_name, specialty_link,
        health_status, pipeline_stage, data_source, excluded,
        aletia_verified, breakthrough_designation,
        ai_ml_type, accountability_tier, mode, autonomy,
@@ -126,6 +126,7 @@ export default async function Home({
        autonomous_output_mode, autonomous_output_description, eu_risk_class,
        manufacturers(name, hq_location),
        regional_registrations(country, regulatory_body, clearance_type, external_id_value),
+       device_trials(title, brief_summary, status, trial_role),
        tech_specs(api_type, ehr_compat, data_hosting, fhir_compatible, popia_compliant)`,
             { count: 'exact' },
     )
