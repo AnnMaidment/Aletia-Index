@@ -177,8 +177,8 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
           <DataSourceTag source={dataSource} />
         </div>
 
-        <h1 className="h1" style={{ marginBottom: 6 }}>{companyName}</h1>
-        <p className="subhead">{deviceName}</p>
+        <h1 className="h1" style={{ marginBottom: 6 }}>{deviceName}</h1>
+        <p className="subhead">{companyName}</p>
 
         <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 10, fontSize: 13, color: 'var(--muted)' }}>
           {mfr?.hq_location && <span>📍 {mfr.hq_location}</span>}
