@@ -165,7 +165,11 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                         overflow: 'hidden',
                       }}
                     >
-                      {device.intended_use}
+                      {device.description?.trim()
+  || device.intended_use?.trim()
+  || device.device_trials?.find((t) => t.brief_summary)?.brief_summary
+  || device.device_trials?.[0]?.title
+  || '—'}
                     </div>
                   </td>
 

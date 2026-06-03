@@ -124,11 +124,29 @@ export async function fetchAllAIDeviceTrials(): Promise<ClinicalTrial[]> {
       console.error(`[clinical-trials] Query failed: "${query}"`, err)
     }
   }
-
   // Filter to device interventions only
   const deviceTrials = results.filter((t) => t.isDeviceTrial)
   console.log(`[clinical-trials] ${deviceTrials.length} device trials after intervention filter`)
   return deviceTrials
+}
+
+/**
+ * Fetch and normalise a single trial by NCT id.
+ * The keyword search loop (fetchAllAIDeviceTrials) only finds trials matching
+ * the AI_DEVICE_QUERIES bundles — this resolves a specific known NCT directly.
+ */
+export async function fetchTrialByNct(nctId: string): Promise<ClinicalTrial | null> {
+  const url = `${CT_BASE_URL}/${encodeURIComponent(nctId)}?format=json`
+  const response = await fetch(url, {
+    headers: { 'User-Agent': 'Aletia-Ingest/1.0', 'Accept': 'application/json' },
+  })
+  if (response.status === 404) return null
+  if (!response.ok) {
+    const body = await response.text().catch(() => '')
+    throw new Error(`ClinicalTrials API error for ${nctId}: ${response.status} ${response.statusText} — ${body.slice(0, 200)}`)
+  }
+  const study = (await response.json()) as CTStudy
+  return normalizeStudy(study)
 }
 
 // ── Single query fetch with pagination ───────────────────────────────────────

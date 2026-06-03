@@ -154,7 +154,6 @@ export async function generateMetadata(
     twitter: { card: 'summary_large_image', title: fullTitle, description },
   }
 }
-
 // ── Helpers (cleared-device template) ────────────────────────────────────────
 
 function statusStyle(s: string): CSSProperties {
