@@ -1,7 +1,8 @@
 import {
-  LabelValue, PipelineStepper, PreClearanceBanner, DataSourceTag,
+  LabelValue, PipelineStepper, PreClearanceBanner,
   AllIdentifiersPanel, TrialCard, sortTrials,
 } from './shared'
+import { technologyName, isRealTechnologyName } from '@/lib/displayName'
 import InterestButton from './InterestButton'
 import type { DeviceExternalId, DeviceTrial } from '@/lib/types'
 
@@ -85,8 +86,6 @@ function EmptyHint({ text }: { text: string }) {
 export default function PreApprovalDevicePage({ device }: { device: Device }) {
   const mfr = device.manufacturers
   const companyName = mfr?.name ?? device.manufacturer_name ?? 'Unknown Company'
-  const deviceName  = device.name ?? device.intended_use ?? 'Pre-approval device'
-
   // pre_approval_profile may come back as object (single FK) or array — normalise
   const rawProfile = device.pre_approval_profile
   const profile: PreApprovalProfile | null = Array.isArray(rawProfile)
@@ -173,12 +172,15 @@ export default function PreApprovalDevicePage({ device }: { device: Device }) {
             </span>
           )}
 
-          {/* Data source provenance */}
-          <DataSourceTag source={dataSource} />
         </div>
 
-        <h1 className="h1" style={{ marginBottom: 6 }}>{deviceName}</h1>
-        <p className="subhead">{companyName}</p>
+        <h1 className="h1" style={{ marginBottom: 6 }}>{technologyName(device.name)}</h1>
+        <p className="subhead">{companyName} · Sponsor</p>
+        {!isRealTechnologyName(device.name) && (
+          <p style={{ marginTop: 4, fontSize: 13, color: 'var(--muted)', fontStyle: 'italic' }}>
+            Named product not publicly identified
+          </p>
+        )}
 
         <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 10, fontSize: 13, color: 'var(--muted)' }}>
           {mfr?.hq_location && <span>📍 {mfr.hq_location}</span>}

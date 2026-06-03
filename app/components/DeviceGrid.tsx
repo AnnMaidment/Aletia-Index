@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import type { Device } from '@/lib/types'
 import { PIPELINE_LABELS } from '@/lib/types'
+import { technologyName } from '@/lib/displayName'
 import { AutonomousBadge } from './AutonomousBadge'
 
 // Extend Device locally to include pre_approval_profile without touching shared types
@@ -87,7 +88,6 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
               </tr>
             ) : devices.map(device => {
               const isPreClearance = !!device.pipeline_stage
-              const dataSource     = device.data_source ?? 'registry_sync'
               const pap            = device.pre_approval_profile   // may be null for cleared devices
 
               return (
@@ -111,16 +111,12 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                           className="appName"
                           style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
                         >
-                          {isPreClearance
-                            ? (device.name || device.manufacturers?.name || device.manufacturer_name || device.aletia_id)
-                            : (device.manufacturers?.name || device.manufacturer_name || device.aletia_id)}
+                          {technologyName(device.name)}
                         </a>
-                        {isPreClearance && device.name && (device.manufacturers?.name || device.manufacturer_name) && (
-                          <div className="appOrg" style={{ fontWeight: 500, color: 'var(--text)' }}>
-                            {device.manufacturers?.name || device.manufacturer_name}
-                          </div>
-                        )}
-                        <div className="appOrg">{device.aletia_id}</div>
+                        <div className="appOrg">
+                          {device.manufacturers?.name || device.manufacturer_name || '—'}
+                          <span style={{ opacity: .6 }}> · {device.aletia_id}</span>
+                        </div>
 
                         {/* Jurisdiction chip strip — only when the device has regional_registrations.
                             Pipeline-only devices have none and get no strip. Devices cleared in
@@ -140,15 +136,6 @@ export default function DeviceGrid({ devices, totalCount, page, pageSize, filter
                           </div>
                         )}
 
-                        {/* Data-source badges — only shown for cleared devices */}
-                        {!isPreClearance && dataSource === 'aletia_research' && (
-                          <span className="badge research" style={{ marginTop: 4 }}>ⓘ Aletia Research</span>
-                        )}
-                        {!isPreClearance && dataSource === 'manufacturer_submitted' && (
-                          <span className="badge research" style={{ marginTop: 4, background: '#f0fdf4', color: '#15803d', borderColor: 'rgba(21,128,61,.15)' }}>
-                            ✓ Manufacturer Submitted
-                          </span>
-                        )}
                         {device.breakthrough_designation && (
                           <span className="badge breakthrough" style={{ marginTop: 4, fontSize: 11, padding: '3px 8px' }}>⚡ Breakthrough</span>
                         )}

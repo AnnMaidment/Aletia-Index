@@ -6,9 +6,10 @@ import type { Metadata } from 'next'
 import type { CSSProperties } from 'react'
 import { AutonomousBadge } from '@/app/components/AutonomousBadge'
 import {
-  LabelValue, PipelineStepper, PreClearanceBanner, DataSourceTag,
+  LabelValue, PipelineStepper, PreClearanceBanner,
   AllIdentifiersPanel, TrialCard, sortTrials, primaryExternalId,
 } from './shared'
+import { technologyName } from '@/lib/displayName'
 import PreApprovalDevicePage from './PreApprovalDevicePage'
 import {
   normaliseIdentifierInput,
@@ -442,8 +443,6 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
                 </span>
               )}
 
-              <DataSourceTag source={dataSource} />
-
               {device.autonomous_output_mode && (
                 <AutonomousBadge
                   description={device.autonomous_output_description}
@@ -455,8 +454,8 @@ export default async function DevicePage({ params }: { params: Promise<{ id: str
 
             </div>
 
-            <h1 className="h1" style={{ marginBottom: 6 }}>{mfr.name}</h1>
-            <p className="subhead">{device.name ?? device.intended_use}</p>
+            <h1 className="h1" style={{ marginBottom: 6 }}>{technologyName(device.name)}</h1>
+            <p className="subhead">{mfr.name} · Manufacturer</p>
             {mfr.hq_location && (
               <p style={{ marginTop: 10, fontSize: 13, color: 'var(--muted)' }}>📍 {mfr.hq_location}</p>
             )}

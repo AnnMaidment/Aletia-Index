@@ -473,7 +473,6 @@ export default async function Home({
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 3.5v17l13-8.5-13-8.5Z" fill="currentColor" /></svg>
                 Take tour
               </button>
-              <a href="/request-review" className="reviewBtn">Request Review</a>
               <MobileMenu />
             </div>
           </div>
