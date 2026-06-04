@@ -1,33 +1,35 @@
 /**
- * lib/fdaSync.ts — A2b rewrite
+ * lib/fdaSync.ts — FDA discovery rebuild (June 2026)
  *
  * Three entry points, reflecting the three things FDA ingest actually does:
  *
- *   1. syncExistingDeviceFromFDA(aletiaId, kNumber, idType)
+ *   1. syncExistingDeviceFromFDA(aletiaId, externalIdValue, idType)
  *      Refresh an existing device's FDA-derived fields. Used when we already
- *      know which aletia_id maps to which K-number — no identity gating needed.
+ *      know which aletia_id maps to which identifier — no identity gating.
+ *      (Now applies the graduation rule — BUG-010 — on clearance.)
  *
  *   2. bulkSyncAllDevices()
  *      Walk device_external_ids (fda_k_number / fda_de_novo / fda_pma rows),
  *      call #1 for each. This is what the scheduled bulk sync calls.
  *
- *   3. ingestFdaDevice(kNumber, clearanceType)
- *      Process a K-number where we don't know yet whether it's new to Aletia.
- *      Goes through the 4d gate — exact identifier match updates; fuzzy match
- *      queues for admin review; no match creates a new device.
- *      This is what the seed/discovery path (PUT /api/fda-sync) now uses.
+ *   3. ingestFdaDevice(input: FdaIngestInput)
+ *      Process a discovered identifier (K… / DEN… / P…) through the 4d gate.
+ *      Used by the rebuilt discovery path (PUT /api/fda-sync). Takes the
+ *      already-known fields from the FDA published list OR the supplementary
+ *      sweep, so it does NOT re-fetch clearance data per device, and it now
+ *      handles De Novo (which has no openFDA single-record lookup).
  *
- * Key differences from pre-A2b:
- *   - The K-number is no longer conflated with the device's identity. aletia_id
- *     is the identity; K-numbers live in device_external_ids.
- *   - bulkSyncAllDevices joins through device_external_ids rather than
- *     relying on regional_registrations.device_link being the K-number.
- *   - Discovery uses the 4d gate so a new K-number that matches an existing
- *     multi-jurisdiction device (e.g. an MHRA-only record whose FDA clearance
- *     we're learning about for the first time) gets merged rather than
- *     creating a duplicate.
- *   - Writes use the service-role client. Pre-A2b used the anon client which
- *     worked only because RLS was permissive; tightening this is good hygiene.
+ * Rebuild changes (June 2026):
+ *   - ingestFdaDevice signature changed from (kNumber, idType) to (input):
+ *     it now accepts list-/sweep-provided device fields + a list-membership
+ *     flag + a provenance source. The ONLY caller is the PUT discovery handler.
+ *     (grep `ingestFdaDevice(` before committing to confirm.)
+ *   - buildFdaDeviceSeed no longer writes device_name into intended_use, and
+ *     ai_ml_integral is set from list membership (was blanket-true).
+ *   - Graduation rule: a recorded clearance sets pipeline_stage = null.
+ *   - On-list devices auto-create; sweep-only devices route to review
+ *     (autoCreate=false) rather than auto-creating — they are not list-
+ *     confirmed AI, so they must not spring into the curated index.
  */
 
 import { createAdminClient } from './supabase-admin'
@@ -50,7 +52,7 @@ export interface SyncResult {
 }
 
 export interface IngestResult {
-  k_number: string
+  identifier: string
   action: 'updated_existing' | 'created_new' | 'queued_for_review' | 'already_queued' | 'failed' | 'skipped_class_1'
   aletia_id: string | null
   error?: string
@@ -58,8 +60,52 @@ export interface IngestResult {
 
 type FdaIdType = 'fda_k_number' | 'fda_de_novo' | 'fda_pma'
 
+/**
+ * Normalised discovery input. The FDA list seed and the supplementary sweep
+ * both produce these — fully populated — so ingest does not re-fetch openFDA
+ * per device. `onList` drives ai_ml_integral and the auto-create policy.
+ */
+export interface FdaIngestInput {
+  identifier: string
+  id_type: FdaIdType
+  device_name?: string | null
+  applicant?: string | null
+  product_code?: string | null
+  decision_date?: string | null
+  clearance_type?: '510k' | 'De Novo' | 'PMA'
+  /** Membership of the FDA published AI/ML list. */
+  onList: boolean
+  /** Provenance for device_external_ids.source. */
+  source: 'fda_list' | 'fda_sweep'
+}
+
+// Identifier shape guards, per pathway.
+const ID_SHAPE: Record<FdaIdType, RegExp> = {
+  fda_k_number: /^K\d+/i,
+  fda_de_novo:  /^DEN\d+/i,
+  fda_pma:      /^P\d+/i,
+}
+
+const CLEARANCE_TYPE_BY_ID: Record<FdaIdType, '510k' | 'De Novo' | 'PMA'> = {
+  fda_k_number: '510k',
+  fda_de_novo:  'De Novo',
+  fda_pma:      'PMA',
+}
+
+// Classification is keyed by product_code and effectively immutable across a
+// run; cache it so a 1,451-device list seed makes ~85 lookups, not ~1,451.
+const classificationCache = new Map<string, Awaited<ReturnType<typeof getClassificationByProductCode>>>()
+
+async function classifyProductCode(productCode: string) {
+  if (!productCode) return null
+  if (classificationCache.has(productCode)) return classificationCache.get(productCode)!
+  const result = await getClassificationByProductCode(productCode)
+  classificationCache.set(productCode, result)
+  return result
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Health status derivation — unchanged from pre-A2b
+// Health status derivation — unchanged
 // ─────────────────────────────────────────────────────────────────────────────
 
 function deriveHealthStatus(
@@ -73,6 +119,7 @@ function deriveHealthStatus(
 
 // ─────────────────────────────────────────────────────────────────────────────
 // (1) Sync one existing device's FDA-derived fields
+//     (now applies the graduation rule on clearance — BUG-010)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function syncExistingDeviceFromFDA(
@@ -84,19 +131,14 @@ export async function syncExistingDeviceFromFDA(
   const updatedFields: string[] = []
 
   try {
-    // ── Fetch FDA clearance data by identifier type ───────────────────────
     const clearanceData = idType === 'fda_k_number'
       ? await get510kByKNumber(externalIdValue)
       : idType === 'fda_pma'
         ? await getPMAByNumber(externalIdValue)
-        : null   // De Novo: no dedicated helper, fall through to defaults
+        : null   // De Novo: no dedicated openFDA lookup, fall through to defaults
 
     const productCode = clearanceData?.product_code ?? ''
-
-    // ── Classification check — Class I is out of scope ────────────────────
-    const classification = productCode
-      ? await getClassificationByProductCode(productCode)
-      : null
+    const classification = productCode ? await classifyProductCode(productCode) : null
 
     if (productCode && !classification) {
       return {
@@ -108,7 +150,6 @@ export async function syncExistingDeviceFromFDA(
       }
     }
 
-    // ── Fetch recalls and adverse events ──────────────────────────────────
     const recalls = idType === 'fda_k_number'
       ? await getRecallsByKNumber(externalIdValue)
       : []
@@ -120,13 +161,14 @@ export async function syncExistingDeviceFromFDA(
 
     const health_status = deriveHealthStatus(hasActiveRecall, total_events)
 
-    // ── Update device_master ──────────────────────────────────────────────
-    // NOTE: we update, not upsert. The device is known to exist (aletiaId is
-    // the PK). Upsert here would risk an accidental insert with default values.
     const deviceUpdate: Record<string, unknown> = {
       health_status,
       last_automated_sync: new Date().toISOString(),
+      // Graduation rule (BUG-010 / B4): recording an FDA clearance means the
+      // device has a regulatory approval, so it is no longer in pipeline.
+      pipeline_stage: null,
     }
+    updatedFields.push('pipeline_stage')
 
     if (clearanceData?.applicant) {
       deviceUpdate.manufacturer_name = clearanceData.applicant
@@ -134,9 +176,7 @@ export async function syncExistingDeviceFromFDA(
     }
 
     if (clearanceData?.device_name) {
-      deviceUpdate.name = clearanceData.device_name           // NEW in A2b
-      // Don't overwrite intended_use if it's already been set richer elsewhere.
-      // We'll fill it only if null.
+      deviceUpdate.name = clearanceData.device_name
       updatedFields.push('name')
     }
 
@@ -157,7 +197,8 @@ export async function syncExistingDeviceFromFDA(
       throw new Error(`device_master update failed: ${deviceErr.message}`)
     }
 
-    // Fill intended_use only if it's currently null.
+    // Fill intended_use only if it's currently null. (We no longer seed
+    // intended_use with the device name; this leaves room for a real source.)
     if (clearanceData?.device_name) {
       await admin
         .from('device_master')
@@ -166,14 +207,13 @@ export async function syncExistingDeviceFromFDA(
         .is('intended_use', null)
     }
 
-    // ── Upsert regional_registrations with external_id_value ──────────────
     if (clearanceData) {
       const regRecord = {
         device_link:       aletiaId,
         country:           'US',
         regulatory_body:   'FDA',
         clearance_type:    clearanceData.clearance_type,
-        external_id_value: externalIdValue,           // NEW in A2b
+        external_id_value: externalIdValue,
         last_updated:      new Date().toISOString(),
       }
 
@@ -188,7 +228,6 @@ export async function syncExistingDeviceFromFDA(
       }
     }
 
-    // Touch last_seen_at on the external_ids row. Minor bookkeeping.
     await admin
       .from('device_external_ids')
       .update({ last_seen_at: new Date().toISOString() })
@@ -216,13 +255,7 @@ export async function syncExistingDeviceFromFDA(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// (2) Bulk re-sync — walk device_external_ids
-//
-// Joins through device_external_ids rather than regional_registrations, because
-// in A2b, regional_registrations.external_id_value is populated lazily (as each
-// sync runs), but device_external_ids has a row for every device from the
-// A2b backfill. Using it as the source of truth ensures we don't miss any
-// FDA-linked device.
+// (2) Bulk re-sync — walk device_external_ids (unchanged)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function bulkSyncAllDevices(): Promise<SyncResult[]> {
@@ -241,9 +274,7 @@ export async function bulkSyncAllDevices(): Promise<SyncResult[]> {
   const results: SyncResult[] = []
 
   for (const row of fdaIds) {
-    // 300ms delay between FDA calls to respect openFDA rate limits.
     await new Promise((resolve) => setTimeout(resolve, 300))
-
     const result = await syncExistingDeviceFromFDA(
       row.aletia_id,
       row.id_value,
@@ -256,90 +287,115 @@ export async function bulkSyncAllDevices(): Promise<SyncResult[]> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// (3) Discovery / seed — one K-number at a time, through the 4d gate
+// (3) Discovery / seed — one identifier at a time, through the 4d gate
 //
-// Called by the PUT /api/fda-sync endpoint when seeding. Each K-number
-// returned by openFDA goes through here. New K-numbers create devices;
-// known K-numbers update them; ambiguous matches queue for admin review.
+// Called by PUT /api/fda-sync. The FDA list seed and the supplementary sweep
+// both produce FdaIngestInput records (fully populated), so this no longer
+// re-fetches clearance data per device. It still classifies the product code
+// (cached) for the Class-I filter and accountability tier.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export async function ingestFdaDevice(
-  externalIdValue: string,
-  idType: FdaIdType = 'fda_k_number',
-): Promise<IngestResult> {
+export async function ingestFdaDevice(input: FdaIngestInput): Promise<IngestResult> {
   const admin = createAdminClient()
+  const { identifier, id_type, onList, source } = input
 
-  // Shape check. openFDA should only produce valid shapes but defend anyway.
-  if (idType === 'fda_k_number' && !/^K[0-9]+$/.test(externalIdValue)) {
+  // ── Shape check ──────────────────────────────────────────────────────────
+  if (!identifier || !ID_SHAPE[id_type].test(identifier)) {
     await logIngestionAnomaly(admin, {
       source: 'fda_sync',
       anomaly_type: 'unknown_identifier_shape',
-      identifier_value: externalIdValue,
-      identifier_type_expected: 'fda_k_number',
+      identifier_value: identifier,
+      identifier_type_expected: id_type,
     })
     return {
-      k_number: externalIdValue,
+      identifier,
       action: 'failed',
       aletia_id: null,
-      error: 'identifier did not match ^K[0-9]+$',
+      error: `identifier did not match expected shape for ${id_type}`,
     }
   }
 
-  // Fetch openFDA data up front — the 4d gate needs manufacturer + device
-  // name for candidate matching, and we also need classification info before
-  // committing to a create.
-  const clearanceData = idType === 'fda_k_number'
-    ? await get510kByKNumber(externalIdValue)
-    : idType === 'fda_pma'
-      ? await getPMAByNumber(externalIdValue)
-      : null
+  // ── Resolve device fields. Prefer the provided (list/sweep) data; only fall
+  //    back to an openFDA lookup if fields are missing AND a lookup exists.
+  //    De Novo has no lookup — it must arrive fully populated (the list does). ─
+  let device_name = input.device_name ?? null
+  let applicant = input.applicant ?? null
+  let product_code = input.product_code ?? null
+  const decision_date = input.decision_date ?? null
 
-  if (!clearanceData) {
-    return {
-      k_number: externalIdValue,
-      action: 'failed',
-      aletia_id: null,
-      error: 'openFDA returned no data',
+  if ((!device_name || !product_code) && id_type !== 'fda_de_novo') {
+    const fetched = id_type === 'fda_pma'
+      ? await getPMAByNumber(identifier)
+      : await get510kByKNumber(identifier)
+    if (fetched) {
+      device_name = device_name ?? fetched.device_name
+      applicant = applicant ?? fetched.applicant
+      product_code = product_code ?? fetched.product_code
     }
   }
 
-  // Class I — not our scope. Skip without error.
-  const productCode = clearanceData.product_code ?? ''
-  const classification = productCode
-    ? await getClassificationByProductCode(productCode)
-    : null
-
-  if (productCode && !classification) {
-    return {
-      k_number: externalIdValue,
-      action: 'skipped_class_1',
-      aletia_id: null,
-    }
+  if (!product_code) {
+    // No product code → can't classify → can't tier or Class-I filter.
+    // For a De Novo with no provided code this is a data gap, not a crash.
+    await logIngestionAnomaly(admin, {
+      source: 'fda_sync',
+      anomaly_type: 'classification_failed',
+      identifier_value: identifier,
+      identifier_type_expected: id_type,
+      context: { reason: 'no product_code available', source },
+    })
   }
 
-  // ── 4d gate ──────────────────────────────────────────────────────────────
+  // ── Class I filter / classification (cached per product code) ─────────────
+  const classification = product_code ? await classifyProductCode(product_code) : null
+  if (product_code && !classification) {
+    return { identifier, action: 'skipped_class_1', aletia_id: null }
+  }
+
+  const clearance_type = input.clearance_type ?? CLEARANCE_TYPE_BY_ID[id_type]
+
+  const payload = {
+    identifier,
+    id_type,
+    device_name,
+    applicant,
+    product_code,
+    decision_date,
+    clearance_type,
+    on_fda_list: onList,
+    source,
+    fetched_at: new Date().toISOString(),
+  }
+
+  // ── 4d gate ────────────────────────────────────────────────────────────────
+  // On-list devices are FDA-confirmed AI → auto-create. Sweep-only devices are
+  // NOT list-confirmed → autoCreate=false routes any no-match to review rather
+  // than minting an unconfirmed device into the curated index.
   const decision = await processExternalIdentifier({
-    supabase:    admin,
-    id_type:     idType,
-    id_value:    externalIdValue,
+    supabase:     admin,
+    id_type,
+    id_value:     identifier,
     jurisdiction: 'US',
-    source:      'fda_sync',
-    queueSource: 'fda_sync',
+    source,
+    queueSource:  'fda_sync',
+    // Reuse the production-proven review_reason value. A dedicated reason like
+    // 'sweep_unconfirmed_ai' would label sweep finds more precisely, but only
+    // adopt it after confirming ingestion_review_queue.review_reason has no
+    // CHECK constraint that would reject a new value.
     reviewReason: 'possible_merge',
-    manufacturerName: clearanceData.applicant ?? null,
-    deviceName:       clearanceData.device_name ?? null,
-    payload: {
-      ...clearanceData,
-      fetched_at: new Date().toISOString(),
-    },
-    autoCreate: true,
-    deviceSeed: buildFdaDeviceSeed(clearanceData, classification),
+    manufacturerName: applicant,
+    deviceName:       device_name,
+    payload,
+    autoCreate:  onList,
+    deviceSeed:  buildFdaDeviceSeed(
+      { applicant, device_name, clearance_type, decision_date, product_code },
+      classification,
+      { aiMlIntegral: onList },
+    ),
   })
 
-  // ── Post-gate: regional_registrations enrichment for create/update paths ─
+  // ── Post-gate enrichment for create/update paths ──────────────────────────
   if (decision.action === 'updated_existing' || decision.action === 'created_new') {
-    // For a freshly-created device, a regional_registrations row doesn't yet
-    // exist. For an updated one, it may or may not. Upsert handles both.
     await admin
       .from('regional_registrations')
       .upsert(
@@ -347,35 +403,32 @@ export async function ingestFdaDevice(
           device_link:       decision.aletia_id,
           country:           'US',
           regulatory_body:   'FDA',
-          clearance_type:    clearanceData.clearance_type,
-          external_id_value: externalIdValue,
+          clearance_type,
+          external_id_value: identifier,
           last_updated:      new Date().toISOString(),
         },
         { onConflict: 'device_link,country,regulatory_body' },
       )
 
-    return {
-      k_number: externalIdValue,
-      action: decision.action,
-      aletia_id: decision.aletia_id,
+    // Graduation rule (BUG-010): recording a clearance graduates the device
+    // out of pipeline. Applied on the update path too (create path sets it via
+    // the seed). Never touches ai_ml_integral, so a list-confirmed device is
+    // not downgraded by a later sweep hit.
+    if (decision.action === 'updated_existing') {
+      await admin
+        .from('device_master')
+        .update({ pipeline_stage: null })
+        .eq('aletia_id', decision.aletia_id)
     }
+
+    return { identifier, action: decision.action, aletia_id: decision.aletia_id }
   }
 
   if (decision.action === 'queued_for_review' || decision.action === 'already_queued') {
-    return {
-      k_number: externalIdValue,
-      action: decision.action,
-      aletia_id: null,
-    }
+    return { identifier, action: decision.action, aletia_id: null }
   }
 
-  // action === 'failed'
-  return {
-    k_number: externalIdValue,
-    action: 'failed',
-    aletia_id: null,
-    error: decision.error,
-  }
+  return { identifier, action: 'failed', aletia_id: null, error: decision.error }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -383,11 +436,11 @@ export async function ingestFdaDevice(
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface FdaClearanceData {
-  applicant?: string
-  device_name?: string
-  clearance_type?: string
-  decision_date?: string
-  product_code?: string
+  applicant?: string | null
+  device_name?: string | null
+  clearance_type?: string | null
+  decision_date?: string | null
+  product_code?: string | null
 }
 
 interface FdaClassification {
@@ -397,6 +450,7 @@ interface FdaClassification {
 function buildFdaDeviceSeed(
   clearance: FdaClearanceData,
   classification: FdaClassification | null,
+  opts: { aiMlIntegral: boolean },
 ): Record<string, unknown> {
   const tierMap: Record<string, number> = { '2': 2, '3': 4 }
   const tier = classification?.device_class
@@ -407,15 +461,23 @@ function buildFdaDeviceSeed(
     // aletia_id omitted — sequence DEFAULT allocates.
     manufacturer_name:   clearance.applicant ?? null,
     name:                clearance.device_name ?? null,
-    intended_use:        clearance.device_name ?? null,
+    // FIX: do NOT mirror the device name into intended_use. Leave it null for a
+    // real source (FDA Indications-for-Use sourcing lands after the prune).
+    intended_use:        null,
     country_of_origin:   'US',
-    health_status:       'Green',              // derived properly on next full sync cycle
+    health_status:       'Green',              // derived properly on next full sync
     aletia_verified:     false,
     approval_status:     'approved',
     data_source:         'registry_sync',
     accountability_tier: tier,
     last_automated_sync: new Date().toISOString(),
     excluded:            false,
-    ai_ml_integral:      true,                 // FDA seed path only runs over AI/ML product codes, so this is safe
+    // Graduation rule on the create path: a cleared/approved device is not in
+    // pipeline.
+    pipeline_stage:      null,
+    // FIX: list membership, not a blanket true. Sweep-only devices reach the
+    // create path only via admin promotion; auto-discovery sets this from
+    // onList (false for sweep-only, which are queued, not auto-created).
+    ai_ml_integral:      opts.aiMlIntegral,
   }
 }

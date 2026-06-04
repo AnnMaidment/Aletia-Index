@@ -10,9 +10,22 @@
  * Scope: Class II and Class III AI/ML medical devices only.
  * Jurisdictions: FDA (US), CE Mark (EU), SAHPRA (ZA)
  *
- * Product codes last updated: March 2026
- * Source: https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-and-machine-learning-aiml-enabled-medical-devices
+ * DISCOVERY ROLE (rebuilt June 2026 — FDA discovery rebuild, Phase 1):
+ *   The authoritative discovery seed is now the FDA's own published AI/ML list
+ *   (see lib/fdaList.ts). The product-code + keyword searches in THIS file are
+ *   DEMOTED to a *supplementary sweep* — they exist only to catch recent
+ *   devices not yet on the published list. They no longer define "is this AI?";
+ *   list membership does (see buildFdaDeviceSeed in lib/fdaSync.ts).
+ *
+ *   All discovery queries are now paginated (skip), so no query truncates at
+ *   the openFDA 1000-row cap. The sweep spans 510(k), De Novo (which lives in
+ *   the 510k dataset — openFDA has no `denovo` endpoint) and PMA.
+ *
+ * Product codes last reviewed: June 2026 (duplicate QKB removed).
+ * Source: https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-enabled-medical-devices
  */
+
+import { classifyIdentifier, type FdaIdType } from './fdaList';
 
 const FDA_BASE = 'https://api.fda.gov/device';
 const API_KEY = process.env.OPENFDA_API_KEY ?? '';
@@ -20,13 +33,23 @@ const API_KEY = process.env.OPENFDA_API_KEY ?? '';
 // Aletia Index only covers Class II and III — Class I is out of scope
 const ALLOWED_DEVICE_CLASSES = ['2', '3'];
 
+// openFDA hard limits: max `limit` per call is 1000; `skip` may not exceed 25000.
+const OPENFDA_MAX_LIMIT = 1000;
+const OPENFDA_MAX_SKIP = 25000;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 /**
- * Complete list of FDA product codes associated with AI/ML medical devices.
- * Derived from the FDA's official AI-Enabled Medical Devices list (March 2026).
- * This replaces the original 6-code list which missed devices like K251293 (QUO).
+ * Supplementary product codes associated with AI/ML medical devices.
+ *
+ * NOTE (June 2026): this list is no longer the discovery authority — the FDA's
+ * published AI/ML list is (lib/fdaList.ts). These codes now drive only the
+ * supplementary sweep for very recent devices not yet on the published list.
+ * Broad imaging-system codes here (JAK/KPR/LLZ/IYN) intentionally over-reach;
+ * the seed builder no longer blanket-flags swept devices as AI (it defers to
+ * list membership), and the prune removes off-list over-capture.
  *
  * Grouped by clinical area for maintainability.
- * Update this list quarterly when FDA publishes new authorisations.
  */
 export const AIML_PRODUCT_CODES = [
   // ── RADIOLOGY — imaging AI, reconstruction, segmentation ──────────────────
@@ -57,7 +80,7 @@ export const AIML_PRODUCT_CODES = [
   'POK', // Fetal / thyroid ultrasound AI
   'QBC', // Neurological imaging AI
   'JAA', // Radiology image management with AI
-  'QKB', // Segmentation / auto-contour (RT planning)
+  // (duplicate 'QKB' removed June 2026 — it was listed twice in this block)
 
   // ── CARDIOVASCULAR ────────────────────────────────────────────────────────
   'QYE', // ECG AI — low ejection fraction, cardiac function detection
@@ -213,7 +236,22 @@ export interface FDAClassificationResult {
   definition: string;
 }
 
-// ── Internal Fetch Helper ──────────────────────────────────────────────────────
+/**
+ * Normalised record emitted by the supplementary sweep. Carries the real
+ * identifier and its resolved id_type so the discovery path (PUT /api/fda-sync)
+ * can ingest De Novo (DEN…) and PMA (P…) results with the correct id_type
+ * rather than assuming everything is a K-number.
+ */
+export interface FdaSweepRecord {
+  identifier: string;
+  id_type: FdaIdType;
+  device_name: string;
+  applicant: string;
+  product_code: string;
+  decision_date: string;
+}
+
+// ── Internal Fetch Helpers ──────────────────────────────────────────────────────
 
 async function fdaFetch<T>(
   endpoint: string,
@@ -228,7 +266,7 @@ async function fdaFetch<T>(
       headers: { Accept: 'application/json' },
       cache: 'no-store',
     });
-    if (res.status === 404) return [];
+    if (res.status === 404) return []; // openFDA returns 404 for "no matches"
     if (!res.ok) {
       console.error(`[fda.ts] HTTP ${res.status} → ${url}`);
       return null;
@@ -239,6 +277,65 @@ async function fdaFetch<T>(
     console.error(`[fda.ts] Network error → ${url}:`, err);
     return null;
   }
+}
+
+/**
+ * Paginated fetch: walks `skip` until a short page is returned or the openFDA
+ * skip ceiling (25000) is reached. Fixes the previous structural undercount
+ * where queries silently capped at the first 1000 rows.
+ *
+ * On a mid-pagination network error it returns what it has gathered so far
+ * (with a warning) rather than nothing — a partial sweep is better than a
+ * dropped one, and the next run reconciles. Returns null only if the very
+ * first page failed.
+ */
+async function fdaFetchAll<T>(
+  endpoint: string,
+  params: Record<string, string>,
+  opts: { pageSize?: number; delayMs?: number; label?: string } = {}
+): Promise<T[] | null> {
+  const pageSize = Math.min(opts.pageSize ?? OPENFDA_MAX_LIMIT, OPENFDA_MAX_LIMIT);
+  const delayMs = opts.delayMs ?? 300;
+  const label = opts.label ?? endpoint;
+
+  const out: T[] = [];
+  let skip = 0;
+  let pageIndex = 0;
+
+  while (true) {
+    const page = await fdaFetch<T>(endpoint, {
+      ...params,
+      limit: String(pageSize),
+      skip: String(skip),
+    });
+
+    if (page === null) {
+      if (pageIndex === 0) return null; // first page failed → genuine failure
+      console.warn(`[fda.ts] ${label}: network error after ${out.length} rows; returning partial.`);
+      break;
+    }
+
+    out.push(...page);
+    pageIndex++;
+
+    if (page.length < pageSize) break; // last page
+
+    skip += pageSize;
+    if (skip >= OPENFDA_MAX_SKIP) {
+      // A single slice exceeding 25k means this code/query is too broad to
+      // paginate with skip alone — would need search_after. Product-code
+      // batches never approach this; warn loudly if it ever happens.
+      console.warn(
+        `[fda.ts] ${label}: hit openFDA skip ceiling (${OPENFDA_MAX_SKIP}) — ` +
+        `slice truncated at ${out.length} rows. Narrow the query or use search_after.`
+      );
+      break;
+    }
+
+    await sleep(delayMs);
+  }
+
+  return out;
 }
 
 // ── 510(k) Clearances ──────────────────────────────────────────────────────────
@@ -374,21 +471,23 @@ export async function getClassificationByProductCode(
   };
 }
 
-// ── Bulk AI/ML Device Search ───────────────────────────────────────────────────
+// ── Supplementary sweep: 510(k) by product codes (PAGINATED) ───────────────────
 
 /**
- * PRIMARY SEED STRATEGY: Search by product codes.
+ * SUPPLEMENTARY SWEEP (product codes, 510k dataset).
  *
- * This is the most reliable method. It catches devices regardless of how
- * the manufacturer names them — "CardioVision" is caught by QUO just as
- * "AI Chest Analysis" is caught by QFM.
+ * Was the primary seed; now a sweep for recent devices not yet on the FDA
+ * published list. The 510k dataset includes both 510(k) and De Novo decision
+ * types (openFDA has no separate `denovo` endpoint), so this naturally sweeps
+ * De Novo records too — the caller classifies each result by identifier prefix.
  *
- * The FDA API accepts a max of ~100 characters in a search query, so we
- * batch the codes into groups of 15 and merge the results.
+ * Codes are batched (15 per query) AND each batch is fully paginated, so the
+ * old `limit:1000`-per-batch truncation (which clipped QIH, ~40% of devices)
+ * is gone.
  */
 export async function searchAIMLByProductCodes(): Promise<FDA510kResult[]> {
   const BATCH_SIZE = 15;
-  const uniqueCodes = [...new Set(AIML_PRODUCT_CODES)]; // deduplicate
+  const uniqueCodes = [...new Set(AIML_PRODUCT_CODES)]; // belt-and-braces dedupe
   const batches: string[][] = [];
 
   for (let i = 0; i < uniqueCodes.length; i += BATCH_SIZE) {
@@ -399,13 +498,13 @@ export async function searchAIMLByProductCodes(): Promise<FDA510kResult[]> {
   const seen = new Set<string>();
 
   for (const batch of batches) {
-    // Respect FDA rate limit between batches
-    await new Promise(r => setTimeout(r, 300));
+    await sleep(300); // respect FDA rate limit between batches
 
-    const results = await fdaFetch<Record<string, string>>('510k', {
-      search: `product_code:(${batch.join(' OR ')})`,
-      limit: '1000',
-    });
+    const results = await fdaFetchAll<Record<string, string>>(
+      '510k',
+      { search: `product_code:(${batch.join(' OR ')})` },
+      { label: `510k product_code batch [${batch[0]}…]` }
+    );
 
     if (!results) continue;
 
@@ -424,22 +523,23 @@ export async function searchAIMLByProductCodes(): Promise<FDA510kResult[]> {
     }
   }
 
-  console.info(`[fda.ts] searchAIMLByProductCodes: ${allResults.length} devices found across ${batches.length} batches`);
+  console.info(`[fda.ts] searchAIMLByProductCodes: ${allResults.length} devices across ${batches.length} batches (paginated)`);
   return allResults;
 }
 
+// ── Supplementary sweep: 510(k) by AI keyword (PAGINATED) ──────────────────────
+
 /**
- * SUPPLEMENTARY SEED STRATEGY: Search by AI keywords in device name.
- *
- * Catches devices that have "AI" or "artificial intelligence" explicitly
- * in their name but use a product code not in our list.
- * Run this after searchAIMLByProductCodes and merge results.
+ * SUPPLEMENTARY SWEEP (keyword, 510k dataset). Catches devices whose name
+ * carries an AI term but whose product code isn't in AIML_PRODUCT_CODES.
+ * Now paginated.
  */
 export async function searchAIMLDevices(): Promise<FDA510kResult[]> {
-  const results = await fdaFetch<Record<string, string>>('510k', {
-    search: 'device_name:(AI OR "artificial intelligence" OR "machine learning" OR "deep learning" OR "neural network")',
-    limit: '1000',
-  });
+  const results = await fdaFetchAll<Record<string, string>>(
+    '510k',
+    { search: 'device_name:(AI OR "artificial intelligence" OR "machine learning" OR "deep learning" OR "neural network")' },
+    { label: '510k keyword sweep' }
+  );
   if (!results) return [];
 
   return results.map((r) => ({
@@ -453,10 +553,139 @@ export async function searchAIMLDevices(): Promise<FDA510kResult[]> {
   }));
 }
 
+// ── Supplementary sweep: PMA by product codes (PAGINATED) ──────────────────────
+
 /**
- * COMBINED SEED: Run both strategies and deduplicate by K number.
- * Use this for full reseeds. The product code search is primary;
- * the name search catches any stragglers.
+ * SUPPLEMENTARY SWEEP (product codes, PMA dataset). Class III completeness:
+ * the published list carries PMAs, but recent PMA authorisations not yet listed
+ * are caught here. Uses the `pma` endpoint (distinct from 510k) and emits the
+ * pma_number as identifier.
+ */
+export async function searchAIMLPMAByProductCodes(): Promise<FDAPMAResult[]> {
+  const BATCH_SIZE = 15;
+  const uniqueCodes = [...new Set(AIML_PRODUCT_CODES)];
+  const batches: string[][] = [];
+
+  for (let i = 0; i < uniqueCodes.length; i += BATCH_SIZE) {
+    batches.push(uniqueCodes.slice(i, i + BATCH_SIZE));
+  }
+
+  const allResults: FDAPMAResult[] = [];
+  const seen = new Set<string>();
+
+  for (const batch of batches) {
+    await sleep(300);
+
+    const results = await fdaFetchAll<Record<string, string>>(
+      'pma',
+      { search: `product_code:(${batch.join(' OR ')})` },
+      { label: `pma product_code batch [${batch[0]}…]` }
+    );
+
+    if (!results) continue;
+
+    for (const r of results) {
+      if (!r.pma_number || seen.has(r.pma_number)) continue;
+      seen.add(r.pma_number);
+      allResults.push({
+        pma_number: r.pma_number,
+        device_name: r.device_name,
+        applicant: r.applicant,
+        decision_date: r.decision_date,
+        decision_description: r.decision_description,
+        product_code: r.product_code,
+        clearance_type: 'PMA' as const,
+      });
+    }
+  }
+
+  console.info(`[fda.ts] searchAIMLPMAByProductCodes: ${allResults.length} PMA devices across ${batches.length} batches (paginated)`);
+  return allResults;
+}
+
+// ── Combined supplementary sweep (normalised, for the discovery path) ──────────
+
+/**
+ * The full supplementary sweep used by the rebuilt discovery flow AFTER the
+ * FDA-list seed has run. Merges paginated 510(k) (product-code + keyword) and
+ * PMA (product-code) results, classifies each by identifier prefix (so DEN…
+ * → fda_de_novo, P… → fda_pma, K… → fda_k_number), and dedupes.
+ *
+ * Returns normalised records; the caller adds only identifiers not already
+ * present from the list seed (handled at the ingest layer via the 4d gate).
+ *
+ * NOTE on De Novo: there is no openFDA `denovo` endpoint — De Novo decisions
+ * live in the 510k dataset. Whether a swept De Novo record exposes its DEN…
+ * number or a granted K… number in `k_number` should be eyeballed on the first
+ * run (this function logs the id_type distribution). The authoritative De Novo
+ * source is the published list (lib/fdaList.ts), which carries DEN… directly.
+ */
+export async function searchAllAIMLForSweep(): Promise<FdaSweepRecord[]> {
+  const [byCode, byName, byPMA] = await Promise.all([
+    searchAIMLByProductCodes(),
+    searchAIMLDevices(),
+    searchAIMLPMAByProductCodes(),
+  ]);
+
+  const out: FdaSweepRecord[] = [];
+  const seen = new Set<string>();
+  let skipped = 0;
+
+  const pushOne = (
+    identifier: string,
+    device_name: string,
+    applicant: string,
+    product_code: string,
+    decision_date: string,
+    pmaHint = false
+  ) => {
+    const id = (identifier ?? '').trim();
+    if (!id) { skipped++; return; }
+
+    // PMA numbers are emitted from the pma endpoint; classify directly to avoid
+    // any ambiguity with the prefix matcher.
+    const cls = pmaHint
+      ? { id_type: 'fda_pma' as FdaIdType }
+      : classifyIdentifier(id);
+
+    if (!cls) { skipped++; return; }
+
+    const key = `${cls.id_type}:${id}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+
+    out.push({
+      identifier: id,
+      id_type: cls.id_type,
+      device_name: device_name ?? '',
+      applicant: applicant ?? '',
+      product_code: product_code ?? '',
+      decision_date: decision_date ?? '',
+    });
+  };
+
+  for (const r of byCode) pushOne(r.k_number, r.device_name, r.applicant, r.product_code, r.decision_date);
+  for (const r of byName) pushOne(r.k_number, r.device_name, r.applicant, r.product_code, r.decision_date);
+  for (const r of byPMA)  pushOne(r.pma_number, r.device_name, r.applicant, r.product_code, r.decision_date, true);
+
+  const counts = out.reduce<Record<string, number>>((acc, e) => {
+    acc[e.id_type] = (acc[e.id_type] ?? 0) + 1;
+    return acc;
+  }, {});
+
+  console.info(
+    `[fda.ts] searchAllAIMLForSweep: ${out.length} unique sweep records ` +
+    `(fda_k_number=${counts.fda_k_number ?? 0}, fda_de_novo=${counts.fda_de_novo ?? 0}, ` +
+    `fda_pma=${counts.fda_pma ?? 0}); ${skipped} skipped (blank/unrecognised identifier).`
+  );
+
+  return out;
+}
+
+/**
+ * @deprecated Pre-rebuild combined 510(k) seed. Superseded by the FDA-list seed
+ * (lib/fdaList.ts) plus searchAllAIMLForSweep(). Retained so nothing breaks if
+ * still referenced; the discovery path no longer calls it. Now paginated.
  */
 export async function searchAllAIMLDevices(): Promise<FDA510kResult[]> {
   const [byCode, byName] = await Promise.all([
@@ -464,7 +693,7 @@ export async function searchAllAIMLDevices(): Promise<FDA510kResult[]> {
     searchAIMLDevices(),
   ]);
 
-  const seen = new Set(byCode.map(d => d.k_number));
+  const seen = new Set(byCode.map((d) => d.k_number));
   const combined = [...byCode];
 
   for (const d of byName) {
@@ -474,6 +703,6 @@ export async function searchAllAIMLDevices(): Promise<FDA510kResult[]> {
     }
   }
 
-  console.info(`[fda.ts] searchAllAIMLDevices: ${combined.length} total unique devices`);
+  console.info(`[fda.ts] searchAllAIMLDevices (deprecated): ${combined.length} total unique devices`);
   return combined;
 }
