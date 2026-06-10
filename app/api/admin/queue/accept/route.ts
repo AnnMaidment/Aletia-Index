@@ -333,6 +333,8 @@ export async function POST(req: NextRequest) {
     await enrichFromFdaQueue(admin, aletiaId, classified, raw)
   } else if (queueRow.source === 'mhra_sync') {
     await enrichFromMhraQueue(admin, aletiaId, classified, raw)
+  } else if (queueRow.source === 'eudamed_sync') {
+    await enrichFromEudamedQueue(admin, aletiaId, classified, raw)
   }
   // Other sources — no per-source enrichment today. Adding one is a matter of
   // writing a new enrichFrom* helper below and plumbing it in.
@@ -408,6 +410,12 @@ function classifyQueueIdentifier(queueRow: {
     case 'mhra_sync':
       // source_id should be the raw numeric MHRA device ID (no MHRA- prefix).
       return { id_type: 'mhra_device_id', id_value: sourceId, jurisdiction: 'GB' }
+
+    case 'eudamed_sync':
+      // source_id is the EUDAMED udiDiData record UUID (euUuid) — the
+      // retrievable EU handle. The Basic UDI layer isn't reachable yet, so we
+      // attach on the UDI-DI record under its own type, not 'eudamed_basic_udi'.
+      return { id_type: 'eudamed_udi_di', id_value: sourceId, jurisdiction: 'EU' }
 
     case 'scarlet_eudamed_sync':
       return { id_type: 'scarlet_pccp_id', id_value: sourceId, jurisdiction: null }
@@ -621,6 +629,67 @@ async function enrichFromMhraQueue(
     device_class:      typeof raw.device_class === 'string' ? raw.device_class : null,
     gmdn_code:         typeof raw.gmdn_code === 'string' ? raw.gmdn_code : null,
     gmdn_term:         typeof raw.gmdn_term === 'string' ? raw.gmdn_term : null,
+  })
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enrichment: eudamed_sync queue row → regional_registrations row (EU)
+//
+// raw_data is the spread EudamedDeviceRecord (lib/eudamed.ts) — notified_body,
+// legislation, risk_class, certificate_number, etc. regulatory_body holds the
+// notified body name; clearance_type the CE/MDR route. external_id_value is the
+// basic UDI-DI, which equals classified.id_value — and the merge block has
+// already appended that device_external_ids row, so the regional_registrations
+// consistency trigger is satisfied.
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function enrichFromEudamedQueue(
+  admin: ReturnType<typeof getServiceClient>,
+  aletiaId: string,
+  classified: ClassifiedIdentifier,
+  raw: Record<string, unknown>,
+): Promise<void> {
+  const notifiedBody =
+    typeof raw.notified_body === 'string' && raw.notified_body ? raw.notified_body : 'pending'
+  const legislation = typeof raw.legislation === 'string' ? raw.legislation : null
+  // NB/legislation are a deferred backfill (not retrievable from EUDAMED yet —
+  // revisit monthly). 'pending' is explicit, not a fabricated body/route.
+  const clearanceType =
+    legislation?.includes('MDR')  ? 'CE Mark (MDR)' :
+    legislation?.includes('IVDR') ? 'CE Mark (IVDR)' :
+    legislation?.includes('MDD')  ? 'CE Mark (MDD, legacy)' :
+    'pending'
+  const riskClass = typeof raw.risk_class === 'string' ? raw.risk_class : null
+
+  const { data: existing } = await admin
+    .from('regional_registrations')
+    .select('reg_id')
+    .eq('device_link', aletiaId)
+    .eq('country', 'EU')
+    .eq('regulatory_body', notifiedBody)
+    .maybeSingle()
+
+  if (existing) {
+    await admin
+      .from('regional_registrations')
+      .update({
+        external_id_value: classified.id_value,
+        clearance_type:    clearanceType,
+        device_class:      riskClass,
+        last_updated:      new Date().toISOString(),
+      })
+      .eq('reg_id', existing.reg_id)
+    return
+  }
+
+  await admin.from('regional_registrations').insert({
+    device_link:       aletiaId,
+    country:           'EU',
+    regulatory_body:   notifiedBody,
+    clearance_type:    clearanceType,
+    external_id_value: classified.id_value,
+    device_class:      riskClass,
+    last_updated:      new Date().toISOString(),
   })
 }
 

@@ -1,110 +1,42 @@
 /**
- * Aletia Index — /api/eudamed-scarlet-sync
+ * app/api/eudamed-scarlet-sync/route.ts — PARKED (9 June 2026).
  *
- * API route that queries EUDAMED for all Scarlet NB (3022) certified devices,
- * then routes them through the same ingestion_review_queue pattern used by
- * the O'Leary PCCP pipeline — so unknown devices get human review before
- * going live.
+ * RETIRED, not patched. This route was the on-demand "Scarlet NB (3022)
+ * enrichment" stopgap. It is broken under A2a/A2b: it queries the dead
+ * device_master.device_id / device_master.eudamed_basic_udi columns and writes
+ * A2a-era device_master fields (ce_mark_status, ce_certificate_number,
+ * ce_notified_body, …) that the A2b model moved to device_external_ids +
+ * regional_registrations.
  *
- * Trigger manually:
- *   curl -X POST https://aletia-index.vercel.app/api/eudamed-scarlet-sync \
- *     -H "x-sync-token: $SYNC_SECRET"
+ * It is superseded by the EUDAMED discovery ingest:
+ *   - lib/eudamedList.ts   — EMDN cndCode allow-list (the AI-isolation heuristic)
+ *   - lib/eudamed.ts       — public-surface client + fetchEudamedAiMlDevices()
+ *   - lib/eudamedSync.ts   — ingestEudamedDevice() through the 4d gate
+ *   - app/api/eudamed-sync/route.ts — the replacement endpoint
  *
- * Add to vercel.json crons (monthly is appropriate — EUDAMED changes slowly):
- *   { "path": "/api/eudamed-scarlet-sync", "schedule": "0 4 1 * *" }
+ * Per EUDAMED-REINGEST-SPEC.md (locked decision 1) and EUDAMED-STEP-0A-FINDINGS.md
+ * §6: park, don't patch. Kept as a tombstone so old links/crons fail loudly with
+ * a pointer rather than silently running against dead columns.
+ *
+ * The single-NB approach (Scarlet only) was also too narrow — the new ingest
+ * discovers across the whole EMDN allow-list, not one notified body.
  */
 
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import { queryScarletDevices, type ScarletDevice } from '@/lib/scarletEudamedQuery';
-// add a comment
-export async function POST(req: Request) {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-  // Auth check — same pattern as pccp-ingest
-  const token = req.headers.get('x-sync-token') ??
-    req.headers.get('authorization')?.replace('Bearer ', '');
 
-  if (token !== process.env.SYNC_SECRET && token !== process.env.CRON_SECRET) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+const PARKED = {
+  error: 'Gone — this route is retired.',
+  replaced_by: '/api/eudamed-sync',
+  reason:
+    'eudamed-scarlet-sync queried dead A2a columns (device_master.device_id / eudamed_basic_udi) ' +
+    'and was single-NB. Use the EUDAMED discovery ingest (EMDN allow-list → 4d gate).',
+  see: 'EUDAMED-STEP-0A-FINDINGS.md §6; EUDAMED-REINGEST-SPEC.md',
+} as const;
 
-  try {
-    const devices = await queryScarletDevices();
+export async function POST() {
+  return NextResponse.json(PARKED, { status: 410 });
+}
 
-    let updated    = 0;
-    let queued     = 0;
-    let errors     = 0;
-    const unknown: string[] = [];
-
-    for (const device of devices) {
-      try {
-        // Check if this device already exists in device_master
-        // Match on EUDAMED Basic UDI (most reliable EU identifier)
-        const { data: existing } = await supabase
-          .from('device_master')
-          .select('device_id, pccp_status')
-          .eq('eudamed_basic_udi', device.eudamed_basic_udi)
-          .maybeSingle();
-
-        if (existing) {
-          // Device is already in Aletia — enrich with EU certification data
-          await supabase
-            .from('device_master')
-            .update({
-              ce_mark_status:       'certified',
-              ce_certificate_number: device.certificate_number,
-              ce_certificate_expiry: device.certificate_expiry,
-              ce_notified_body:     'Scarlet NB B.V. (3022)',
-              eu_risk_class:        device.risk_class,
-              emdn_code:            device.emdn_code,
-              last_automated_sync:  new Date().toISOString(),
-            })
-            .eq('device_id', existing.device_id);
-
-          updated++;
-        } else {
-          // Unknown device — queue for review, same as O'Leary pipeline
-          await supabase
-            .from('ingestion_review_queue')
-            .upsert({
-              source:               'eudamed_scarlet_nb',
-              source_id:            device.eudamed_basic_udi,
-              device_name:          device.device_name,
-              manufacturer:         device.manufacturer_name,
-              raw_data:             device,
-              status:               'pending',
-              review_note:          `Scarlet NB (3022) certified device. EU ${device.risk_class}. EMDN: ${device.emdn_code ?? 'unknown'}. ai_ml_integral=true (Scarlet only certifies SaMD/AIaMD).`,
-            }, {
-              onConflict: 'source,source_id',
-              ignoreDuplicates: true,
-            });
-
-          unknown.push(device.device_name);
-          queued++;
-        }
-      } catch (err) {
-        console.error(`Error processing ${device.device_name}:`, err);
-        errors++;
-      }
-    }
-
-    return NextResponse.json({
-      success: true,
-      total_scarlet_devices: devices.length,
-      updated_in_device_master: updated,
-      queued_for_review: queued,
-      errors,
-      queued_devices: unknown,
-    });
-
-  } catch (err) {
-    console.error('EUDAMED Scarlet sync error:', err);
-    return NextResponse.json(
-      { error: 'Sync failed', detail: (err as Error).message },
-      { status: 500 }
-    );
-  }
+export async function GET() {
+  return NextResponse.json(PARKED, { status: 410 });
 }

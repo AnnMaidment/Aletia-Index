@@ -141,6 +141,7 @@ export const EXT_ID_LABEL: Record<ExternalIdType, string> = {
   mhra_device_id:        'MHRA Device',
   ce_certificate:        'CE Certificate',
   eudamed_basic_udi:     'EUDAMED Basic UDI',
+  eudamed_udi_di:        'EUDAMED UDI-DI',
   nct:                   'ClinicalTrials.gov',
   udi_di:                'UDI-DI',
   scarlet_pccp_id:       'Scarlet PCCP',

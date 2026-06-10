@@ -60,6 +60,7 @@ export type ExternalIdType =
   | 'mhra_device_id'
   | 'ce_certificate'
   | 'eudamed_basic_udi'
+  | 'eudamed_udi_di'
   | 'nct'
   | 'udi_di'
   | 'scarlet_pccp_id'
