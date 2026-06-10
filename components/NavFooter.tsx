@@ -46,6 +46,7 @@ export function Nav({ active }: { active: string }) {
               <a href="/methodology" className={active === 'methodology' ? 'active' : ''}>Methodology</a>
               <a href="/insights" className={active === 'insights' ? 'active' : ''}>Insights</a>
               <a href="/clinicians" className={active === 'clinicians' ? 'active' : ''}>For Clinicians</a>
+              <a href="/regulators" className={active === 'regulators' ? 'active' : ''}>For Regulators</a>
             </div>
             <div className="navRight">
               <button className="iconBtn" aria-label="Search">
@@ -67,6 +68,7 @@ export function Nav({ active }: { active: string }) {
         <a href="/methodology" className={active === 'methodology' ? 'active' : ''} onClick={() => setMenuOpen(false)}>Methodology</a>
         <a href="/insights" className={active === 'insights' ? 'active' : ''} onClick={() => setMenuOpen(false)}>Insights</a>
         <a href="/clinicians" className={active === 'clinicians' ? 'active' : ''} onClick={() => setMenuOpen(false)}>For Clinicians</a>
+        <a href="/regulators" className={active === 'regulators' ? 'active' : ''} onClick={() => setMenuOpen(false)}>For Regulators</a>
         <a href="/request-review" className="primaryBtn" onClick={() => setMenuOpen(false)}>Request Review</a>
       </div>
     </>

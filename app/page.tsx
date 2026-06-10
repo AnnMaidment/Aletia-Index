@@ -469,6 +469,7 @@ export default async function Home({
               <a href="/about">About</a>
               <a href="/methodology">Methodology</a>
               <a href="/clinicians">For Clinicians</a>
+              <a href="/regulators">For Regulators</a>
             </div>
             <div className="navRight">
               <button type="button" className="tourBtn" aria-label="Take a tour">
