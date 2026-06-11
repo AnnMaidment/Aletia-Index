@@ -39,6 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .from('device_master')
     .select('aletia_id, last_automated_sync')
     .eq('excluded', false)
+    .is('merged_into', null)
 
   console.log('[sitemap] device count:', devices?.length ?? 0)
   if (error) {

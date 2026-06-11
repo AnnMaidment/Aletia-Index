@@ -30,11 +30,11 @@ export default function Regulators() {
         .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius2);box-shadow:var(--shadow)}
         .cardPad{padding:32px}
         hr.sep{border:none;border-top:1px solid var(--line);margin:24px 0}
-        .sectionTitle{font-size:17px;font-weight:700;color:var(--text);margin-bottom:12px;font-family:Georgia,"Times New Roman",serif}
+        .sectionTitle{font-size:17px;font-weight:700;color:var(--text);margin-bottom:12px}
         .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.7);color:#173f86;border:1px solid rgba(188,206,233,.8);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
         .heroRow{display:flex;justify-content:space-between;align-items:flex-end;gap:26px;padding-bottom:28px}
         .heroNote{max-width:400px;padding:14px 16px;border:1px solid rgba(195,208,230,.85);border-radius:14px;background:rgba(255,255,255,.63);color:#4d5f7b;font-size:14px;line-height:1.55;flex-shrink:0}
-        .lead{font-family:Georgia,"Times New Roman",serif;font-size:17px;line-height:1.7;color:#14223e}
+        .lead{font-size:14.5px;line-height:1.75;color:var(--text)}
         .lead strong{color:#092657;font-weight:800}
         .infoGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:4px}
         .infoCard{border-radius:13px;background:#f7f9fc;border:1px solid #dbe5f1;padding:18px 20px;line-height:1.5}

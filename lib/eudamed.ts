@@ -18,7 +18,7 @@
  *              udiPiType.softwareIdentification is a PRODUCTION-ID type, NOT an
  *              AI flag — never gate on it.
  *   Basic-UDI: GET /tools/eudamed/api/devices/basicUdiData/{basicUdiUuid}?languageIso2Code=en
- *              → real deviceName, specialDeviceType.code (…software), 
+ *              → real deviceName, specialDeviceType.code (…software),
  *              deviceCertificateInfoList[] (cert# + expiry + notified body),
  *              medicalPurpose.
  *
@@ -79,7 +79,7 @@ interface EudamedSearchPage {
   last: boolean;
 }
 
-interface EudamedUdiDetail {
+export interface EudamedUdiDetail {
   // Field paths CONFIRMED against a live udiDiData detail dump (9 June 2026):
   tradeName?: { textByDefaultLanguage?: string | null } | null;
   additionalDescription?: string | null;
@@ -122,7 +122,7 @@ export interface EudamedDeviceRecord {
 
 // ── Parsers (refdata code → human label) ─────────────────────────────────────
 
-function parseRiskClass(code: string | null | undefined): string | null {
+export function parseRiskClass(code: string | null | undefined): string | null {
   if (!code) return null;
   const map: Record<string, string> = {
     'refdata.risk-class.class-i': 'Class I',
@@ -201,7 +201,7 @@ async function searchByCndCode(cndCode: string): Promise<EudamedSearchRow[]> {
 // "has basicUdiDataUuid started populating?" check into the re-pull cron), not
 // a code bug. Until then we read everything available off the detail endpoint.
 
-async function fetchUdiDetail(uuid: string): Promise<EudamedUdiDetail | null> {
+export async function fetchUdiDetail(uuid: string): Promise<EudamedUdiDetail | null> {
   try {
     return await fetchJson<EudamedUdiDetail>(
       `${EUDAMED_BASE}/devices/udiDiData/${uuid}?languageIso2Code=en`,

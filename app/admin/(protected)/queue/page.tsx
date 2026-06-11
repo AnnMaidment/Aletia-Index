@@ -48,7 +48,7 @@ export default async function QueuePage({
   let query = admin
     .from('ingestion_review_queue')
     .select(
-      'queue_id, source, source_id, device_name, manufacturer, sponsor_type, review_reason, specialty_inferred, specialty_confidence, status, created_at, raw_data',
+      'queue_id, source, source_id, device_name, manufacturer, sponsor_type, review_reason, review_note, specialty_inferred, specialty_confidence, status, created_at, raw_data, possible_merge_candidates',
       { count: 'exact' }
     )
     .order('created_at', { ascending: false })

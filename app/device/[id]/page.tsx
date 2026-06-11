@@ -57,6 +57,7 @@ const resolveToAletiaId = cache(async (rawId: string): Promise<string | null> =>
       .select('aletia_id')
       .eq('aletia_id', canonicaliseAletiaId(rawId))
       .eq('excluded', false)
+      .is('merged_into', null)
       .maybeSingle()
     return data?.aletia_id ?? null
   }
@@ -81,6 +82,7 @@ const resolveToAletiaId = cache(async (rawId: string): Promise<string | null> =>
     .select('aletia_id')
     .eq('external_legacy_id', normalised)
     .eq('excluded', false)
+    .is('merged_into', null)
     .maybeSingle()
   return legRow?.aletia_id ?? null
 })
@@ -109,6 +111,7 @@ const fetchDeviceByAletiaId = cache(async (aletiaId: string) => {
     `)
     .eq('aletia_id', aletiaId)
     .eq('excluded', false)
+    .is('merged_into', null)
     .single()
   return data
 })

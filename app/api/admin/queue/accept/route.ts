@@ -16,8 +16,14 @@
  *   2. Merge mode (merge_into_aletia_id provided):
  *      - Target device must exist; target's claim state gates the merge
  *      - Appends the queue's identifier to device_external_ids as non-primary
- *      - Device_master fields are NEVER overwritten. Only null-or-missing
- *        fields get filled from queue data (append-never-overwrite discipline)
+ *      - CONTENT fields (name, manufacturer_name, intended_use, eu_risk_class)
+ *        follow the field-level merge diff: the route recomputes
+ *        computeMergeDiff(target, incoming-from-raw_data) server-side and
+ *        applies resolveMergePatch(diffs, body.field_decisions). With no
+ *        decisions sent, the suggested defaults apply (enrich fills the gap,
+ *        conflict keeps existing). The old implicit fillIfNull is GONE.
+ *      - LINK fields (manufacturer_link, specialty_link) keep the null-only
+ *        fill — they are FKs, not diffable content.
  *      - Source-specific enrichment (device_trials / regional_registrations)
  *        still happens — trials and regulatory facts about the device compose
  *        across sources rather than overwriting
@@ -27,15 +33,19 @@
  *   - 24 Apr 2026 — Atomicity fix: create mode wraps its three writes in the
  *     create_device_atomic RPC to prevent the partial-commit orphans we hit
  *     on 23 Apr (ALT-006163 / ALT-006165).
+ *   - 10 Jun 2026 — Queue-rewrite session: merge mode consumes field_decisions
+ *     via lib/mergeDiff.ts; fillIfNull content fills deleted (this also removes
+ *     the device-name-into-intended_use conflation for FDA/MHRA merges).
  *
  * Request body:
  *   {
  *     queue_id: string,                        // required
- *     device_name?: string,                    // written to device_master.name on create; filled-if-null on merge
+ *     device_name?: string,                    // written to device_master.name on create; IGNORED for merge content (diff governs)
  *     manufacturer_name?: string,              // resolves to manufacturer_link
  *     specialty?: string | null,
  *     approval_status?: 'pre_approval' | 'approved',
  *     merge_into_aletia_id?: string | null,    // triggers merge mode if present
+ *     field_decisions?: Record<string,'keep'|'use_incoming'>, // merge mode: per-field diff decisions; omitted fields use suggested defaults
  *     confirm_claimed_merge?: boolean,         // required if merge target is claimed
  *     review_note?: string | null,
  *   }
@@ -49,6 +59,11 @@ import {
   AdminAuthError,
 } from '@/lib/adminAudit'
 import type { ClinicalTrial } from '@/lib/clinicalTrials'
+import {
+  computeMergeDiff,
+  resolveMergePatch,
+  buildIncomingFields,
+} from '@/lib/mergeDiff'
 import type {
   DeviceTrialStatus,
   ExternalIdType,
@@ -61,6 +76,7 @@ interface Body {
   specialty?: string | null
   approval_status?: 'pre_approval' | 'approved'
   merge_into_aletia_id?: string | null
+  field_decisions?: Record<string, 'keep' | 'use_incoming'>
   confirm_claimed_merge?: boolean
   review_note?: string | null
 }
@@ -169,12 +185,13 @@ export async function POST(req: NextRequest) {
   // ── Branch: merge vs create ───────────────────────────────────────────────
   let aletiaId: string
   let isMerge: boolean
+  let mergeFieldsApplied: string[] | null = null
 
   if (body.merge_into_aletia_id) {
     // ── Merge mode ──────────────────────────────────────────────────────────
     const { data: target, error: lookupErr } = await admin
       .from('device_master')
-      .select('aletia_id, name, intended_use, specialty_link, manufacturer_link, claimed_at, claimed_by_email, approval_status')
+      .select('aletia_id, name, manufacturer_name, intended_use, eu_risk_class, specialty_link, manufacturer_link, claimed_at, claimed_by_email, approval_status')
       .eq('aletia_id', body.merge_into_aletia_id)
       .maybeSingle()
 
@@ -199,19 +216,41 @@ export async function POST(req: NextRequest) {
     aletiaId = target.aletia_id
     isMerge = true
 
-    // Append-never-overwrite: only fill fields that are currently null on the
-    // target. Admin can still edit the device afterwards via Module 3 (future).
-    const fillIfNull: Record<string, unknown> = {
+    // ── Field-level merge diff (replaces the old fillIfNull) ────────────────
+    // Recomputed server-side from the authoritative DB row + the queue's
+    // raw_data — the client sends only keep/use_incoming decisions, never a
+    // value blob. No decisions → each row's suggested default applies
+    // (enrich fills the gap, conflict keeps existing). The drawer renders the
+    // same computeMergeDiff over the same inputs, so what the operator saw is
+    // exactly what lands here.
+    const incoming = buildIncomingFields(queueRow.source, raw, {
+      device_name: queueRow.device_name ?? null,
+      manufacturer: queueRow.manufacturer ?? null,
+    })
+    const diffs = computeMergeDiff(
+      {
+        name:              target.name,
+        manufacturer_name: target.manufacturer_name,
+        intended_use:      target.intended_use,
+        eu_risk_class:     target.eu_risk_class,
+      },
+      incoming,
+    )
+    const contentPatch = resolveMergePatch(diffs, body.field_decisions ?? {})
+    mergeFieldsApplied = Object.keys(contentPatch)
+
+    // LINK fields stay null-only-fill: they're FKs, not diffable content.
+    // (manufacturer_name the TEXT column is in the diff above; the link is not.)
+    const update: Record<string, unknown> = {
       last_automated_sync: now,
+      ...contentPatch,
     }
-    if (target.name == null && body.device_name) fillIfNull.name = body.device_name
-    if (target.intended_use == null && body.device_name) fillIfNull.intended_use = body.device_name
-    if (target.specialty_link == null && body.specialty) fillIfNull.specialty_link = body.specialty
-    if (target.manufacturer_link == null && manufacturerId) fillIfNull.manufacturer_link = manufacturerId
+    if (target.specialty_link == null && body.specialty) update.specialty_link = body.specialty
+    if (target.manufacturer_link == null && manufacturerId) update.manufacturer_link = manufacturerId
 
     const { error: updErr } = await admin
       .from('device_master')
-      .update(fillIfNull)
+      .update(update)
       .eq('aletia_id', aletiaId)
 
     if (updErr) {
@@ -363,6 +402,8 @@ export async function POST(req: NextRequest) {
       aletia_id: aletiaId,
       manufacturer_id: manufacturerId,
       merged_into: isMerge ? body.merge_into_aletia_id : null,
+      field_decisions: isMerge ? (body.field_decisions ?? null) : null,
+      merge_fields_applied: mergeFieldsApplied,
       specialty: body.specialty || null,
       external_id: `${classified.id_type}:${classified.id_value}`,
     },

@@ -79,6 +79,7 @@ export default async function Home({
       .from('device_master')
       .select('aletia_id, manufacturers!inner(name)')
       .eq('excluded', false)
+      .is('merged_into', null)
       .or(`name.ilike.%${search}%`, { referencedTable: 'manufacturers' })
       .range(0, 199)
     manufacturerDeviceIds = (mfrData ?? []).map(
@@ -131,6 +132,7 @@ export default async function Home({
             { count: 'exact' },
     )
     .eq('excluded', false)
+    .is('merged_into', null)
 
   // ── Mode filters (mutually exclusive) ──────────────────────────────────────
   if (pipeline === 'true') {
@@ -213,36 +215,43 @@ export default async function Home({
     supabase
       .from('device_master')
       .select('aletia_id', { count: 'exact', head: true })
-      .eq('excluded', false),
+      .eq('excluded', false)
+      .is('merged_into', null),
     supabase
       .from('device_master')
       .select('aletia_id', { count: 'exact', head: true })
       .eq('excluded', false)
+      .is('merged_into', null)
       .not('pipeline_stage', 'is', null),
     supabase
       .from('device_master')
       .select('aletia_id', { count: 'exact', head: true })
       .eq('excluded', false)
+      .is('merged_into', null)
       .eq('pccp_status', 'approved'),
     supabase
       .from('device_master')
       .select('aletia_id, regional_registrations!inner(country)', { count: 'exact', head: true })
       .eq('excluded', false)
+      .is('merged_into', null)
       .eq('regional_registrations.country', 'US'),
     supabase
       .from('device_master')
       .select('aletia_id, regional_registrations!inner(country)', { count: 'exact', head: true })
       .eq('excluded', false)
+      .is('merged_into', null)
       .eq('regional_registrations.country', 'GB'),
     supabase
       .from('device_master')
       .select('aletia_id, regional_registrations!inner(country)', { count: 'exact', head: true })
       .eq('excluded', false)
+      .is('merged_into', null)
       .eq('regional_registrations.country', 'EU'),
     supabase
       .from('device_master')
       .select('specialty_link')
       .eq('excluded', false)
+      .is('merged_into', null)
       .not('specialty_link', 'is', null)
       .range(0, 9999),
   ])

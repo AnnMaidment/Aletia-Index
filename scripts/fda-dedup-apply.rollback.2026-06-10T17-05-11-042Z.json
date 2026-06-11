@@ -1,0 +1,2550 @@
+[
+  {
+    "survivor": "ALT-001028",
+    "absorbed": [
+      "ALT-001047",
+      "ALT-001082"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "dda8f215-2ce5-448f-b8c7-457b308d65c3",
+        "from_aletia_id": "ALT-001047",
+        "id_type": "fda_k_number",
+        "id_value": "K221449"
+      },
+      {
+        "external_id_row_id": "8af865b6-0a86-4444-924b-bb4ae7d1b609",
+        "from_aletia_id": "ALT-001082",
+        "id_type": "fda_k_number",
+        "id_value": "K243341"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007201",
+    "absorbed": [
+      "ALT-007185",
+      "ALT-007150"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "24026a53-e86e-48a5-86ef-638f8806f23e",
+        "from_aletia_id": "ALT-007185",
+        "id_type": "fda_k_number",
+        "id_value": "K142037"
+      },
+      {
+        "external_id_row_id": "47ea05a5-cf7d-4bc5-8e21-0cf75803815c",
+        "from_aletia_id": "ALT-007150",
+        "id_type": "fda_k_number",
+        "id_value": "K163623"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-001016",
+    "absorbed": [
+      "ALT-001043"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "948a4cc7-2dc4-43d2-a2ee-fa95da2de1e6",
+        "from_aletia_id": "ALT-001043",
+        "id_type": "fda_k_number",
+        "id_value": "K213999"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006951",
+    "absorbed": [
+      "ALT-006899"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "96835f59-15b8-423f-abcc-22c0f5c36f46",
+        "from_aletia_id": "ALT-006899",
+        "id_type": "fda_k_number",
+        "id_value": "K211118"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007127",
+    "absorbed": [
+      "ALT-007055",
+      "ALT-006851",
+      "ALT-006590"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "8ccd251a-0940-4f80-8bdb-b5e228e634de",
+        "from_aletia_id": "ALT-007055",
+        "id_type": "fda_k_number",
+        "id_value": "K192107"
+      },
+      {
+        "external_id_row_id": "8459a92b-bdc3-46c2-9807-e0669a187c7e",
+        "from_aletia_id": "ALT-006851",
+        "id_type": "fda_k_number",
+        "id_value": "K213436"
+      },
+      {
+        "external_id_row_id": "7e28006f-f3b5-49ad-ba5f-49a60b98d392",
+        "from_aletia_id": "ALT-006590",
+        "id_type": "fda_k_number",
+        "id_value": "K232704"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007169",
+    "absorbed": [
+      "ALT-007153"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "6fcedeea-24ef-40b7-b5ec-69f8b5cfce52",
+        "from_aletia_id": "ALT-007153",
+        "id_type": "fda_k_number",
+        "id_value": "K172385"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-001070",
+    "absorbed": [
+      "ALT-001084"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "a6972b72-6d9e-4e90-bf15-62244ff288db",
+        "from_aletia_id": "ALT-001084",
+        "id_type": "fda_k_number",
+        "id_value": "K243955"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-001042",
+    "absorbed": [
+      "ALT-001068"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "8ccea32b-28a4-4e81-9230-98396323fb8b",
+        "from_aletia_id": "ALT-001068",
+        "id_type": "fda_k_number",
+        "id_value": "K233753"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-001021",
+    "absorbed": [
+      "ALT-001038",
+      "ALT-001045",
+      "ALT-001058"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "bf5ebda5-d8af-41b7-bb0b-33ad117b5fab",
+        "from_aletia_id": "ALT-001038",
+        "id_type": "fda_k_number",
+        "id_value": "K212067"
+      },
+      {
+        "external_id_row_id": "a1d22f7b-fab8-4b9e-924b-389c1918bf79",
+        "from_aletia_id": "ALT-001045",
+        "id_type": "fda_k_number",
+        "id_value": "K220961"
+      },
+      {
+        "external_id_row_id": "83beeac0-a04c-47d4-9850-fb2d227795b3",
+        "from_aletia_id": "ALT-001058",
+        "id_type": "fda_k_number",
+        "id_value": "K230807"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006941",
+    "absorbed": [
+      "ALT-006820"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "a033bbae-a4e9-4f1c-be04-18263a2f4a22",
+        "from_aletia_id": "ALT-006820",
+        "id_type": "fda_k_number",
+        "id_value": "K213938"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-001025",
+    "absorbed": [
+      "ALT-001046"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "6d36d4c0-01ed-45dc-815f-2bf564898f00",
+        "from_aletia_id": "ALT-001046",
+        "id_type": "fda_k_number",
+        "id_value": "K221305"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006566",
+    "absorbed": [
+      "ALT-006439",
+      "ALT-004611"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "43309eb8-ba9b-49a3-b081-e9d713d4ca4d",
+        "from_aletia_id": "ALT-006439",
+        "id_type": "fda_k_number",
+        "id_value": "K242275"
+      },
+      {
+        "external_id_row_id": "d6b2eaf3-3f5e-4df4-a4ea-d399698e3546",
+        "from_aletia_id": "ALT-004611",
+        "id_type": "fda_k_number",
+        "id_value": "K251528"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006403",
+    "absorbed": [
+      "ALT-006265"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "2cd2d85b-d375-4125-ac23-2dcf3a5d4830",
+        "from_aletia_id": "ALT-006265",
+        "id_type": "fda_k_number",
+        "id_value": "K251481"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006744",
+    "absorbed": [
+      "ALT-006438"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "6174c390-5961-4afb-92ac-d704f8b619d3",
+        "from_aletia_id": "ALT-006438",
+        "id_type": "fda_k_number",
+        "id_value": "K242300"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007049",
+    "absorbed": [
+      "ALT-006969",
+      "ALT-006881",
+      "ALT-006737",
+      "ALT-006492"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "6b8c0645-5185-47a1-947a-9e6fc3fbab9c",
+        "from_aletia_id": "ALT-006969",
+        "id_type": "fda_k_number",
+        "id_value": "K201444"
+      },
+      {
+        "external_id_row_id": "7ca667d4-23b7-4898-a8fb-6f09b32ae4b9",
+        "from_aletia_id": "ALT-006881",
+        "id_type": "fda_k_number",
+        "id_value": "K211379"
+      },
+      {
+        "external_id_row_id": "9912c958-8abe-4d61-a48f-163b40e326fd",
+        "from_aletia_id": "ALT-006737",
+        "id_type": "fda_k_number",
+        "id_value": "K220783"
+      },
+      {
+        "external_id_row_id": "c52c7b16-830a-4e39-bace-85b86886e9b3",
+        "from_aletia_id": "ALT-006492",
+        "id_type": "fda_k_number",
+        "id_value": "K232799"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006822",
+    "absorbed": [
+      "ALT-006515"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "604ce47c-8a6c-425e-8dd4-8642cea02344",
+        "from_aletia_id": "ALT-006515",
+        "id_type": "fda_k_number",
+        "id_value": "K232431"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006824",
+    "absorbed": [
+      "ALT-006761"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "d24a2991-7463-4c56-ad49-3feae38ab365",
+        "from_aletia_id": "ALT-006761",
+        "id_type": "fda_k_number",
+        "id_value": "K221727"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007029",
+    "absorbed": [
+      "ALT-006992",
+      "ALT-006785"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "a3b4591a-9cda-4bc4-8c5f-3e6d7e15ef18",
+        "from_aletia_id": "ALT-006992",
+        "id_type": "fda_k_number",
+        "id_value": "K201034"
+      },
+      {
+        "external_id_row_id": "5d899f04-7c0e-4ef9-9872-1038c3719c79",
+        "from_aletia_id": "ALT-006785",
+        "id_type": "fda_k_number",
+        "id_value": "K221219"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004022",
+    "absorbed": [
+      "ALT-004281"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "8b6137ab-e507-42ea-bd6f-5e576d9c71e7",
+        "from_aletia_id": "ALT-004281",
+        "id_type": "fda_k_number",
+        "id_value": "K233562"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-001020",
+    "absorbed": [
+      "ALT-001033"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "640fe00a-4b52-4fa8-a748-a4c276f8fba2",
+        "from_aletia_id": "ALT-001033",
+        "id_type": "fda_k_number",
+        "id_value": "K203822"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-001032",
+    "absorbed": [
+      "ALT-001037"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "6db88723-149e-4e13-8786-57ed56a7bb69",
+        "from_aletia_id": "ALT-001037",
+        "id_type": "fda_k_number",
+        "id_value": "K211881"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-001044",
+    "absorbed": [
+      "ALT-001093"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "9a762bc6-8c1a-4029-aa0c-d8f1d7da0bbf",
+        "from_aletia_id": "ALT-001093",
+        "id_type": "fda_k_number",
+        "id_value": "K252284"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004404",
+    "absorbed": [
+      "ALT-004640"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "ef5adced-62c4-4432-83ed-d00e5986014d",
+        "from_aletia_id": "ALT-004640",
+        "id_type": "fda_k_number",
+        "id_value": "K252330"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004250",
+    "absorbed": [
+      "ALT-004557"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "e8d79b55-a28d-4339-955f-02c8681f75e8",
+        "from_aletia_id": "ALT-004557",
+        "id_type": "fda_k_number",
+        "id_value": "K250515"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006981",
+    "absorbed": [
+      "ALT-006781"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "14427f32-fd06-4d03-b42b-c24dc134a046",
+        "from_aletia_id": "ALT-006781",
+        "id_type": "fda_k_number",
+        "id_value": "K221248"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004207",
+    "absorbed": [
+      "ALT-006225"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "b3d7c923-fa8e-4200-a34e-a273076f74f8",
+        "from_aletia_id": "ALT-006225",
+        "id_type": "fda_k_number",
+        "id_value": "K251985"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006386",
+    "absorbed": [
+      "ALT-006217"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "df0cfadf-335f-42a3-8cc3-b487a06c7aa5",
+        "from_aletia_id": "ALT-006217",
+        "id_type": "fda_k_number",
+        "id_value": "K252328"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006777",
+    "absorbed": [
+      "ALT-006578"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "f498e769-2970-4675-82db-a694195ea117",
+        "from_aletia_id": "ALT-006578",
+        "id_type": "fda_k_number",
+        "id_value": "K231965"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006962",
+    "absorbed": [
+      "ALT-006758"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "41ab6245-e015-47ec-8c47-1e3bd3d5823b",
+        "from_aletia_id": "ALT-006758",
+        "id_type": "fda_k_number",
+        "id_value": "K221147"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006977",
+    "absorbed": [
+      "ALT-006759"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "290004c8-6537-42fb-9741-cf93b083ad85",
+        "from_aletia_id": "ALT-006759",
+        "id_type": "fda_k_number",
+        "id_value": "K220619"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006684",
+    "absorbed": [
+      "ALT-004184",
+      "ALT-006593",
+      "ALT-006437"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "fc077058-3fac-4566-b671-8426a582b8e9",
+        "from_aletia_id": "ALT-004184",
+        "id_type": "fda_k_number",
+        "id_value": "K231572"
+      },
+      {
+        "external_id_row_id": "75cb9205-e0f6-4202-af9d-c026351bc17d",
+        "from_aletia_id": "ALT-006593",
+        "id_type": "fda_k_number",
+        "id_value": "K232712"
+      },
+      {
+        "external_id_row_id": "cda9c432-993b-4a65-8700-f40485e65de8",
+        "from_aletia_id": "ALT-006437",
+        "id_type": "fda_k_number",
+        "id_value": "K241585"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006516",
+    "absorbed": [
+      "ALT-004463"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "50a61946-56df-42ac-bead-3f5ac9489e13",
+        "from_aletia_id": "ALT-004463",
+        "id_type": "fda_k_number",
+        "id_value": "K243122"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006504",
+    "absorbed": [
+      "ALT-006282",
+      "ALT-006241"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "56de26da-4a65-47fb-8d71-727173ec480c",
+        "from_aletia_id": "ALT-006282",
+        "id_type": "fda_k_number",
+        "id_value": "K243397"
+      },
+      {
+        "external_id_row_id": "bd0be260-fb42-4b7b-850c-54560974a9eb",
+        "from_aletia_id": "ALT-006241",
+        "id_type": "fda_k_number",
+        "id_value": "K252371"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006494",
+    "absorbed": [
+      "ALT-006271"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "411b582b-f592-477c-8dd1-005ac8cdf920",
+        "from_aletia_id": "ALT-006271",
+        "id_type": "fda_k_number",
+        "id_value": "K250246"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006393",
+    "absorbed": [
+      "ALT-006281"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "52ba9308-7328-4da5-a6ca-0a2bfffc786f",
+        "from_aletia_id": "ALT-006281",
+        "id_type": "fda_k_number",
+        "id_value": "K251839"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006669",
+    "absorbed": [
+      "ALT-004177",
+      "ALT-004200"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "700cd71d-3ef0-43de-99f8-0dc3e10322ed",
+        "from_aletia_id": "ALT-004177",
+        "id_type": "fda_k_number",
+        "id_value": "K231384"
+      },
+      {
+        "external_id_row_id": "a673a78b-1ce4-4941-9aa9-50ffff2667c3",
+        "from_aletia_id": "ALT-004200",
+        "id_type": "fda_k_number",
+        "id_value": "K231767"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006676",
+    "absorbed": [
+      "ALT-006677"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "a0e2547a-5e41-43fe-930c-a7e43e6f1d77",
+        "from_aletia_id": "ALT-006677",
+        "id_type": "fda_k_number",
+        "id_value": "K222268"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004180",
+    "absorbed": [
+      "ALT-004442"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "15ce3f18-420b-4a22-995f-61d7375178b6",
+        "from_aletia_id": "ALT-004442",
+        "id_type": "fda_k_number",
+        "id_value": "K242652"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006464",
+    "absorbed": [
+      "ALT-006266"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "7a3c6f0d-5c30-48c1-8692-678682990888",
+        "from_aletia_id": "ALT-006266",
+        "id_type": "fda_k_number",
+        "id_value": "K251747"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003933",
+    "absorbed": [
+      "ALT-004135",
+      "ALT-004336",
+      "ALT-004381"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "e10f99c3-f1d1-4384-bd02-c714707f4fca",
+        "from_aletia_id": "ALT-004135",
+        "id_type": "fda_k_number",
+        "id_value": "K230658"
+      },
+      {
+        "external_id_row_id": "43f0f950-2d9c-400a-9c9f-1a5ad955208f",
+        "from_aletia_id": "ALT-004336",
+        "id_type": "fda_k_number",
+        "id_value": "K240781"
+      },
+      {
+        "external_id_row_id": "332a5a74-665f-4523-80d9-7ecd8cf1ee00",
+        "from_aletia_id": "ALT-004381",
+        "id_type": "fda_k_number",
+        "id_value": "K241508"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006856",
+    "absorbed": [
+      "ALT-006782",
+      "ALT-004147"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "bc1c19a5-8ece-4e40-aa56-9f4a6ad45fdc",
+        "from_aletia_id": "ALT-006782",
+        "id_type": "fda_k_number",
+        "id_value": "K220416"
+      },
+      {
+        "external_id_row_id": "562b38fd-8fad-4ec1-89c6-cb3cb5409d1c",
+        "from_aletia_id": "ALT-004147",
+        "id_type": "fda_k_number",
+        "id_value": "K230854"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006821",
+    "absorbed": [
+      "ALT-004103",
+      "ALT-006574"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "7052197d-5029-4ddc-a522-4a00b671dbfb",
+        "from_aletia_id": "ALT-004103",
+        "id_type": "fda_k_number",
+        "id_value": "K223774"
+      },
+      {
+        "external_id_row_id": "d19436df-658e-4ec6-8411-f6296a86c60c",
+        "from_aletia_id": "ALT-006574",
+        "id_type": "fda_k_number",
+        "id_value": "K231765"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006982",
+    "absorbed": [
+      "ALT-006855"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "b59c30bb-d1dd-49c8-987e-5db56555e12e",
+        "from_aletia_id": "ALT-006855",
+        "id_type": "fda_k_number",
+        "id_value": "K210632"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006774",
+    "absorbed": [
+      "ALT-006750",
+      "ALT-004067",
+      "ALT-006588",
+      "ALT-004346",
+      "ALT-006314",
+      "ALT-006206"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "fd666d1e-f39b-4cd0-bb93-e7acdd217ab5",
+        "from_aletia_id": "ALT-006750",
+        "id_type": "fda_k_number",
+        "id_value": "K221923"
+      },
+      {
+        "external_id_row_id": "d6e03d4c-a6e0-479b-93df-c23209558773",
+        "from_aletia_id": "ALT-004067",
+        "id_type": "fda_k_number",
+        "id_value": "K223247"
+      },
+      {
+        "external_id_row_id": "c8b5fa51-30a7-4468-93d0-e8ad041e165a",
+        "from_aletia_id": "ALT-006588",
+        "id_type": "fda_k_number",
+        "id_value": "K232760"
+      },
+      {
+        "external_id_row_id": "e32566a6-b48e-4177-99b4-dcfb662d3fce",
+        "from_aletia_id": "ALT-004346",
+        "id_type": "fda_k_number",
+        "id_value": "K240944"
+      },
+      {
+        "external_id_row_id": "e08cd655-2611-45d9-b087-65b8238e3e63",
+        "from_aletia_id": "ALT-006314",
+        "id_type": "fda_k_number",
+        "id_value": "K251276"
+      },
+      {
+        "external_id_row_id": "12821f9b-3d60-4c3c-a980-0c082ea0647c",
+        "from_aletia_id": "ALT-006206",
+        "id_type": "fda_k_number",
+        "id_value": "K253489"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006756",
+    "absorbed": [
+      "ALT-004069"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "ed2840bb-2f2f-420b-92cf-e9ae9bbc57b3",
+        "from_aletia_id": "ALT-004069",
+        "id_type": "fda_k_number",
+        "id_value": "K223268"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004239",
+    "absorbed": [
+      "ALT-004509",
+      "ALT-006247"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "28e956c1-e070-4739-819d-6e3ab541334f",
+        "from_aletia_id": "ALT-004509",
+        "id_type": "fda_k_number",
+        "id_value": "K243812"
+      },
+      {
+        "external_id_row_id": "2a6ec7ab-5293-40f1-814a-c9bb65d0f1bd",
+        "from_aletia_id": "ALT-006247",
+        "id_type": "fda_k_number",
+        "id_value": "K251518"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004070",
+    "absorbed": [
+      "ALT-004306"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "e0602ba4-d395-4967-bb12-420d4a862228",
+        "from_aletia_id": "ALT-004306",
+        "id_type": "fda_k_number",
+        "id_value": "K233977"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004525",
+    "absorbed": [
+      "ALT-004637"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "773a3a4d-ce74-482d-88c6-df5a061ed58e",
+        "from_aletia_id": "ALT-004637",
+        "id_type": "fda_k_number",
+        "id_value": "K252178"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004052",
+    "absorbed": [
+      "ALT-004335"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "6e261b01-974f-4f18-ab1d-1efc348c819f",
+        "from_aletia_id": "ALT-004335",
+        "id_type": "fda_k_number",
+        "id_value": "K240769"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006956",
+    "absorbed": [
+      "ALT-003898",
+      "ALT-006350"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "1b46206c-f5ae-4812-beb6-0bc26b6ff38f",
+        "from_aletia_id": "ALT-003898",
+        "id_type": "fda_k_number",
+        "id_value": "K212466"
+      },
+      {
+        "external_id_row_id": "cbf54fbe-a43a-4ac3-aff3-d1ea5b7ce3d2",
+        "from_aletia_id": "ALT-006350",
+        "id_type": "fda_k_number",
+        "id_value": "K243331"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006986",
+    "absorbed": [
+      "ALT-006927",
+      "ALT-006418",
+      "ALT-006351",
+      "ALT-006346"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "91f379c8-9a73-48f7-bc5b-f584085df298",
+        "from_aletia_id": "ALT-006927",
+        "id_type": "fda_k_number",
+        "id_value": "K210053"
+      },
+      {
+        "external_id_row_id": "f34bef11-dc25-40ed-af35-b3ec87ca70b0",
+        "from_aletia_id": "ALT-006418",
+        "id_type": "fda_k_number",
+        "id_value": "K240553"
+      },
+      {
+        "external_id_row_id": "0b843cb3-4a7a-467a-8240-d9f2762dc405",
+        "from_aletia_id": "ALT-006351",
+        "id_type": "fda_k_number",
+        "id_value": "K243235"
+      },
+      {
+        "external_id_row_id": "0ffad1fb-208e-4316-a034-6f1fbc1603b4",
+        "from_aletia_id": "ALT-006346",
+        "id_type": "fda_k_number",
+        "id_value": "K243862"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006917",
+    "absorbed": [
+      "ALT-004046",
+      "ALT-006330"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "461bda42-9771-4f78-9945-13f2a4499e9f",
+        "from_aletia_id": "ALT-004046",
+        "id_type": "fda_k_number",
+        "id_value": "K222803"
+      },
+      {
+        "external_id_row_id": "12445a9c-5d1a-4810-941b-5181f829b9f7",
+        "from_aletia_id": "ALT-006330",
+        "id_type": "fda_k_number",
+        "id_value": "K242748"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003896",
+    "absorbed": [
+      "ALT-004025"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "9a8ecfdf-03d7-4ea3-833f-f1cf8c5f55d4",
+        "from_aletia_id": "ALT-004025",
+        "id_type": "fda_k_number",
+        "id_value": "K222070"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006833",
+    "absorbed": [
+      "ALT-004038"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "8358f210-6259-4af2-a790-f1de474f5191",
+        "from_aletia_id": "ALT-004038",
+        "id_type": "fda_k_number",
+        "id_value": "K222458"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007005",
+    "absorbed": [
+      "ALT-006915"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "d0c9c637-b9b1-4ba3-9437-5cdd027dc63b",
+        "from_aletia_id": "ALT-006915",
+        "id_type": "fda_k_number",
+        "id_value": "K210209"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006985",
+    "absorbed": [
+      "ALT-004016"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "321ac117-3138-4257-b2c7-6ea88a8f0e4f",
+        "from_aletia_id": "ALT-004016",
+        "id_type": "fda_k_number",
+        "id_value": "K221716"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006913",
+    "absorbed": [
+      "ALT-003990"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "f345cc31-8268-4533-8e60-68373d4608e5",
+        "from_aletia_id": "ALT-003990",
+        "id_type": "fda_k_number",
+        "id_value": "K220899"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006885",
+    "absorbed": [
+      "ALT-004502"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "5af87fad-e35f-456d-86ca-bd53ed0ca989",
+        "from_aletia_id": "ALT-004502",
+        "id_type": "fda_k_number",
+        "id_value": "K243687"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006975",
+    "absorbed": [
+      "ALT-003987"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "6cd7697c-d631-43ad-aeb6-4a5969acec3f",
+        "from_aletia_id": "ALT-003987",
+        "id_type": "fda_k_number",
+        "id_value": "K220882"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003907",
+    "absorbed": [
+      "ALT-004410"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "ab0921d5-9c1a-4f07-b160-88f6f5ca74f9",
+        "from_aletia_id": "ALT-004410",
+        "id_type": "fda_k_number",
+        "id_value": "K242130"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-001184",
+    "absorbed": [
+      "ALT-003874"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "827d1f73-34f4-4b94-acb0-c4597c3a4dd4",
+        "from_aletia_id": "ALT-003874",
+        "id_type": "fda_k_number",
+        "id_value": "K211951"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003488",
+    "absorbed": [
+      "ALT-003854"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "beef994f-61db-4dd5-8a68-188e71da422e",
+        "from_aletia_id": "ALT-003854",
+        "id_type": "fda_k_number",
+        "id_value": "K211279"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003842",
+    "absorbed": [
+      "ALT-006399",
+      "ALT-004578",
+      "ALT-006207"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "9948c60f-137a-4012-bcc8-f9864b0a4757",
+        "from_aletia_id": "ALT-006399",
+        "id_type": "fda_k_number",
+        "id_value": "K241197"
+      },
+      {
+        "external_id_row_id": "ea584ce1-19ed-46da-ad9a-a0f885dcea53",
+        "from_aletia_id": "ALT-004578",
+        "id_type": "fda_k_number",
+        "id_value": "K250932"
+      },
+      {
+        "external_id_row_id": "00ae9a55-afa1-4f1a-b887-f147ef932ca7",
+        "from_aletia_id": "ALT-006207",
+        "id_type": "fda_k_number",
+        "id_value": "K253141"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003455",
+    "absorbed": [
+      "ALT-007033",
+      "ALT-007010",
+      "ALT-003820",
+      "ALT-006748"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "c4d6b9bd-172d-40f7-b69b-ed79c9142f05",
+        "from_aletia_id": "ALT-007033",
+        "id_type": "fda_k_number",
+        "id_value": "K192287"
+      },
+      {
+        "external_id_row_id": "4856814e-c8ac-404c-bef8-35690425a3db",
+        "from_aletia_id": "ALT-007010",
+        "id_type": "fda_k_number",
+        "id_value": "K193229"
+      },
+      {
+        "external_id_row_id": "f28d2a16-2e2e-430d-bab0-50d180b09dd8",
+        "from_aletia_id": "ALT-003820",
+        "id_type": "fda_k_number",
+        "id_value": "K210404"
+      },
+      {
+        "external_id_row_id": "7a3a440d-bc65-4bf6-a150-4eb798dfb119",
+        "from_aletia_id": "ALT-006748",
+        "id_type": "fda_k_number",
+        "id_value": "K221347"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006997",
+    "absorbed": [
+      "ALT-003742"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "5931c1ce-ade6-4f12-9641-70fa4f870618",
+        "from_aletia_id": "ALT-003742",
+        "id_type": "fda_k_number",
+        "id_value": "K201992"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003635",
+    "absorbed": [
+      "ALT-006845"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "0fc461e1-eece-4be8-a4ec-ed97354d5da9",
+        "from_aletia_id": "ALT-006845",
+        "id_type": "fda_k_number",
+        "id_value": "K211541"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004385",
+    "absorbed": [
+      "ALT-006113"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "1696067c-22d8-40eb-88f9-18dc2b48463d",
+        "from_aletia_id": "ALT-006113",
+        "id_type": "fda_k_number",
+        "id_value": "K243685"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003528",
+    "absorbed": [
+      "ALT-006883"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "fd7e40b8-1497-4c3b-89e7-0a19106a1f8c",
+        "from_aletia_id": "ALT-006883",
+        "id_type": "fda_k_number",
+        "id_value": "K212074"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003020",
+    "absorbed": [
+      "ALT-003143",
+      "ALT-003475"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "ab1079b5-57eb-4abc-9284-abf0fca16c6e",
+        "from_aletia_id": "ALT-003143",
+        "id_type": "fda_k_number",
+        "id_value": "K161772"
+      },
+      {
+        "external_id_row_id": "4f9eca85-abcf-4bae-84ab-9271ea469c40",
+        "from_aletia_id": "ALT-003475",
+        "id_type": "fda_k_number",
+        "id_value": "K182035"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006935",
+    "absorbed": [
+      "ALT-003940",
+      "ALT-004577"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "66cbfa94-3de4-4108-857d-6661bbb3b3d2",
+        "from_aletia_id": "ALT-003940",
+        "id_type": "fda_k_number",
+        "id_value": "K213857"
+      },
+      {
+        "external_id_row_id": "9e84fed7-445b-48a9-8d14-efb151ed805e",
+        "from_aletia_id": "ALT-004577",
+        "id_type": "fda_k_number",
+        "id_value": "K250902"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006605",
+    "absorbed": [
+      "ALT-006595"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "f0e73a5d-ea04-46f7-a599-0d99ae3aed1c",
+        "from_aletia_id": "ALT-006595",
+        "id_type": "fda_k_number",
+        "id_value": "K230085"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007009",
+    "absorbed": [
+      "ALT-006920",
+      "ALT-006799",
+      "ALT-006613",
+      "ALT-006442",
+      "ALT-004483"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "fda7badf-3edb-49f4-90c7-0091b808ec5c",
+        "from_aletia_id": "ALT-006920",
+        "id_type": "fda_k_number",
+        "id_value": "K203323"
+      },
+      {
+        "external_id_row_id": "e803b6f0-dea4-4a74-9c70-9c18831bdb41",
+        "from_aletia_id": "ALT-006799",
+        "id_type": "fda_k_number",
+        "id_value": "K220192"
+      },
+      {
+        "external_id_row_id": "4773e833-7b0d-4233-816a-4136cc5d3f95",
+        "from_aletia_id": "ALT-006613",
+        "id_type": "fda_k_number",
+        "id_value": "K230355"
+      },
+      {
+        "external_id_row_id": "e24adb3b-a8b2-4ac4-b239-edeba4eff7cd",
+        "from_aletia_id": "ALT-006442",
+        "id_type": "fda_k_number",
+        "id_value": "K241496"
+      },
+      {
+        "external_id_row_id": "9e448a64-b734-4e58-a14d-ea45b3832a09",
+        "from_aletia_id": "ALT-004483",
+        "id_type": "fda_k_number",
+        "id_value": "K243335"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006901",
+    "absorbed": [
+      "ALT-006606",
+      "ALT-006213"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "5cc54786-5ad5-4f83-8472-38f0a468f553",
+        "from_aletia_id": "ALT-006606",
+        "id_type": "fda_k_number",
+        "id_value": "K231748"
+      },
+      {
+        "external_id_row_id": "1b2886c1-85e4-4349-9204-858a55baa5b8",
+        "from_aletia_id": "ALT-006213",
+        "id_type": "fda_k_number",
+        "id_value": "K251370"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006530",
+    "absorbed": [
+      "ALT-006223"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "a8f8ba3d-0173-4e0d-b3b1-793870c06d79",
+        "from_aletia_id": "ALT-006223",
+        "id_type": "fda_k_number",
+        "id_value": "K252074"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006502",
+    "absorbed": [
+      "ALT-006277"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "03b2b4f5-1103-4102-ae57-86be0affa505",
+        "from_aletia_id": "ALT-006277",
+        "id_type": "fda_k_number",
+        "id_value": "K250901"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006735",
+    "absorbed": [
+      "ALT-006687"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "4af6ef37-9de3-455a-a72e-81a1dfcb859f",
+        "from_aletia_id": "ALT-006687",
+        "id_type": "fda_k_number",
+        "id_value": "K223726"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007018",
+    "absorbed": [
+      "ALT-006914"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "f069c15a-c37b-4911-9d34-cb70ec1b7707",
+        "from_aletia_id": "ALT-006914",
+        "id_type": "fda_k_number",
+        "id_value": "K203225"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-001187",
+    "absorbed": [
+      "ALT-004244"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "452fa26c-d6d6-4d4e-b3a5-721e801785d2",
+        "from_aletia_id": "ALT-004244",
+        "id_type": "fda_k_number",
+        "id_value": "K232787"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004587",
+    "absorbed": [
+      "ALT-004674"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "9c43ecfe-9d12-482f-97cd-56886eadbfed",
+        "from_aletia_id": "ALT-004674",
+        "id_type": "fda_k_number",
+        "id_value": "K253664"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004526",
+    "absorbed": [
+      "ALT-004574",
+      "ALT-004649"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "d482f3a7-85e0-42b9-963a-b2d9bfc15b68",
+        "from_aletia_id": "ALT-004574",
+        "id_type": "fda_k_number",
+        "id_value": "K250882"
+      },
+      {
+        "external_id_row_id": "6fe777ff-c4ac-4d08-9e08-610249ea2526",
+        "from_aletia_id": "ALT-004649",
+        "id_type": "fda_k_number",
+        "id_value": "K252497"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004312",
+    "absorbed": [
+      "ALT-004652"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "a18131db-4f4a-4044-a498-ea5a4744ffc1",
+        "from_aletia_id": "ALT-004652",
+        "id_type": "fda_k_number",
+        "id_value": "K252586"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004584",
+    "absorbed": [
+      "ALT-004639"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "7c8c1405-2372-4e48-a302-776af7f1894d",
+        "from_aletia_id": "ALT-004639",
+        "id_type": "fda_k_number",
+        "id_value": "K252294"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006088",
+    "absorbed": [
+      "ALT-006093"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "72a5d00a-aed9-49be-b1ce-63f435fd5399",
+        "from_aletia_id": "ALT-006093",
+        "id_type": "fda_k_number",
+        "id_value": "K251456"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004379",
+    "absorbed": [
+      "ALT-004544",
+      "ALT-004613"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "a1dfcd9d-720a-4a3d-b1cd-63d4d05c5d55",
+        "from_aletia_id": "ALT-004544",
+        "id_type": "fda_k_number",
+        "id_value": "K250255"
+      },
+      {
+        "external_id_row_id": "3938438f-3a97-4272-bf23-9d04b10df295",
+        "from_aletia_id": "ALT-004613",
+        "id_type": "fda_k_number",
+        "id_value": "K251639"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004420",
+    "absorbed": [
+      "ALT-004580"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "5a58b550-bfec-4651-bf55-d825a6ed5f18",
+        "from_aletia_id": "ALT-004580",
+        "id_type": "fda_k_number",
+        "id_value": "K250984"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006496",
+    "absorbed": [
+      "ALT-006319",
+      "ALT-004575"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "d983886b-30f2-4bc9-90f2-6f27f6a50319",
+        "from_aletia_id": "ALT-006319",
+        "id_type": "fda_k_number",
+        "id_value": "K251110"
+      },
+      {
+        "external_id_row_id": "08b17ef0-7692-4e81-8401-116ca042bf7f",
+        "from_aletia_id": "ALT-004575",
+        "id_type": "fda_k_number",
+        "id_value": "K250886"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006647",
+    "absorbed": [
+      "ALT-006564",
+      "ALT-004347"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "360189e1-dafa-4fba-a78b-a81c159cb499",
+        "from_aletia_id": "ALT-006564",
+        "id_type": "fda_k_number",
+        "id_value": "K233545"
+      },
+      {
+        "external_id_row_id": "ccf80b01-9fd8-4b7c-8089-241ed862db5e",
+        "from_aletia_id": "ALT-004347",
+        "id_type": "fda_k_number",
+        "id_value": "K240980"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006651",
+    "absorbed": [
+      "ALT-006580",
+      "ALT-006199"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "4c601d37-b5ec-4b66-a6e5-241dfee01cbf",
+        "from_aletia_id": "ALT-006580",
+        "id_type": "fda_k_number",
+        "id_value": "K232500"
+      },
+      {
+        "external_id_row_id": "06f095f1-ea63-4e0f-ba34-fb5f4b9e0254",
+        "from_aletia_id": "ALT-006199",
+        "id_type": "fda_k_number",
+        "id_value": "K252557"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006392",
+    "absorbed": [
+      "ALT-006367",
+      "ALT-006333",
+      "ALT-006311",
+      "ALT-006276",
+      "ALT-006234"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "e27b9b94-3383-4217-8196-98536c651bd9",
+        "from_aletia_id": "ALT-006367",
+        "id_type": "fda_k_number",
+        "id_value": "K243794"
+      },
+      {
+        "external_id_row_id": "6f1b357e-168e-4fef-9a53-e5feef459840",
+        "from_aletia_id": "ALT-006333",
+        "id_type": "fda_k_number",
+        "id_value": "K250177"
+      },
+      {
+        "external_id_row_id": "9e133eb7-2558-4342-80bf-ef1989699cdb",
+        "from_aletia_id": "ALT-006311",
+        "id_type": "fda_k_number",
+        "id_value": "K243793"
+      },
+      {
+        "external_id_row_id": "2750a73b-e617-47d2-b6fc-257b711b1fb5",
+        "from_aletia_id": "ALT-006276",
+        "id_type": "fda_k_number",
+        "id_value": "K251455"
+      },
+      {
+        "external_id_row_id": "9ee832dd-ac28-4732-b114-2b7a47335c61",
+        "from_aletia_id": "ALT-006234",
+        "id_type": "fda_k_number",
+        "id_value": "K251651"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006479",
+    "absorbed": [
+      "ALT-006273"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "1e4f72bd-a80f-4237-8413-608e1a51b0cb",
+        "from_aletia_id": "ALT-006273",
+        "id_type": "fda_k_number",
+        "id_value": "K250738"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006518",
+    "absorbed": [
+      "ALT-004534"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "f1e53ec4-06a6-476c-bbbf-19b7f63acbd0",
+        "from_aletia_id": "ALT-004534",
+        "id_type": "fda_k_number",
+        "id_value": "K250086"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006634",
+    "absorbed": [
+      "ALT-006568",
+      "ALT-004552"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "7c26df34-b33a-4a63-a8b3-8cc71e6fccda",
+        "from_aletia_id": "ALT-006568",
+        "id_type": "fda_k_number",
+        "id_value": "K232841"
+      },
+      {
+        "external_id_row_id": "6d8b1fa8-9d5f-4499-931e-7629c75ddff7",
+        "from_aletia_id": "ALT-004552",
+        "id_type": "fda_k_number",
+        "id_value": "K250369"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006562",
+    "absorbed": [
+      "ALT-004518"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "07be1d18-6a26-4400-a07a-17e464f657ba",
+        "from_aletia_id": "ALT-004518",
+        "id_type": "fda_k_number",
+        "id_value": "K243933"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004264",
+    "absorbed": [
+      "ALT-004497"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "54117827-59c3-4b54-a9e7-660c97c8f84e",
+        "from_aletia_id": "ALT-004497",
+        "id_type": "fda_k_number",
+        "id_value": "K243657"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006512",
+    "absorbed": [
+      "ALT-004504"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "1529e658-9e74-4334-91fb-ba74d176f5c7",
+        "from_aletia_id": "ALT-004504",
+        "id_type": "fda_k_number",
+        "id_value": "K243696"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006692",
+    "absorbed": [
+      "ALT-006211"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "2ed64c93-acf3-4cd7-90ce-16d163837586",
+        "from_aletia_id": "ALT-006211",
+        "id_type": "fda_k_number",
+        "id_value": "K251203"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006810",
+    "absorbed": [
+      "ALT-006453",
+      "ALT-006292"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "25296d8a-e907-454f-b38f-beeb64931a23",
+        "from_aletia_id": "ALT-006453",
+        "id_type": "fda_k_number",
+        "id_value": "K233731"
+      },
+      {
+        "external_id_row_id": "1bb5128d-d24c-4b35-980b-86887a83179f",
+        "from_aletia_id": "ALT-006292",
+        "id_type": "fda_k_number",
+        "id_value": "K243672"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007188",
+    "absorbed": [
+      "ALT-007004"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "3fca5c07-a788-4b51-84bc-da3d8caf9c37",
+        "from_aletia_id": "ALT-007004",
+        "id_type": "fda_k_number",
+        "id_value": "K193281"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007102",
+    "absorbed": [
+      "ALT-006859"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "ac5a6156-68b6-4082-9a83-8fcda438d02c",
+        "from_aletia_id": "ALT-006859",
+        "id_type": "fda_k_number",
+        "id_value": "K211964"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007050",
+    "absorbed": [
+      "ALT-006923"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "16c49d46-f9c3-4976-b300-41b6af755cae",
+        "from_aletia_id": "ALT-006923",
+        "id_type": "fda_k_number",
+        "id_value": "K203182"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006693",
+    "absorbed": [
+      "ALT-004480"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "955e141b-3a0c-4bb4-821b-5a08ee1329d1",
+        "from_aletia_id": "ALT-004480",
+        "id_type": "fda_k_number",
+        "id_value": "K243294"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006567",
+    "absorbed": [
+      "ALT-006261"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "b9a8dcdd-f334-4462-b78a-bbec9d4e2aa8",
+        "from_aletia_id": "ALT-006261",
+        "id_type": "fda_k_number",
+        "id_value": "K251983"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004085",
+    "absorbed": [
+      "ALT-004408"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "18302b68-21a1-4637-9df6-a12c5675dc34",
+        "from_aletia_id": "ALT-004408",
+        "id_type": "fda_k_number",
+        "id_value": "K242094"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006659",
+    "absorbed": [
+      "ALT-004427"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "ff7d5678-fb0d-47be-b030-2ec2f4357bd1",
+        "from_aletia_id": "ALT-004427",
+        "id_type": "fda_k_number",
+        "id_value": "K242444"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003822",
+    "absorbed": [
+      "ALT-006743"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "d174bc7b-4fed-49fb-8727-1817c7eb6660",
+        "from_aletia_id": "ALT-006743",
+        "id_type": "fda_k_number",
+        "id_value": "K221599"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006763",
+    "absorbed": [
+      "ALT-006701"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "363edc7b-04e4-49dd-a5c0-a08839751598",
+        "from_aletia_id": "ALT-006701",
+        "id_type": "fda_k_number",
+        "id_value": "K223387"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-004429",
+    "absorbed": [
+      "ALT-006204"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "21f0d27e-d794-4b8e-8577-5b1e7bb3cb02",
+        "from_aletia_id": "ALT-006204",
+        "id_type": "fda_k_number",
+        "id_value": "K251763"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006522",
+    "absorbed": [
+      "ALT-006062"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "c5077b7d-26bc-426e-98e7-f55d99219ca5",
+        "from_aletia_id": "ALT-006062",
+        "id_type": "fda_k_number",
+        "id_value": "K241684"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006789",
+    "absorbed": [
+      "ALT-006679"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "116333d8-4540-45fa-a225-f3299d43a0dc",
+        "from_aletia_id": "ALT-006679",
+        "id_type": "fda_k_number",
+        "id_value": "K222746"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007084",
+    "absorbed": [
+      "ALT-003741"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "625276b3-e6f6-4236-a5fb-34590b04efe0",
+        "from_aletia_id": "ALT-003741",
+        "id_type": "fda_k_number",
+        "id_value": "K201985"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006916",
+    "absorbed": [
+      "ALT-003930"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "7ab3bfba-369b-48fc-adef-fb362d5480dd",
+        "from_aletia_id": "ALT-003930",
+        "id_type": "fda_k_number",
+        "id_value": "K213628"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007001",
+    "absorbed": [
+      "ALT-006878",
+      "ALT-006440"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "c2b32c37-5ceb-4b06-876c-bf94171443b0",
+        "from_aletia_id": "ALT-006878",
+        "id_type": "fda_k_number",
+        "id_value": "K212100"
+      },
+      {
+        "external_id_row_id": "144efd0d-d8e5-423d-9174-06cfb8c2fa22",
+        "from_aletia_id": "ALT-006440",
+        "id_type": "fda_k_number",
+        "id_value": "K233826"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-003894",
+    "absorbed": [
+      "ALT-004028"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "f3e58fec-4d29-4fc8-b612-ea237fa8b439",
+        "from_aletia_id": "ALT-004028",
+        "id_type": "fda_k_number",
+        "id_value": "K222176"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006836",
+    "absorbed": [
+      "ALT-006694",
+      "ALT-006044"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "12fd203f-2f11-4a00-8267-0aa854c951a2",
+        "from_aletia_id": "ALT-006694",
+        "id_type": "fda_k_number",
+        "id_value": "K230197"
+      },
+      {
+        "external_id_row_id": "78abcdb6-29c9-4d6f-9785-2d8dc7e0d0ba",
+        "from_aletia_id": "ALT-006044",
+        "id_type": "fda_k_number",
+        "id_value": "K233030"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006435",
+    "absorbed": [
+      "ALT-006116"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "54179c6f-56c6-48b8-9eee-90b278f654bc",
+        "from_aletia_id": "ALT-006116",
+        "id_type": "fda_k_number",
+        "id_value": "K250753"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006623",
+    "absorbed": [
+      "ALT-006229"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "6ff091fa-9030-404e-8e6a-83405bc34224",
+        "from_aletia_id": "ALT-006229",
+        "id_type": "fda_k_number",
+        "id_value": "K252298"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007125",
+    "absorbed": [
+      "ALT-006542"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "7d640c30-e7dc-41a9-a886-0a347eef692e",
+        "from_aletia_id": "ALT-006542",
+        "id_type": "fda_k_number",
+        "id_value": "K232412"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006952",
+    "absorbed": [
+      "ALT-006787",
+      "ALT-006662"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "217afbe7-21c7-4e79-be44-b58eb4a45a65",
+        "from_aletia_id": "ALT-006787",
+        "id_type": "fda_k_number",
+        "id_value": "K221106"
+      },
+      {
+        "external_id_row_id": "5f413782-90e4-4c5a-93c8-f697baf68598",
+        "from_aletia_id": "ALT-006662",
+        "id_type": "fda_k_number",
+        "id_value": "K230772"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007164",
+    "absorbed": [
+      "ALT-007137"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "45445ca0-328e-4af5-ba0d-0a3b9d911df6",
+        "from_aletia_id": "ALT-007137",
+        "id_type": "fda_k_number",
+        "id_value": "K173939"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006329",
+    "absorbed": [
+      "ALT-006262"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "768e2afc-2b3b-4b8b-87aa-175e46610f39",
+        "from_aletia_id": "ALT-006262",
+        "id_type": "fda_k_number",
+        "id_value": "K252362"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006788",
+    "absorbed": [
+      "ALT-006404",
+      "ALT-006269"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "0df8bd26-afb0-4025-89f8-cb2a5093d2b2",
+        "from_aletia_id": "ALT-006404",
+        "id_type": "fda_k_number",
+        "id_value": "K241747"
+      },
+      {
+        "external_id_row_id": "c1ecd400-a5b3-4205-9273-aba0e86434d5",
+        "from_aletia_id": "ALT-006269",
+        "id_type": "fda_k_number",
+        "id_value": "K251873"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006545",
+    "absorbed": [
+      "ALT-006411",
+      "ALT-006287"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "64ed4d4e-32b4-4982-9efa-ef18f06f64fe",
+        "from_aletia_id": "ALT-006411",
+        "id_type": "fda_k_number",
+        "id_value": "K243189"
+      },
+      {
+        "external_id_row_id": "3f3c9052-cced-49d9-9d33-ea6d5b257f08",
+        "from_aletia_id": "ALT-006287",
+        "id_type": "fda_k_number",
+        "id_value": "K251766"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006382",
+    "absorbed": [
+      "ALT-006291"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "2126eb49-dec9-480e-8510-fc0301c31479",
+        "from_aletia_id": "ALT-006291",
+        "id_type": "fda_k_number",
+        "id_value": "K250877"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006379",
+    "absorbed": [
+      "ALT-006328"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "9c4e1474-7fd5-44b8-93df-2509a2f443df",
+        "from_aletia_id": "ALT-006328",
+        "id_type": "fda_k_number",
+        "id_value": "K250650"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007068",
+    "absorbed": [
+      "ALT-006957",
+      "ALT-006890",
+      "ALT-006871"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "1d4d1516-6afc-45ff-9dd2-34775ef31b17",
+        "from_aletia_id": "ALT-006957",
+        "id_type": "fda_k_number",
+        "id_value": "K200569"
+      },
+      {
+        "external_id_row_id": "65ec3ca2-9241-4897-b14b-e9385c1edd27",
+        "from_aletia_id": "ALT-006890",
+        "id_type": "fda_k_number",
+        "id_value": "K210645"
+      },
+      {
+        "external_id_row_id": "1e52e1db-79a4-403d-b9db-58204da06393",
+        "from_aletia_id": "ALT-006871",
+        "id_type": "fda_k_number",
+        "id_value": "K211867"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006775",
+    "absorbed": [
+      "ALT-006636",
+      "ALT-006343"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "a81760e2-dc50-4936-872a-bd478ec95166",
+        "from_aletia_id": "ALT-006636",
+        "id_type": "fda_k_number",
+        "id_value": "K230337"
+      },
+      {
+        "external_id_row_id": "4e973edf-c379-4f1a-a1a0-85a0295680e4",
+        "from_aletia_id": "ALT-006343",
+        "id_type": "fda_k_number",
+        "id_value": "K243891"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007041",
+    "absorbed": [
+      "ALT-006954"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "8fe39d7b-8609-4b5f-a4ed-703b757c3bf3",
+        "from_aletia_id": "ALT-006954",
+        "id_type": "fda_k_number",
+        "id_value": "K202280"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006624",
+    "absorbed": [
+      "ALT-006493"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "9e52e6ca-feb6-4731-95b9-b1dec74cffa4",
+        "from_aletia_id": "ALT-006493",
+        "id_type": "fda_k_number",
+        "id_value": "K240406"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006583",
+    "absorbed": [
+      "ALT-006401"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "e6aa3e7f-73e6-4460-bc68-bafac6ffaeb6",
+        "from_aletia_id": "ALT-006401",
+        "id_type": "fda_k_number",
+        "id_value": "K240645"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007174",
+    "absorbed": [
+      "ALT-007105",
+      "ALT-007031"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "84262c20-a89c-4484-99c4-8dce3127962e",
+        "from_aletia_id": "ALT-007105",
+        "id_type": "fda_k_number",
+        "id_value": "K181939"
+      },
+      {
+        "external_id_row_id": "9249befb-3f70-4f0a-93c9-31408eb9dbd8",
+        "from_aletia_id": "ALT-007031",
+        "id_type": "fda_k_number",
+        "id_value": "K192130"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006631",
+    "absorbed": [
+      "ALT-006447"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "90ba2c00-887b-4f2d-9aad-6895107f0cc5",
+        "from_aletia_id": "ALT-006447",
+        "id_type": "fda_k_number",
+        "id_value": "K241429"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006780",
+    "absorbed": [
+      "ALT-006456"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "56d119e2-05fc-4b55-a5a9-05638c96ba08",
+        "from_aletia_id": "ALT-006456",
+        "id_type": "fda_k_number",
+        "id_value": "K240845"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006720",
+    "absorbed": [
+      "ALT-006497"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "47a19e66-75c9-48b7-98f0-9c899f3cb1c0",
+        "from_aletia_id": "ALT-006497",
+        "id_type": "fda_k_number",
+        "id_value": "K240058"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006818",
+    "absorbed": [
+      "ALT-006499"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "23afefe1-9294-49b2-8ea5-c62420f2b6e5",
+        "from_aletia_id": "ALT-006499",
+        "id_type": "fda_k_number",
+        "id_value": "K233582"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006614",
+    "absorbed": [
+      "ALT-006501"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "bee933bc-bb27-4903-be51-4a5d1e91aed5",
+        "from_aletia_id": "ALT-006501",
+        "id_type": "fda_k_number",
+        "id_value": "K240773"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006903",
+    "absorbed": [
+      "ALT-006508"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "bb4b2b71-4930-49e5-82bc-a655b9dc0c5e",
+        "from_aletia_id": "ALT-006508",
+        "id_type": "fda_k_number",
+        "id_value": "K240172"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006943",
+    "absorbed": [
+      "ALT-006888"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "86a8d9b1-db2e-40f0-8a56-741a0ee03644",
+        "from_aletia_id": "ALT-006888",
+        "id_type": "fda_k_number",
+        "id_value": "K211788"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006973",
+    "absorbed": [
+      "ALT-006640"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "0b0a853b-8108-46b0-84d3-82ad88138d5b",
+        "from_aletia_id": "ALT-006640",
+        "id_type": "fda_k_number",
+        "id_value": "K223357"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006808",
+    "absorbed": [
+      "ALT-006747"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "e084e11a-a291-43b4-9999-fd87161de908",
+        "from_aletia_id": "ALT-006747",
+        "id_type": "fda_k_number",
+        "id_value": "K221432"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006842",
+    "absorbed": [
+      "ALT-006760"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "a40d350f-a60d-4734-8ea4-36b7caef5664",
+        "from_aletia_id": "ALT-006760",
+        "id_type": "fda_k_number",
+        "id_value": "K221203"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006893",
+    "absorbed": [
+      "ALT-006770"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "c8abb286-01ce-451c-b97a-73f479acb4f0",
+        "from_aletia_id": "ALT-006770",
+        "id_type": "fda_k_number",
+        "id_value": "K213037"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006882",
+    "absorbed": [
+      "ALT-006792"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "18970ab8-f1c0-45c0-b32a-822c5fc6f7a4",
+        "from_aletia_id": "ALT-006792",
+        "id_type": "fda_k_number",
+        "id_value": "K220590"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-006908",
+    "absorbed": [
+      "ALT-006829"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "bc845004-e067-4752-9ed5-e55b6b8a4c17",
+        "from_aletia_id": "ALT-006829",
+        "id_type": "fda_k_number",
+        "id_value": "K213307"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007159",
+    "absorbed": [
+      "ALT-007141",
+      "ALT-006832"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "c3de5ba6-212f-445d-99d5-f934c0c6f441",
+        "from_aletia_id": "ALT-007141",
+        "id_type": "fda_k_number",
+        "id_value": "K180091"
+      },
+      {
+        "external_id_row_id": "dbca0f33-29fe-4224-b9e3-5adbd2a86a78",
+        "from_aletia_id": "ALT-006832",
+        "id_type": "fda_k_number",
+        "id_value": "K212005"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007093",
+    "absorbed": [
+      "ALT-007059",
+      "ALT-006963"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "5e71f8ee-4cf3-447b-a2e3-639c6f27196f",
+        "from_aletia_id": "ALT-007059",
+        "id_type": "fda_k_number",
+        "id_value": "K191183"
+      },
+      {
+        "external_id_row_id": "09e7c004-5f20-4d40-9987-ecc1ec23f849",
+        "from_aletia_id": "ALT-006963",
+        "id_type": "fda_k_number",
+        "id_value": "K201841"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007108",
+    "absorbed": [
+      "ALT-006971"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "895e1d0d-92ee-4359-bc2a-9add4889f354",
+        "from_aletia_id": "ALT-006971",
+        "id_type": "fda_k_number",
+        "id_value": "K201310"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007028",
+    "absorbed": [
+      "ALT-006990"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "e1b4ebd0-fd75-45a5-be29-2165279bf683",
+        "from_aletia_id": "ALT-006990",
+        "id_type": "fda_k_number",
+        "id_value": "K200974"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007097",
+    "absorbed": [
+      "ALT-007034"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "7da9802f-9563-4088-a3e0-9e69cc0bcc5b",
+        "from_aletia_id": "ALT-007034",
+        "id_type": "fda_k_number",
+        "id_value": "K192442"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007124",
+    "absorbed": [
+      "ALT-007061"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "506d9457-f10e-42c6-86f6-8cbba641289e",
+        "from_aletia_id": "ALT-007061",
+        "id_type": "fda_k_number",
+        "id_value": "K191370"
+      }
+    ]
+  },
+  {
+    "survivor": "ALT-007160",
+    "absorbed": [
+      "ALT-007078"
+    ],
+    "idMoves": [
+      {
+        "external_id_row_id": "ae2bfc61-48cb-4c53-a1ba-4de97af4209d",
+        "from_aletia_id": "ALT-007078",
+        "id_type": "fda_k_number",
+        "id_value": "K183593"
+      }
+    ]
+  }
+]

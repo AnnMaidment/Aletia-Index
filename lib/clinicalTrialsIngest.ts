@@ -371,6 +371,7 @@ async function sponsorHasAIMLDevices(
     .eq('manufacturer_link', manufacturerMatch.id)
     .eq('ai_ml_integral', true)
     .eq('excluded', false)
+    .is('merged_into', null)
     .limit(1)
     .maybeSingle()
 

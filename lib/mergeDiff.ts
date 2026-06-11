@@ -138,6 +138,72 @@ export function computeMergeDiff(
   return out
 }
 
+/**
+ * Build the `incoming` field map for computeMergeDiff from a queue row's
+ * raw_data, per source. The cardinal rule (BUG-002's root): intended_use is
+ * mapped ONLY from the source's real intended-use/medical-purpose text, never
+ * synthesised from the device name. Sources with no such text leave it null —
+ * it then simply never appears as an enrich row.
+ *
+ * Raw shapes (grounded against the writers, 10 June 2026):
+ *   eudamed_sync — spread EudamedDeviceRecord (lib/eudamedSync.ts) or the
+ *     crosswalk-seed shape (scripts/seed-eudamed.ts): device_name,
+ *     manufacturer_name, risk_class, medical_purpose (sync path only; the
+ *     Basic UDI record carrying it is not retrievable as of 9 June 2026).
+ *   fda_sync / pccp_ingest / oleary_csv — lib/fdaSync.ts payload: device_name,
+ *     applicant. No intended-use text on the FDA list/sweep payloads.
+ *   mhra_sync — lib/mhraSync.ts payload: GMDN_TERM_NAME (the gate's deviceName).
+ *     Manufacturer name is not in the payload; fall back to the queue column.
+ *   clinical_trials — spread ClinicalTrial; the queue columns carry the
+ *     device/sponsor names. brief_summary is trial prose, NOT intended use.
+ *
+ * `queueRow` supplies the device_name/manufacturer columns as fallback so a
+ * thin raw_data still produces a usable map.
+ */
+export function buildIncomingFields(
+  source: string,
+  raw: Record<string, unknown>,
+  queueRow: { device_name: string | null; manufacturer: string | null },
+): Record<string, string | null> {
+  const str = (v: unknown): string | null =>
+    typeof v === 'string' && v.trim() !== '' ? v : null
+
+  switch (source) {
+    case 'eudamed_sync':
+      return {
+        name:              str(raw.device_name) ?? queueRow.device_name,
+        manufacturer_name: str(raw.manufacturer_name) ?? queueRow.manufacturer,
+        intended_use:      str(raw.medical_purpose),
+        eu_risk_class:     str(raw.risk_class),
+      }
+    case 'fda_sync':
+    case 'pccp_ingest':
+    case 'oleary_csv':
+      return {
+        name:              str(raw.device_name) ?? queueRow.device_name,
+        manufacturer_name: str(raw.applicant) ?? queueRow.manufacturer,
+        intended_use:      null,
+        eu_risk_class:     null,
+      }
+    case 'mhra_sync':
+      return {
+        name:              str(raw.GMDN_TERM_NAME) ?? queueRow.device_name,
+        manufacturer_name: queueRow.manufacturer,
+        intended_use:      null,
+        // DEVICE_SUB_TYPE_DESC is a UK classification, not an EU risk class.
+        eu_risk_class:     null,
+      }
+    default:
+      // clinical_trials and anything else: queue columns only, no intended use.
+      return {
+        name:              queueRow.device_name,
+        manufacturer_name: queueRow.manufacturer,
+        intended_use:      null,
+        eu_risk_class:     null,
+      }
+  }
+}
+
 /** Convenience: only the rows that need the operator's attention. */
 export function actionableDiffs(diffs: FieldDiff[]): FieldDiff[] {
   return diffs.filter((d) => d.status !== 'same')

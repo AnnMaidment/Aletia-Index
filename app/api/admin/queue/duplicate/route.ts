@@ -7,11 +7,15 @@
  * data from the queue entry, that's a separate flow (future: queue/merge).
  *
  * Body:
- *   { queueId: string, targetDeviceId: string, note?: string }
+ *   { queue_id: string, target_device_id: string, review_note?: string }
+ *
+ * (Contract aligned to snake_case 10 June 2026 — BUG-011: the drawer sent
+ *  snake_case with no target while this route required camelCase + a target,
+ *  so every Mark-duplicate 400'd. The drawer now collects a target device.)
  *
  * Side effects:
  *   - queue row: status='duplicate', reviewed_at=now(), reviewed_by=email,
- *     review_note=note, raw_data.duplicate_of = targetDeviceId
+ *     review_note=note, raw_data.duplicate_of = target_device_id
  *   - audit_log entry with action='queue.duplicate'
  */
 
@@ -36,17 +40,19 @@ export async function POST(req: NextRequest) {
     throw e;
   }
 
-  let body: { queueId?: string; targetDeviceId?: string; note?: string };
+  let body: { queue_id?: string; target_device_id?: string; review_note?: string | null };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const { queueId, targetDeviceId, note } = body;
+  const queueId = body.queue_id;
+  const targetDeviceId = body.target_device_id;
+  const note = body.review_note ?? null;
   if (!queueId || !targetDeviceId) {
     return NextResponse.json(
-      { error: 'queueId and targetDeviceId required' },
+      { error: 'queue_id and target_device_id required' },
       { status: 400 }
     );
   }
@@ -126,5 +132,5 @@ export async function POST(req: NextRequest) {
     req,
   });
 
-  return NextResponse.json({ ok: true, queueId, duplicateOf: targetDeviceId });
+  return NextResponse.json({ ok: true, queue_id: queueId, duplicate_of: targetDeviceId });
 }
