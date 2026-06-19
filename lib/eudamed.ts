@@ -26,6 +26,18 @@
  * on detail/basic-UDI, not on search — so we filter cheaply on the search
  * endpoint (cndCode) then detail-fetch only the candidates. NEVER crawl 2.4M.
  *
+ * ── LOCALISED-TEXT ENVELOPE (Bugs A/B/C, confirmed live 10 + 17 June 2026) ──
+ *   Several "name"-like detail fields are NOT plain strings: tradeName,
+ *   additionalDescription, and cndNomenclatures[].description all arrive as a
+ *   { textByDefaultLanguage, texts[] } envelope. The two live variants seen:
+ *     tradeName:             textByDefaultLanguage = null; the real name sits in
+ *                            texts[0] with language = null, allLanguagesApplicable = true.
+ *     additionalDescription: { texts: [{ language: { isoCode: 'en' }, text: '…' }] }.
+ *   So language can be null OR { isoCode }, and textByDefaultLanguage may be
+ *   absent. extractLocalisedText() below copes with all three field sites; the
+ *   old direct `.textByDefaultLanguage` reads silently produced null names and
+ *   handed an object to hasAiKeyword (keyword guard dead on the description).
+ *
  * ── VERIFY AGAINST LIVE BEFORE THE FIRST REAL RUN (the st.id discipline) ──
  *   The Step 0A probe confirmed the search surface and field LOCATIONS. Two
  *   things this client assumes that you should confirm with a 1-device live
@@ -59,6 +71,50 @@ const MAX_RETRIES = 4;               // on 429/503, with exponential backoff
 
 // ── Raw API shapes (subset we read) ─────────────────────────────────────────
 
+/**
+ * EUDAMED localised-text envelope. Returned for tradeName, additionalDescription
+ * and cndNomenclatures[].description. `language` may be null (when
+ * allLanguagesApplicable is true) or carry an isoCode; `textByDefaultLanguage`
+ * may be present or null. Resolve with extractLocalisedText().
+ */
+interface EudamedLocalisedText {
+  textByDefaultLanguage?: string | null;
+  texts?: Array<{
+    language?: { isoCode?: string | null } | null;
+    text?: string | null;
+    allLanguagesApplicable?: boolean | null;
+  }> | null;
+}
+
+/**
+ * Resolve a localised-text envelope to a single best string, or null.
+ * Precedence: EUDAMED's own default-language resolution → the "applies to all
+ * languages" entry → an English entry → the first entry that actually has text.
+ * Empty / whitespace-only text counts as absent throughout. Tolerates a bare
+ * string too, in case any field is ever genuinely flat.
+ */
+export function extractLocalisedText(
+  field: EudamedLocalisedText | string | null | undefined,
+): string | null {
+  if (field == null) return null;
+  if (typeof field === 'string') {
+    const t = field.trim();
+    return t.length ? t : null;
+  }
+
+  const byDefault = field.textByDefaultLanguage?.trim();
+  if (byDefault) return byDefault;
+
+  const texts = field.texts ?? [];
+  const pick =
+    texts.find((t) => t.allLanguagesApplicable && t.text?.trim()) ??
+    texts.find((t) => t.language?.isoCode?.toLowerCase() === 'en' && t.text?.trim()) ??
+    texts.find((t) => t.text?.trim());
+
+  const text = pick?.text?.trim();
+  return text && text.length ? text : null;
+}
+
 interface EudamedSearchRow {
   uuid: string;
   basicUdi: string;
@@ -80,13 +136,15 @@ interface EudamedSearchPage {
 }
 
 export interface EudamedUdiDetail {
-  // Field paths CONFIRMED against a live udiDiData detail dump (9 June 2026):
-  tradeName?: { textByDefaultLanguage?: string | null } | null;
-  additionalDescription?: string | null;
-  cndNomenclatures?: Array<{ code?: string; description?: { textByDefaultLanguage?: string | null } }>;
+  // Field paths CONFIRMED against a live udiDiData detail dump (10 + 17 June 2026).
+  // tradeName / additionalDescription / cndNomenclatures[].description are the
+  // localised-text envelope (see EudamedLocalisedText + extractLocalisedText).
+  tradeName?: EudamedLocalisedText | null;
+  additionalDescription?: EudamedLocalisedText | null;
+  cndNomenclatures?: Array<{ code?: string; description?: EudamedLocalisedText | null }>;
   udiPiType?: { softwareIdentification?: boolean | null } | null;
   deviceStatus?: { type?: { code?: string } } | null;
-  riskClass?: { code?: string } | null;
+  riskClass?: { code?: string } | null;     // absent on detail in practice; falls back to search row
   // NB/certificate/legislation are NOT on this endpoint, and the Basic UDI
   // record they'd live on is not retrievable via the public device API as of
   // 9 June 2026 (basicUdiDataUuid null across all sampled devices; every known
@@ -269,11 +327,13 @@ export async function fetchEudamedAiMlDevices(
       const emdnOnAllowlist =
         !!emdnCode && AI_EMDN_ALLOWLIST.some((a) => emdnCode.startsWith(a));
 
-      // Field paths confirmed live: name = tradeName.textByDefaultLanguage;
-      // software = udiPiType.softwareIdentification.
-      const deviceName = detail?.tradeName?.textByDefaultLanguage ?? row.tradeName ?? null;
+      // Localised-text envelope: name = tradeName (texts[]/default-language),
+      // description = additionalDescription (texts[]) — both via the shared
+      // extractor. software = udiPiType.softwareIdentification.
+      const deviceName = extractLocalisedText(detail?.tradeName) ?? row.tradeName ?? null;
+      const additionalDescription = extractLocalisedText(detail?.additionalDescription);
       const isSoftware = detail?.udiPiType?.softwareIdentification === true;
-      const keywordHit = hasAiKeyword(deviceName, detail?.additionalDescription);
+      const keywordHit = hasAiKeyword(deviceName, additionalDescription);
 
       const confidence = classifyEudamedCandidate({ emdnOnAllowlist, isSoftware, keywordHit });
       if (confidence === 'reject') continue;
@@ -288,7 +348,7 @@ export async function fetchEudamedAiMlDevices(
         manufacturer_srn: row.manufacturerSrn ?? null,
         risk_class: parseRiskClass(detail?.riskClass?.code ?? row.riskClass?.code),
         emdn_code: emdnCode,
-        emdn_description: emdn?.description?.textByDefaultLanguage ?? null,
+        emdn_description: extractLocalisedText(emdn?.description),
         // NB/cert/legislation deferred — not retrievable yet (monthly re-probe).
         certificate_number: null,
         certificate_expiry: null,
