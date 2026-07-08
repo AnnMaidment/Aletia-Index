@@ -7,13 +7,15 @@
  *   npx tsx scripts/extract-queue-specialty.ts --dry-run
  *   npx tsx scripts/extract-queue-specialty.ts            # actually write
  *   npx tsx scripts/extract-queue-specialty.ts --force    # overwrite existing
- *   npx tsx scripts/extract-queue-specialty.ts --status=all --source=clinical_trials
+ *   npx tsx scripts/extract-queue-specialty.ts --dry-run --status=all --source=clinical_trials
  *
  * Requires .env.local to contain:
  *   NEXT_PUBLIC_SUPABASE_URL=...
  *   SUPABASE_SERVICE_ROLE_KEY=...
  *
  * Load env with `dotenv/config` import (works with tsx).
+ *
+ * fda_dedup rows are skipped automatically (cluster objects, not devices).
  */
 
 import 'dotenv/config';
@@ -49,6 +51,8 @@ Flags:
   --status=pending|all   Which queue status to process (default: pending)
   --source=<name>        Only process entries with this source
   -h, --help             Show this help
+
+Note: fda_dedup rows are always skipped (cluster objects, not device records).
 `);
     process.exit(0);
   }
@@ -71,6 +75,7 @@ Flags:
   console.log('  updated:                     ', result.updated);
   console.log('  skipped (already populated): ', result.skipped_already_populated);
   console.log('  skipped (no raw_data):       ', result.skipped_no_raw_data);
+  console.log('  skipped (cluster source):    ', result.skipped_cluster_source);
   console.log('  no specialty matched:        ', result.no_specialty_found);
   console.log('');
   console.log('  by confidence:');

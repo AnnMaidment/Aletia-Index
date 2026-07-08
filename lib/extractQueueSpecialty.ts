@@ -2,24 +2,37 @@
  * lib/extractQueueSpecialty.ts
  *
  * Backfill specialty_inferred + specialty_confidence + specialty_signals
- * on ingestion_review_queue entries whose raw_data contains CT.gov trial data.
+ * on ingestion_review_queue entries, by normalising each row's raw_data into a
+ * SpecialtyEvidence bundle (lib/specialtyEvidence.ts) and running the
+ * deterministic taxonomy matcher (lib/specialtyTaxonomy.ts).
  *
  * This is idempotent — safe to re-run. Entries already populated are skipped
- * unless { force: true } is passed.
+ * unless { force: true } is passed. Rows that are attempted but unclassified are
+ * written with specialty_confidence = 'none' so a null specialty_confidence is a
+ * reliable signal that the row was never processed.
+ *
+ * fda_dedup rows are SKIPPED: they are cluster-review objects (band, members,
+ * proposed_survivor), not device records. Classifying them as devices would be
+ * meaningless. Cluster specialty-agreement is a separate, future concern.
  *
  * Used by:
- *   - scripts/extract-queue-specialty.ts (one-off backfill)
- *   - app/api/admin/extract-specialty/route.ts (re-run from admin UI)
+ *   - scripts/extract-queue-specialty.ts             (one-off backfill)
+ *   - app/api/admin/queue/extract-specialty/route.ts (re-run from admin UI)
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { inferSpecialty, SpecialtyConfidence } from './specialtyTaxonomy';
+import { buildSpecialtyEvidence } from './specialtyEvidence';
+
+/** Sources that are cluster objects, not device records — never classified. */
+const SKIP_SOURCES = new Set<string>(['fda_dedup']);
 
 export interface ExtractResult {
   scanned: number;
   updated: number;
   skipped_already_populated: number;
   skipped_no_raw_data: number;
+  skipped_cluster_source: number;
   no_specialty_found: number;
   by_specialty: Record<string, number>;
   by_confidence: Record<SpecialtyConfidence, number>;
@@ -63,20 +76,21 @@ export async function extractQueueSpecialty(
     updated: 0,
     skipped_already_populated: 0,
     skipped_no_raw_data: 0,
+    skipped_cluster_source: 0,
     no_specialty_found: 0,
     by_specialty: {},
     by_confidence: { high: 0, medium: 0, low: 0, none: 0 },
     errors: [],
   };
 
-  // Fetch in pages of 500 — the queue is ~487 right now but this is future-proof.
+  // Fetch in pages of 500 — the queue is ~800 rows right now but this is future-proof.
   const PAGE = 500;
   let offset = 0;
 
   while (true) {
     let query = supabase
       .from('ingestion_review_queue')
-      .select('queue_id, raw_data, specialty_inferred')
+      .select('queue_id, raw_data, specialty_inferred, source')
       .order('created_at', { ascending: true })
       .range(offset, offset + PAGE - 1);
 
@@ -91,7 +105,13 @@ export async function extractQueueSpecialty(
       if (limit && result.scanned >= limit) break;
       result.scanned++;
 
-      // Skip if already populated (unless forcing)
+      // Skip cluster-review sources (fda_dedup) — not device records.
+      if (SKIP_SOURCES.has(row.source)) {
+        result.skipped_cluster_source++;
+        continue;
+      }
+
+      // Skip if already populated (unless forcing).
       if (!force && row.specialty_inferred) {
         result.skipped_already_populated++;
         continue;
@@ -102,12 +122,13 @@ export async function extractQueueSpecialty(
         continue;
       }
 
-      const match = inferSpecialty(row.raw_data);
+      const evidence = buildSpecialtyEvidence(row.raw_data, row.source);
+      const match = inferSpecialty(evidence);
       result.by_confidence[match.confidence]++;
 
       if (!match.specialty) {
         result.no_specialty_found++;
-        // Still write 'none' confidence so we know we tried
+        // Still write 'none' confidence so we know we tried.
         if (!dryRun) {
           const { error: updateErr } = await supabase
             .from('ingestion_review_queue')

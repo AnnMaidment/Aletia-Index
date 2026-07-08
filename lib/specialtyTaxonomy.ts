@@ -1,8 +1,9 @@
 /**
  * lib/specialtyTaxonomy.ts
  *
- * Canonical mapping from CT.gov condition strings, MeSH terms, and keywords
- * to Aletia's specialty_taxonomy.specialty_name values.
+ * Canonical mapping from clinical evidence (conditions, device names, titles,
+ * summaries, MeSH terms, keywords) to Aletia's specialty_taxonomy.specialty_name
+ * values.
  *
  * IMPORTANT: The LHS strings in PATTERNS must match specialty_taxonomy.specialty_name
  * EXACTLY (case-sensitive). The FK constraint on device_master.specialty_link will
@@ -17,10 +18,21 @@
  *   Ophthalmology, Orthopaedics, Otolaryngology, Paediatrics, Pathology,
  *   Primary Care, Psychiatry, Pulmonology, Radiology, Rheumatology, Urology
  *
+ * SEPARATION OF CONCERNS (refactor 2026-06-22):
+ *   This module answers "what does this evidence indicate?" only. It consumes a
+ *   pre-normalised SpecialtyEvidence bundle (see lib/specialtyEvidence.ts) and
+ *   never reads raw source field names. The deterministic matcher keys off the
+ *   CLINICAL text fields (deviceName, title, conditions, summary, description,
+ *   intendedUse) and deliberately IGNORES the bundle's panel / productCode — a
+ *   raw FDA panel is a regulatory review lane, not a clinical specialty, and is
+ *   reserved for the enrichment phase rather than the deterministic pass.
+ *
  * Used by:
- *   - lib/extractQueueSpecialty.ts (backfill pending queue entries)
- *   - lib/clinicalTrialsIngest.ts (populate specialty on new ingests — future wire-up)
+ *   - lib/extractQueueSpecialty.ts (backfill the review queue)
+ *   - lib/clinicalTrialsIngest.ts  (populate specialty on new ingests — future wire-up)
  */
+
+import type { SpecialtyEvidence } from './specialtyEvidence';
 
 export type SpecialtyConfidence = 'high' | 'medium' | 'low' | 'none';
 
@@ -29,7 +41,7 @@ export interface SpecialtyMatch {
   confidence: SpecialtyConfidence;
   signals: {
     matched_patterns: string[];
-    source_fields: string[];   // e.g. ['conditions','keywords']
+    source_fields: string[];   // e.g. ['conditions','deviceName']
   };
 }
 
@@ -105,6 +117,11 @@ const PATTERNS: Pattern[] = [
       /\bleft ventricular\b/i,
       /\bcardiovascular disease\b/i,
       /\bvalvular heart disease\b/i,
+      /\bheart murmur\b/i,
+      /\baortic stenosis\b/i,
+      /\baortic (regurgitation|insufficiency)\b/i,
+      /\bmitral (regurgitation|insufficiency)\b/i,
+      /\btricuspid (regurgitation|insufficiency)\b/i,
     ],
   },
   {
@@ -176,6 +193,10 @@ const PATTERNS: Pattern[] = [
       /\bwhole slide image/i,
       /\bwsi\b/i,
       /\bhistopatholog/i,
+      /\bcytopatholog/i,
+      /\bcytolog(y|ical)\b/i,
+      /whole slide (scan|imag)/i,
+      /rapid on-?site evaluation/i,
       /\bbiopsy\b.*(cancer|tumor|tumour|carcinoma)/i,
       /\bprostate biopsy\b/i,
     ],
@@ -202,6 +223,11 @@ const PATTERNS: Pattern[] = [
       /\beeg\b|\belectroencephalograph/i,
       /\bdementia\b/i,
       /\bcognitive impairment\b/i,
+      /\bstroke\b/i,
+      /\bisch(a)?emic stroke\b/i,
+      /\blarge vessel occlusion\b/i,
+      /\bintracerebral h(a)?emorrhage\b/i,
+      /\bintracranial aneurysm\b/i,
     ],
   },
   {
@@ -241,6 +267,16 @@ const PATTERNS: Pattern[] = [
   },
 
   // ---- Pulmonology ----
+  //
+  // Sleep-disordered breathing / OSA routes here (decision 2026-06-22): there
+  // is no Sleep Medicine specialty in the taxonomy, and OSA sits closest to
+  // Pulmonology. NOTE: devices that pair sleep apnea WITH arrhythmia/ECG
+  // signals (e.g. Belun Ring) will still resolve to Cardiology under the
+  // first-match-wins rule, because Cardiology is listed earlier in this array
+  // and its arrhythmia/ECG patterns fire at the same HIGH level. That is
+  // surfaced honestly: signals.matched_patterns will list BOTH specialties, so
+  // a reviewer sees the dual signal. If pure-sleep should always beat cardiac,
+  // that needs an explicit precedence decision (not done here).
   {
     specialty: 'Pulmonology',
     confidence: 'high',
@@ -250,6 +286,10 @@ const PATTERNS: Pattern[] = [
       /\bpulmonary fibrosis\b/i,
       /\btuberculosis\b|\btb\b/i,
       /\bpneumonia detection\b/i,
+      /\bobstructive sleep apn(o|e)a\b/i,
+      /\bsleep apn(o|e)a\b/i,
+      /\bsleep-?disordered breathing\b/i,
+      /\bpolysomnograph/i,
     ],
   },
   {
@@ -259,6 +299,7 @@ const PATTERNS: Pattern[] = [
       /\bpulmonolog/i,
       /\brespirator(y|ies)\b/i,
       /\blung disease\b/i,
+      /\bsleep stud(y|ies)\b/i,
     ],
   },
 
@@ -609,26 +650,35 @@ const PATTERNS: Pattern[] = [
 // -----------------------------------------------------------------------
 
 /**
- * Extract specialty from a CT.gov study raw_data record.
+ * Infer specialty from a pre-normalised SpecialtyEvidence bundle.
  *
  * Runs HIGH-confidence patterns across every specialty first, then MEDIUM,
  * then LOW. First specialty with a hit at a given level wins — but because
  * Oncology is listed LAST in the PATTERNS array, organ-specific matches
- * (Urology for prostate cancer, Pathology for biopsy, etc.) claim cancer
- * cases ahead of the generic Oncology label.
+ * (Gastroenterology for colonoscopy, Urology for prostate cancer, etc.) claim
+ * cases ahead of the generic Oncology label even when a cancer term is present.
+ *
+ * Only the clinical text fields are matched. panel / productCode / emdn from
+ * the evidence bundle are intentionally NOT consulted here (see module header).
  */
-export function inferSpecialty(rawData: any): SpecialtyMatch {
-  if (!rawData || typeof rawData !== 'object') {
-    return { specialty: null, confidence: 'none', signals: { matched_patterns: [], source_fields: [] } };
-  }
+export function inferSpecialty(evidence: SpecialtyEvidence): SpecialtyMatch {
+  const none: SpecialtyMatch = {
+    specialty: null,
+    confidence: 'none',
+    signals: { matched_patterns: [], source_fields: [] },
+  };
 
+  if (!evidence || typeof evidence !== 'object') return none;
+
+  // Clinical-signal corpus. Keys here are the field labels recorded in
+  // signals.source_fields, so name them meaningfully.
   const sources: Record<string, string> = {
-    conditions:    extractConditions(rawData),
-    mesh_terms:    extractMeshTerms(rawData),
-    keywords:      extractKeywords(rawData),
-    device_name:   String(rawData.device_name ?? rawData.interventionName ?? ''),
-    brief_title:   String(rawData.brief_title ?? rawData.briefTitle ?? ''),
-    brief_summary: truncate(String(rawData.brief_summary ?? rawData.briefSummary ?? ''), 2000),
+    deviceName:   evidence.deviceName || '',
+    title:        evidence.title || '',
+    conditions:   evidence.conditionsText || '',
+    intendedUse:  evidence.intendedUseText || '',
+    description:  evidence.descriptionText || '',
+    summary:      evidence.summaryText || '',
   };
 
   const matchedPatterns: string[] = [];
@@ -653,13 +703,7 @@ export function inferSpecialty(rawData: any): SpecialtyMatch {
     if (winner !== undefined) break;
   }
 
-  if (winner === undefined) {
-    return {
-      specialty: null,
-      confidence: 'none',
-      signals: { matched_patterns: [], source_fields: [] },
-    };
-  }
+  if (winner === undefined) return none;
 
   const w: Pattern = winner;
   return {
@@ -670,48 +714,4 @@ export function inferSpecialty(rawData: any): SpecialtyMatch {
       source_fields: Array.from(sourceFieldsHit),
     },
   };
-}
-
-// -----------------------------------------------------------------------
-// Helpers — pull fields from CT.gov v2 study shape
-// -----------------------------------------------------------------------
-
-function extractConditions(raw: any): string {
-  const candidates = [
-    raw.conditions,
-    raw.condition,
-    raw?.protocolSection?.conditionsModule?.conditions,
-  ];
-  return firstArrayOrString(candidates);
-}
-
-function extractMeshTerms(raw: any): string {
-  const candidates = [
-    raw.mesh_terms,
-    raw.meshTerms,
-    raw?.derivedSection?.conditionBrowseModule?.meshes?.map?.((m: any) => m.term ?? ''),
-    raw?.derivedSection?.interventionBrowseModule?.meshes?.map?.((m: any) => m.term ?? ''),
-  ];
-  return firstArrayOrString(candidates);
-}
-
-function extractKeywords(raw: any): string {
-  const candidates = [
-    raw.keywords,
-    raw?.protocolSection?.conditionsModule?.keywords,
-  ];
-  return firstArrayOrString(candidates);
-}
-
-function firstArrayOrString(candidates: any[]): string {
-  for (const c of candidates) {
-    if (!c) continue;
-    if (Array.isArray(c)) return c.filter(Boolean).map(String).join(' | ');
-    if (typeof c === 'string') return c;
-  }
-  return '';
-}
-
-function truncate(s: string, n: number): string {
-  return s.length > n ? s.slice(0, n) : s;
 }
