@@ -1,0 +1,488 @@
+queue_id,nct_id,status,action,scope_category,revised_recommendation
+cc1dfd80-d128-4323-9855-4139fbf7a4c0,NCT04289064,pending,reject,AI/ML-improved imaging workflow,capture_improved
+e287fc42-44b4-4e81-9fb5-445c78658d9b,NCT04314180,pending,reject,AI/ML-improved imaging workflow,capture_improved
+215b2153-3b2f-43ba-b1ec-07a563de9fb6,NCT06938061,pending,reject,AI/ML-improved imaging workflow,capture_improved
+fd427b58-2c6b-4deb-8c36-8dca898c65dd,NCT06798779,pending,reject,AI/ML-improved data/model workflow,capture_improved
+1549006c-281a-4151-9a6a-de6d7afe20fd,NCT04722770,pending,reject,AI/ML-improved conventional device/workflow,capture_improved
+193b7086-a650-463c-af2f-09be6ec73c97,NCT06317181,pending,reject,AI/ML-improved data/model workflow,capture_improved
+695966df-ff8c-4b2b-8727-507911468b29,NCT04859634,pending,reject,AI/ML-improved imaging/screening workflow,capture_improved
+7715632d-e3fa-404b-a46a-500b7fe6f504,NCT06507774,pending,reject,AI/ML-improved conventional device/workflow,capture_improved
+25217d7d-9c04-4f3b-8044-4984d7c6213b,NCT06434818,pending,reject,Not AI/ML medical device,reject
+9c7fb523-9e50-4491-90aa-055f7d5e12a2,NCT06647225,pending,reject,AI/ML-improved ultrasound workflow,capture_improved
+b2e327b4-8bc2-473f-97d9-0584e7d31714,NCT05463523,pending,reject,AI/ML-improved procedural device/workflow,capture_improved
+26137996-d1c7-4f80-bd2f-85808f62729d,NCT06792110,pending,reject,AI/ML-improved conventional device/workflow,capture_improved
+2b16ee31-0952-4dca-bad4-e941c183c0fd,NCT06745791,pending,reject,AI/ML-improved imaging software,capture_improved
+0fd2a63f-4808-447a-89c0-569d83ca86b7,NCT06462924,pending,reject,AI/ML-improved imaging reconstruction,capture_improved
+a7a5010c-d1de-449e-b8f8-ed60edb7b112,NCT05820113,pending,reject,AI/ML-improved imaging reconstruction,capture_improved
+df555508-072e-4953-9f0c-c63f1d6b98f4,NCT05871372,approved,reject,AI/ML research/improved neuromodulation signal,capture_improved
+5bb42027-106b-4d0c-a3b6-76b0eb2787f2,NCT06743295,approved,reject,AI/ML-improved conventional device/workflow,capture_improved
+700e12a8-371d-43a1-af14-369577205c6a,NCT04555135,pending,keep,Core AI/ML medical device / clinical software,keep_core
+69aebf49-5df4-4518-a822-00cfd44dbfb1,NCT02243670,pending,keep,Core AI/ML medical device / clinical software,keep_core
+6a87c4f4-bff9-481c-a32c-995ef190c828,NCT05583032,pending,keep,Core AI/ML medical device / clinical software,keep_core
+591c4fc2-0e2f-4c6a-8111-1a95717b84ff,NCT04983771,pending,keep,Core AI/ML medical device / clinical software,keep_core
+dc55addd-4e71-41e4-aa01-b9302748e77a,NCT06235112,pending,keep,Core AI/ML medical device / clinical software,keep_core
+3af5b4d5-b76f-4366-b032-3fc410827bf8,NCT07383870,pending,keep,Core AI/ML medical device / clinical software,keep_core
+29b6c670-f719-463d-bba8-8d65f0a283ea,NCT07312019,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4e8edfd4-5862-4ba2-94f3-0783e2f5a1dc,NCT06786793,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e9404067-9f69-45a1-be53-c0286a31a2af,NCT05322993,pending,keep,Core AI/ML medical device / clinical software,keep_core
+14fdaf71-3f25-446e-b0fc-49c4c1d60961,NCT05196269,pending,keep,Core AI/ML medical device / clinical software,keep_core
+fa923b27-4c2e-4eff-84e4-ae6a6f7ec029,NCT07171086,pending,keep,Core AI/ML medical device / clinical software,keep_core
+3197b2a6-bac2-4fe9-9242-1735a486c5cf,NCT05725187,pending,keep,Core AI/ML medical device / clinical software,keep_core
+6062d74e-4401-40f7-8441-b6fa80945cc3,NCT05829447,pending,keep,Core AI/ML medical device / clinical software,keep_core
+25ad9532-c508-4d99-be9a-4458b00f82b8,NCT07464275,pending,keep,Core AI/ML medical device / clinical software,keep_core
+d823e95a-bbda-49fb-a1b9-df40d50862cc,NCT06806969,pending,keep,Core AI/ML medical device / clinical software,keep_core
+21a7c683-6ca1-4c2a-95f9-efd766c7005f,NCT05630170,pending,keep,Core AI/ML medical device / clinical software,keep_core
+85e6917a-f879-4a34-a7e0-3eb1abdd0b66,NCT04903444,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9fd00e36-07e4-421a-b90b-1249d4cdda18,NCT06802003,pending,keep,Core AI/ML medical device / clinical software,keep_core
+d00f18b4-daab-41e3-81ff-32a0dcbc6e32,NCT05482958,pending,keep,Core AI/ML medical device / clinical software,keep_core
+94d686df-1c1d-4e3c-b339-d0f1b7da5251,NCT04222439,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e8ff7419-beb0-41b2-ad15-8d446fcfa16c,NCT03621462,pending,keep,Core AI/ML medical device / clinical software,keep_core
+3c6d5634-44b7-44bb-872d-cc0a339dd513,NCT07147725,approved,keep,Core AI/ML medical device / clinical software,keep_core
+d3227e1d-1a44-411c-abc0-0cebb415f59f,NCT07087613,pending,keep,Core AI/ML medical device / clinical software,keep_core
+8555a532-3c98-4ff7-bd27-10b0a51a0bf4,NCT07428941,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4d5e3098-112d-450c-a75b-a2fa7ed6a675,NCT06224543,pending,keep,Core AI/ML medical device / clinical software,keep_core
+77f18062-479b-4bbf-bac9-d9eeeaf8ff93,NCT05730192,pending,keep,Core AI/ML medical device / clinical software,keep_core
+71c2a194-8e69-4428-b282-2b028ee6b002,NCT06538155,pending,keep,Core AI/ML medical device / clinical software,keep_core
+90f522f3-db04-4470-8255-81f4b39f3b72,NCT06552468,pending,keep,Core AI/ML medical device / clinical software,keep_core
+201c0ec2-a298-4d0c-9501-8fa3e06f34b7,NCT04608617,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a0a7ffc3-5f9f-43be-bb9a-605d5eb3d611,NCT07227376,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e2fc4f36-2b0f-4748-ad08-43edd9eba3ea,NCT06576232,pending,keep,Core AI/ML medical device / clinical software,keep_core
+24ebd39b-b2fc-49e6-bed1-be1b9a81cc6e,NCT05871814,pending,keep,Core AI/ML medical device / clinical software,keep_core
+eae526ff-de38-479c-a82e-622c23143bc9,NCT04960280,pending,keep,Core AI/ML medical device / clinical software,keep_core
+40b448ea-164d-4824-a7d3-f796d482bedf,NCT05064124,pending,keep,Core AI/ML medical device / clinical software,keep_core
+929176e6-6ca7-4ae2-8b46-289f4cfb31fe,NCT05435872,pending,keep,Core AI/ML medical device / clinical software,keep_core
+80a713f5-7b9a-4f99-bb1e-ded6663e88f1,NCT06472297,pending,keep,Core AI/ML medical device / clinical software,keep_core
+78ad249a-b651-48ca-a6d7-d701ba2c76aa,NCT04437615,pending,keep,Core AI/ML medical device / clinical software,keep_core
+d11de319-c870-4009-948f-4dcad5019324,NCT06654999,pending,keep,Core AI/ML medical device / clinical software,keep_core
+96f91ea5-6ae8-4d27-ac63-ec0f8c6a5573,NCT04837599,pending,keep,Core AI/ML medical device / clinical software,keep_core
+b2a59dae-83c9-4e72-b901-bfe336238a27,NCT05220345,pending,keep,Core AI/ML medical device / clinical software,keep_core
+ec525c9d-1cf9-47cc-9195-41c154656c61,NCT03773458,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4e23e3d0-52f7-4770-b434-849c859e603c,NCT06742229,pending,keep,Core AI/ML medical device / clinical software,keep_core
+ce5176f2-f0b2-4772-a731-dc39050c7b36,NCT05918354,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e5a00f72-f0d0-4b0c-92ea-3d1496862aa1,NCT03499145,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9d85526c-aceb-4b2a-8362-677e01091e52,NCT07500532,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c89675cd-ab8f-42b2-ae30-d9dd6488b9cd,NCT06790108,pending,keep,Core AI/ML medical device / clinical software,keep_core
+b0a6df9e-ee2f-4dc1-8fdc-d38fc43fdfd9,NCT05240625,pending,keep,Core AI/ML medical device / clinical software,keep_core
+6f5c6ec1-4e0d-4b5e-bef8-057c9a2ad5b5,NCT04087824,pending,keep,Core AI/ML medical device / clinical software,keep_core
+45f47d9a-2aac-4701-a840-b283d52d607f,NCT04335318,pending,keep,Core AI/ML medical device / clinical software,keep_core
+53afd7fe-c7eb-427c-8c2d-1a3d0c184c0b,NCT04723758,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f510acc6-c295-4dfc-8177-b24496a05ac0,NCT03602989,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e8f673c8-a1e0-4a4b-bf94-606925fe0842,NCT06295497,pending,keep,Core AI/ML medical device / clinical software,keep_core
+7e0f17f6-a254-418d-883a-7f7c4fa5c982,NCT05940090,pending,keep,Core AI/ML medical device / clinical software,keep_core
+1d81f342-80df-4ceb-ac9a-57a25f9d76ac,NCT04679961,pending,keep,Core AI/ML medical device / clinical software,keep_core
+ef3586ae-753e-46e7-ab14-604e2db98f43,NCT06666023,pending,keep,Core AI/ML medical device / clinical software,keep_core
+b23079e3-980a-462d-a88e-6ee1f382dd5c,NCT04673136,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9e681398-8b43-420e-b55c-a6702cfd99e6,NCT05527730,pending,keep,Core AI/ML medical device / clinical software,keep_core
+7fbad942-124a-4a54-997c-1e07a52fb7a9,NCT07456306,pending,keep,Core AI/ML medical device / clinical software,keep_core
+84d079fb-421f-4428-bd49-9fcd29b6e2fe,NCT04589078,pending,keep,Core AI/ML medical device / clinical software,keep_core
+0ef5b773-02db-4245-baba-c7baf257de5f,NCT07421713,pending,keep,Core AI/ML medical device / clinical software,keep_core
+2a875afc-ccc8-4dc6-891d-b7d85339d949,NCT05693480,pending,keep,Core AI/ML medical device / clinical software,keep_core
+29196a21-455e-464c-bbca-4b307a801216,NCT06616896,pending,keep,Core AI/ML medical device / clinical software,keep_core
+2ef75675-33fd-4eff-aa2d-726022d54c40,NCT06160466,pending,keep,Core AI/ML medical device / clinical software,keep_core
+b80a0bc1-ec47-4d55-8f4e-0ab8265a8ea1,NCT03980470,pending,keep,Core AI/ML medical device / clinical software,keep_core
+3abf7685-7390-4dbc-b168-1850f55b84c1,NCT05813080,pending,keep,Core AI/ML medical device / clinical software,keep_core
+df8f7f5c-caa5-45b0-b3f2-858766f599fb,NCT05176145,pending,keep,Core AI/ML medical device / clinical software,keep_core
+d48e3993-e195-4be9-ab31-14726b3262cf,NCT05391477,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4d85dea7-ed59-4dac-87e3-168237f35000,NCT04191330,pending,keep,Core AI/ML medical device / clinical software,keep_core
+722c6536-2134-4dde-bbf6-c936bccedeaf,NCT07280065,pending,keep,Core AI/ML medical device / clinical software,keep_core
+1c2acfc9-9f86-438d-addb-7d3fff3a9b7f,NCT06013709,pending,keep,Core AI/ML medical device / clinical software,keep_core
+1e79cdac-24d4-42c3-8872-69b6c9f71f8c,NCT05870332,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4099cef6-ae4a-43c9-ade4-367f2237484f,NCT05466864,pending,keep,Core AI/ML medical device / clinical software,keep_core
+b7fbe894-9400-4d18-a6d9-077e0f04b23d,NCT04869618,pending,keep,Core AI/ML medical device / clinical software,keep_core
+971b754f-b42a-4f89-b880-df1a6fb7201f,NCT05863208,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a6814999-b3f4-4dad-8fef-ae30c450de0a,NCT03908645,pending,keep,Core AI/ML medical device / clinical software,keep_core
+0fb7f88a-77ea-45b1-a8f8-f69365494670,NCT04383457,pending,keep,Core AI/ML medical device / clinical software,keep_core
+48ec5526-586a-4ed5-86cc-7c4ae6a06dc1,NCT06621225,pending,keep,Core AI/ML medical device / clinical software,keep_core
+23db05b2-42aa-470d-83fa-a73b93ca9cef,NCT05414448,pending,keep,Core AI/ML medical device / clinical software,keep_core
+014dc5e2-94cf-47c0-ba33-01e86d8d5b31,NCT06612281,pending,keep,Core AI/ML medical device / clinical software,keep_core
+56341288-0d94-4e28-9652-7d036365bd91,NCT05080504,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a965d7e2-6343-45a8-ab32-eeac9b48c92c,NCT05594485,pending,keep,Core AI/ML medical device / clinical software,keep_core
+edd96a29-4309-4d36-b6a1-517c718e93ae,NCT04612868,pending,keep,Core AI/ML medical device / clinical software,keep_core
+b0592663-62db-4147-a308-52633c4841e0,NCT04999813,pending,keep,Core AI/ML medical device / clinical software,keep_core
+955d25ff-af79-482d-a232-640d296fa0c7,NCT04441580,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f3a6f32c-c9e2-4fae-b97d-6d8e98e6dfaf,NCT06213896,pending,keep,Core AI/ML medical device / clinical software,keep_core
+90419c3c-efcd-4bf1-9fa8-56c23d043401,NCT06155643,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a71f27fd-4f8d-439c-aee0-30c143304999,NCT06027411,pending,keep,Core AI/ML medical device / clinical software,keep_core
+61ebc57a-7ed2-446c-8f99-602cdb3b7e3d,NCT06238180,pending,keep,Core AI/ML medical device / clinical software,keep_core
+405b94d3-8df6-4606-8362-c1c435152c05,NCT05914220,pending,keep,Core AI/ML medical device / clinical software,keep_core
+ef5f0224-53c0-46c7-a24c-3cd52be7eb05,NCT07427407,pending,keep,Core AI/ML medical device / clinical software,keep_core
+27362cbe-eb43-49b7-af03-ffa18ac0d32e,NCT05318599,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f9f0f05c-150b-4439-8672-5bef0c0dcd04,NCT04775810,pending,keep,Core AI/ML medical device / clinical software,keep_core
+2811f974-b42e-463f-9f0c-b702e10fac17,NCT06567340,pending,keep,Core AI/ML medical device / clinical software,keep_core
+95fc8768-d29c-4dbf-aad8-ec4ae98a7e7f,NCT04196088,pending,keep,Core AI/ML medical device / clinical software,keep_core
+3b58a172-3e3b-4eba-8be1-9215dc446781,NCT04531995,pending,keep,Core AI/ML medical device / clinical software,keep_core
+617ca2f4-6b16-40b0-a9c1-3b0a13c6ce9b,NCT05807737,pending,keep,Core AI/ML medical device / clinical software,keep_core
+865baea7-6dc3-41ca-9f9d-b507af931966,NCT06699056,pending,keep,Core AI/ML medical device / clinical software,keep_core
+8cf63201-b3d5-4b85-be9d-5a13c38fbfa7,NCT05802563,pending,keep,Core AI/ML medical device / clinical software,keep_core
+8891e9a0-c57f-4920-b037-4a242771817e,NCT05943288,pending,keep,Core AI/ML medical device / clinical software,keep_core
+01db0301-198b-4649-a239-ee69d50456bb,NCT07113223,pending,keep,Core AI/ML medical device / clinical software,keep_core
+41a51e19-0504-42e4-867a-a0bd2bbe0231,NCT05988658,pending,keep,Core AI/ML medical device / clinical software,keep_core
+0dcaf570-6b6a-4027-ae91-d3638fdb66a6,NCT04754347,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c55d5648-d5a7-460b-a018-a5c7c23e6e8a,NCT05362656,pending,keep,Core AI/ML medical device / clinical software,keep_core
+bb980496-1f34-44dc-a254-9294a016e7ea,NCT04885062,pending,keep,Core AI/ML medical device / clinical software,keep_core
+ab058939-9b0b-48d2-8e58-164683768887,NCT04917653,pending,keep,Core AI/ML medical device / clinical software,keep_core
+dd4d08fc-f080-475e-9d10-41bab5c11d4e,NCT05888623,pending,keep,Core AI/ML medical device / clinical software,keep_core
+5950592b-bfc0-4878-b2ec-45c4fff1330f,NCT05795842,pending,keep,Core AI/ML medical device / clinical software,keep_core
+023c00d2-d5ab-43b6-b0b3-006326784c9b,NCT06462352,pending,keep,Core AI/ML medical device / clinical software,keep_core
+976c6ab5-9d65-447b-8d45-c55dd1926ec6,NCT04142879,pending,keep,Core AI/ML medical device / clinical software,keep_core
+94bfaf95-a079-4fe6-9b92-4e562241bb65,NCT06932172,pending,keep,Core AI/ML medical device / clinical software,keep_core
+04ffe39d-915e-49a2-9955-5dbf399b0a90,NCT04577053,pending,keep,Core AI/ML medical device / clinical software,keep_core
+97b83cfc-3788-41f7-bc70-f60d3f9b1319,NCT05519098,pending,keep,Core AI/ML medical device / clinical software,keep_core
+49a66104-e72f-4fc4-9069-985abc435670,NCT05968898,pending,keep,Core AI/ML medical device / clinical software,keep_core
+fce72117-f67a-4c07-976b-9da8a2ead841,NCT07429123,pending,keep,Core AI/ML medical device / clinical software,keep_core
+474d1fa6-b2d2-46f7-a13d-683324a14813,NCT05987670,pending,keep,Core AI/ML medical device / clinical software,keep_core
+1b7f7091-f890-407a-9f09-f36d360642c0,NCT07259278,pending,keep,Core AI/ML medical device / clinical software,keep_core
+3961a259-80fa-4f72-87d2-b28c19c3d305,NCT03973762,pending,keep,Core AI/ML medical device / clinical software,keep_core
+ac3cec1d-0163-4497-9d16-a4a2fff1f7f6,NCT07023471,pending,keep,Core AI/ML medical device / clinical software,keep_core
+23d8fdbd-1e75-4e2f-beaf-c9552d845b77,NCT06688565,pending,keep,Core AI/ML medical device / clinical software,keep_core
+dbb14aa8-3f28-4e24-9891-f9e693d52e42,NCT06710028,pending,keep,Core AI/ML medical device / clinical software,keep_core
+145312ff-295a-4053-a90b-b0466cfc829d,NCT07502040,pending,keep,Core AI/ML medical device / clinical software,keep_core
+6aeee724-8f28-44ce-bcce-b68b9d82fd4d,NCT06815939,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a3547c0c-a094-4416-8ca1-8518763b35c7,NCT04978922,pending,keep,Core AI/ML medical device / clinical software,keep_core
+6e0414c0-ff6f-4736-8ee1-0d5f272fb7ae,NCT06990906,pending,keep,Core AI/ML medical device / clinical software,keep_core
+5b12947b-a0e8-4544-b238-9f475aa186b5,NCT06221397,pending,keep,Core AI/ML medical device / clinical software,keep_core
+dcd8c3a2-8890-47c0-bd09-11f1ba3b236d,NCT07428954,pending,keep,Core AI/ML medical device / clinical software,keep_core
+710f9a70-c3b1-4b98-bd82-c037b352f940,NCT04921488,pending,keep,Core AI/ML medical device / clinical software,keep_core
+d075b7c8-cea7-4f4c-8053-253b6b1b23d5,NCT04487626,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c9913f64-eae1-455f-8b75-b6b38e72f027,NCT06062433,pending,keep,Core AI/ML medical device / clinical software,keep_core
+442acc1b-8f2d-4179-b20f-df83969d6b48,NCT06686056,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e30224cc-2512-4c69-9c73-a101566aed90,NCT04325815,pending,keep,Core AI/ML medical device / clinical software,keep_core
+28bd6471-f42b-4662-b238-fa73ab0fea1f,NCT06901960,pending,keep,Core AI/ML medical device / clinical software,keep_core
+5c349a06-c986-43bc-867b-15a97ff59659,NCT06994702,pending,keep,Core AI/ML medical device / clinical software,keep_core
+232e0689-db27-4508-9429-52a2e3b4edfc,NCT06882356,pending,keep,Core AI/ML medical device / clinical software,keep_core
+2ac162dd-c464-4123-8102-a192a6737173,NCT07464171,pending,keep,Core AI/ML medical device / clinical software,keep_core
+16083357-fa7d-41d8-bc0b-f55b258c7b1a,NCT03186300,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4e46e5fc-d742-4f54-8916-95f5c3221cd2,NCT06275997,pending,keep,Core AI/ML medical device / clinical software,keep_core
+cfc0eebe-3a9c-4337-b4f2-b056cec3cdb8,NCT04040114,pending,keep,Core AI/ML medical device / clinical software,keep_core
+40a181cf-a658-4b7a-8737-03a37f7b155a,NCT06174519,pending,keep,Core AI/ML medical device / clinical software,keep_core
+5a500477-6f79-4c2e-879d-38b8f3e4e8d0,NCT07123675,pending,keep,Core AI/ML medical device / clinical software,keep_core
+1697d9e2-6515-4e40-8c03-9ceabbd4a204,NCT06767111,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e512d6c0-b69c-400c-99f0-c3c29fa4baeb,NCT07425236,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c7259e38-4e86-441f-80e6-799ef41fe223,NCT04049981,pending,keep,Core AI/ML medical device / clinical software,keep_core
+11857942-82e8-47ca-b380-649d68b99b19,NCT06788665,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f27d3d0a-c955-4f4d-bf77-f00b0a83964f,NCT07298252,pending,keep,Core AI/ML medical device / clinical software,keep_core
+be9db400-3b60-4dd8-ac84-16faaae99d20,NCT06667401,pending,keep,Core AI/ML medical device / clinical software,keep_core
+7dc36fb6-e35f-4f72-903e-4e90e92433b5,NCT05057975,pending,keep,Core AI/ML medical device / clinical software,keep_core
+37f00e89-7968-4d79-a53b-55f4d6f972ff,NCT05096286,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c7b7ae2b-922a-417f-bcf5-3eec0288d496,NCT06607822,pending,keep,Core AI/ML medical device / clinical software,keep_core
+21683ccb-6f9e-48c5-94a0-1dd77a6b9713,NCT06713226,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a2c3a1be-3884-4617-b5a3-96b88051cd63,NCT03362138,pending,keep,Core AI/ML medical device / clinical software,keep_core
+1081e7b3-7177-4b45-aad7-e58c4a64eb3a,NCT07376304,pending,keep,Core AI/ML medical device / clinical software,keep_core
+bcfa5f6b-90ce-4a28-bf6f-93f3cee0bdf1,NCT07452016,pending,keep,Core AI/ML medical device / clinical software,keep_core
+7641924f-5b62-489d-ad32-b59eff47d174,NCT05581290,pending,keep,Core AI/ML medical device / clinical software,keep_core
+8e708f2c-b301-4b4c-acff-ce444fcd43a9,NCT07403669,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e8bbabcc-6ec0-47c5-9f55-3a2a97bffdee,NCT03973437,pending,keep,Core AI/ML medical device / clinical software,keep_core
+439951e8-28a4-4611-ae2f-632ab492803d,NCT05732233,pending,keep,Core AI/ML medical device / clinical software,keep_core
+0ef9c449-ab29-43de-888e-72e11fc49bd5,NCT07431710,pending,keep,Core AI/ML medical device / clinical software,keep_core
+201091d3-c294-4f91-98cb-e5b53298121e,NCT06522061,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e80654e5-6f6c-4dfe-b56d-53482aca338c,NCT04606862,pending,keep,Core AI/ML medical device / clinical software,keep_core
+248f3ba9-3124-4526-a93b-08daf1c8b6a1,NCT05752045,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c21cc81a-c8d2-4f1c-8066-6b5fd5c0850d,NCT07288229,pending,keep,Core AI/ML medical device / clinical software,keep_core
+506765fd-36b1-4d1a-bf53-f5bdb366d5e6,NCT03766737,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a05a238b-5722-4eda-8715-b1a61508f2f8,NCT04407325,pending,keep,Core AI/ML medical device / clinical software,keep_core
+63669df1-8cf9-49a8-ae49-a17817a3b2ca,NCT07255885,pending,keep,Core AI/ML medical device / clinical software,keep_core
+fdc1b527-1727-4f7d-bcbc-f1fb599e2173,NCT03569176,pending,keep,Core AI/ML medical device / clinical software,keep_core
+08497194-f776-4563-847a-d857ee2c1d49,NCT07428915,pending,keep,Core AI/ML medical device / clinical software,keep_core
+66837a43-5db2-4847-8cf8-30a41cc16471,NCT06540001,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a43064e1-170f-4187-98c7-b15d8810ec16,NCT05867407,pending,keep,Core AI/ML medical device / clinical software,keep_core
+bb0d47f7-f2e7-46b5-922e-7f33494fcae8,NCT05275556,pending,keep,Core AI/ML medical device / clinical software,keep_core
+188e0d73-e43d-4a5a-8cf0-166fa7b91047,NCT06613503,pending,keep,Core AI/ML medical device / clinical software,keep_core
+d9ad30fd-dcad-4595-90e0-e5a3754b6ebf,NCT07136272,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e66c8565-1093-4322-9982-5553eac5fc4d,NCT06235190,pending,keep,Core AI/ML medical device / clinical software,keep_core
+5377f819-0602-405c-9e61-25771bd9c6f6,NCT07199322,pending,keep,Core AI/ML medical device / clinical software,keep_core
+acec189c-1b48-4be3-8fb3-4f328a3cad71,NCT04138771,pending,keep,Core AI/ML medical device / clinical software,keep_core
+feee9580-fd94-4131-87d0-9de204ca2426,NCT06971471,pending,keep,Core AI/ML medical device / clinical software,keep_core
+b6195818-3c79-4e83-8bd1-0a859208f63c,NCT07437664,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f3014623-2fe0-472f-98e5-ac68c649bbeb,NCT03706534,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9c968dbd-3ed7-4739-a2c5-43f517264cbe,NCT05363475,pending,keep,Core AI/ML medical device / clinical software,keep_core
+8609a49a-cc79-4ccc-9e98-a73483490fce,NCT07127471,pending,keep,Core AI/ML medical device / clinical software,keep_core
+363fedea-3172-4e2a-a511-f7d77373ee6f,NCT06790134,pending,keep,Core AI/ML medical device / clinical software,keep_core
+3909c7af-7726-456c-99ea-aa491d5a93db,NCT06000046,pending,keep,Core AI/ML medical device / clinical software,keep_core
+84109fb3-1b88-4aa4-95bd-6dddfd52c39c,NCT07323186,pending,keep,Core AI/ML medical device / clinical software,keep_core
+12d07d99-788b-4907-bc4a-82b1398bd45c,NCT02599259,pending,keep,Core AI/ML medical device / clinical software,keep_core
+07d8108f-4ca5-4c2b-9b15-192950d49d56,NCT05963191,pending,keep,Core AI/ML medical device / clinical software,keep_core
+b11adef5-ec01-4c9a-b148-6189a76483bf,NCT04909671,pending,keep,Core AI/ML medical device / clinical software,keep_core
+7819b4a4-4333-4ad3-82c7-5ba4f3f922cc,NCT05141773,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9de5cd87-da84-45da-b549-ed19fae28432,NCT05335889,pending,keep,Core AI/ML medical device / clinical software,keep_core
+8e9146b8-d767-4e91-9871-ae1b4fda27f9,NCT05490823,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c19c7850-b711-4e64-8206-c7d3b5e5308e,NCT06645015,pending,keep,Core AI/ML medical device / clinical software,keep_core
+fcb38b50-f8bb-4709-b841-8a0594391d2c,NCT05176704,pending,keep,Core AI/ML medical device / clinical software,keep_core
+830c7180-fe1a-41df-80af-9a89168f606e,NCT06276582,pending,keep,Core AI/ML medical device / clinical software,keep_core
+cfcf6884-8f2a-4473-9bb7-338c39bad281,NCT05833360,pending,keep,Core AI/ML medical device / clinical software,keep_core
+75787220-088d-4104-9ce3-3f60615242cf,NCT06321003,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9c0bccb2-d5c9-45c1-bc5f-6b8b395a4cec,NCT05061953,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c4b9b0e9-178a-42f0-9261-e19c7a61a442,NCT06685367,pending,keep,Core AI/ML medical device / clinical software,keep_core
+deb00afb-4a9b-4ffc-8089-40f2a6f499a6,NCT03053518,pending,keep,Core AI/ML medical device / clinical software,keep_core
+03250e2b-774a-4ce1-b69a-c93bae53464b,NCT05277740,pending,keep,Core AI/ML medical device / clinical software,keep_core
+6ce10d1a-7404-4722-a50d-0632d179d737,NCT06216457,pending,keep,Core AI/ML medical device / clinical software,keep_core
+abb91bcd-b194-4437-ad42-639a7b4eb289,NCT06315829,pending,keep,Core AI/ML medical device / clinical software,keep_core
+26d3d8d0-4389-4857-808b-337475194b42,NCT05497505,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c55f799c-ec31-4eaf-a098-4fcf725e70ac,NCT06326424,approved,keep,Core AI/ML medical device / clinical software,keep_core
+b8a8bb2f-da37-45ec-98cb-5aa2b3026d3f,NCT04621656,pending,keep,Core AI/ML medical device / clinical software,keep_core
+11c37e75-ed4b-4a11-a703-407c5e5b841e,NCT07505394,pending,keep,Core AI/ML medical device / clinical software,keep_core
+37b13841-44d2-4e24-9bdf-8b96bf244f29,NCT03788811,pending,keep,Core AI/ML medical device / clinical software,keep_core
+55e75f8f-194f-4c0a-89e8-576431968ddf,NCT05838456,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e768ec31-15da-4790-96bd-ff6bb9956088,NCT03936413,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f5f71c59-0a83-48b8-afdf-46048af9b6d7,NCT07202104,pending,keep,Core AI/ML medical device / clinical software,keep_core
+6bba8236-f7f6-4798-ad0b-eb9512cdda11,NCT05835024,pending,keep,Core AI/ML medical device / clinical software,keep_core
+6f218da3-113c-455a-8160-5ade294b8e30,NCT02651493,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f84a7c25-a802-4107-aa16-15cea94186b0,NCT05204095,pending,keep,Core AI/ML medical device / clinical software,keep_core
+ecbf886f-5aad-4750-bd76-69c425280bbf,NCT03530098,pending,keep,Core AI/ML medical device / clinical software,keep_core
+36d9d26b-c44b-409e-ab02-c59bbdaa2876,NCT07430358,pending,keep,Core AI/ML medical device / clinical software,keep_core
+707a9216-3ec5-413a-bd72-9e395e267ebd,NCT03864081,pending,keep,Core AI/ML medical device / clinical software,keep_core
+2051ba9d-9d4f-4c2b-897c-77c21726a711,NCT05212727,pending,keep,Core AI/ML medical device / clinical software,keep_core
+38636eab-eea3-44d2-9133-d5ccfbdf88e4,NCT05874648,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9a0e2038-1607-4227-a078-83ae1fe20bc2,NCT05506358,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f03be800-4fca-4664-9c50-ac80ecd19c44,NCT05708222,pending,keep,Core AI/ML medical device / clinical software,keep_core
+8b082fe1-fdfd-4a84-955f-52ab5a03423c,NCT04681274,pending,keep,Core AI/ML medical device / clinical software,keep_core
+767e5fec-6a8d-4f90-8a8f-452a70a302af,NCT06283524,pending,keep,Core AI/ML medical device / clinical software,keep_core
+2cb03516-e621-4ced-99d3-6f57ffd6619d,NCT06952439,pending,keep,Core AI/ML medical device / clinical software,keep_core
+cb9f47d1-bf5d-4dfd-9c67-6119a33bfeac,NCT05288413,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e0780957-05ff-41a7-aff7-b563deb02db2,NCT04397380,pending,keep,Core AI/ML medical device / clinical software,keep_core
+008f0a74-0a9f-4b11-b968-ececb32be3c5,NCT06771830,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a320ef8d-ce80-47e0-9c5e-b44ea146e2f9,NCT06712095,pending,keep,Core AI/ML medical device / clinical software,keep_core
+b23b6cab-cad6-4b88-b6d6-45ca0d2aee67,NCT04763785,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4c354511-4e69-4191-980e-668f2efb3677,NCT07124624,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9405b7bb-24b9-4d35-abf3-fa9fba5ec925,NCT06541834,pending,keep,Core AI/ML medical device / clinical software,keep_core
+30751f79-52bd-4def-bcbe-77a43b71e6cc,NCT07231627,pending,keep,Core AI/ML medical device / clinical software,keep_core
+02632f74-cbb0-4bf5-b2d6-c7590c423626,NCT06643715,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a9e6024e-bd03-439d-b4e2-b25a9b0b14d7,NCT06878469,pending,keep,Core AI/ML medical device / clinical software,keep_core
+3453fe36-28d9-4ebf-9054-85a3b4cb7991,NCT06877988,pending,keep,Core AI/ML medical device / clinical software,keep_core
+710d4553-aabc-4170-9fa4-1c76efcc44a2,NCT07073430,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4b8d94fe-6650-41a0-a73d-5f551116e515,NCT05041777,pending,keep,Core AI/ML medical device / clinical software,keep_core
+5ff1b391-5819-4451-bfa1-4bb1735648b3,NCT04407039,pending,keep,Core AI/ML medical device / clinical software,keep_core
+d036c60b-8f03-400e-a08d-c8806da5e138,NCT03793231,pending,keep,Core AI/ML medical device / clinical software,keep_core
+5ff5f419-d269-47b2-a735-7f6e8e1db175,NCT04733638,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4431da1d-6286-4284-8104-1188ad69eaaf,NCT06469372,pending,keep,Core AI/ML medical device / clinical software,keep_core
+cd8a19a4-95f0-474c-a8f3-7c8e6365282d,NCT06118840,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c87aa935-66f3-4c16-95fe-d52fee8ca9e0,NCT06435286,pending,keep,Core AI/ML medical device / clinical software,keep_core
+78e4c6d5-a9a1-4ebc-be4b-a192c686b96c,NCT01663155,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9f36cc01-525a-46c1-b683-96bf69c69b32,NCT06676930,pending,keep,Core AI/ML medical device / clinical software,keep_core
+ad4520db-d2d6-4de2-838a-2d15bdac7e52,NCT00997802,pending,keep,Core AI/ML medical device / clinical software,keep_core
+7ba3303d-f687-4915-9005-80baefaf2510,NCT06406062,pending,keep,Core AI/ML medical device / clinical software,keep_core
+276bd949-6c02-4fb8-a235-6051c4d893ea,NCT00610831,pending,keep,Core AI/ML medical device / clinical software,keep_core
+6293130e-c156-4f6b-8929-dc86540a1163,NCT06116864,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f7185f2f-a422-4dfd-898c-0f25010fd998,NCT05448300,pending,keep,Core AI/ML medical device / clinical software,keep_core
+ebf201da-8fad-4a6c-b5b0-ec0ae98924da,NCT06495645,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4a137fb0-d173-49d4-ba98-4310e4155312,NCT05481762,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4f90db5d-3218-4a49-9176-d1fc4d547b03,NCT05089071,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f779c05e-fb8f-4005-ba39-9c5b655baae4,NCT01399710,pending,keep,Core AI/ML medical device / clinical software,keep_core
+61541a1f-ba59-4289-83a5-c642c953ef76,NCT00673283,pending,keep,Core AI/ML medical device / clinical software,keep_core
+8e83b766-53b0-4a89-b823-d2648da7b2e8,NCT04195646,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a7ad621a-0af7-451d-9f26-d2ed596ab96e,NCT05822895,pending,keep,Core AI/ML medical device / clinical software,keep_core
+0070251a-2278-4b5c-9e03-3ff12bc5f196,NCT06281392,pending,keep,Core AI/ML medical device / clinical software,keep_core
+19a75736-23eb-4723-9830-00167c4bfac1,NCT04260321,pending,keep,Core AI/ML medical device / clinical software,keep_core
+fe14d0d7-a062-4a36-a82f-064b48788b6c,NCT05869838,pending,keep,Core AI/ML medical device / clinical software,keep_core
+461691ce-5e51-4e9a-b120-054cb7183ae7,NCT07308743,pending,keep,Core AI/ML medical device / clinical software,keep_core
+26a0660e-4410-47c6-b611-99dd04394870,NCT05963724,pending,keep,Core AI/ML medical device / clinical software,keep_core
+ff3c92ed-d1c1-4af7-93bf-ae2cde3fb239,NCT05568992,pending,keep,Core AI/ML medical device / clinical software,keep_core
+032501e7-7a21-48b2-a023-c09d44b0354b,NCT06597968,pending,keep,Core AI/ML medical device / clinical software,keep_core
+8534180a-1212-407e-b6a3-4de63f56cbfc,NCT05754229,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c7f87cae-f0c7-42f5-a3f1-3bcc4d4135c5,NCT04359355,pending,keep,Core AI/ML medical device / clinical software,keep_core
+316d9674-1080-4e52-b6c6-e077c3317e97,NCT03925337,pending,keep,Core AI/ML medical device / clinical software,keep_core
+91c478ec-4c3e-4311-b7fd-71c7824f5116,NCT04227795,pending,keep,Core AI/ML medical device / clinical software,keep_core
+810127de-be57-4758-a10e-e3f2864513d3,NCT02618200,pending,keep,Core AI/ML medical device / clinical software,keep_core
+5d7a1e0b-0dd7-4888-8767-6bc3e914eb3f,NCT00756834,pending,keep,Core AI/ML medical device / clinical software,keep_core
+59416ac3-7fee-48c1-aaed-e4211c7f7863,NCT07097350,pending,keep,Core AI/ML medical device / clinical software,keep_core
+0eb0c7b3-5a22-4895-9dd5-2a00ca02c2f1,NCT06830005,pending,keep,Core AI/ML medical device / clinical software,keep_core
+562f6aa2-4281-41e7-84a3-5ca49ff2e4fd,NCT05139186,pending,keep,Core AI/ML medical device / clinical software,keep_core
+06aa1eee-fb3c-4c15-8bd7-363807a0d56c,NCT03637712,pending,keep,Core AI/ML medical device / clinical software,keep_core
+19cdaf46-8b5f-4fff-9782-3709935a2452,NCT07171333,pending,keep,Core AI/ML medical device / clinical software,keep_core
+af8577b1-3ccf-4f3c-b747-e5ac1ceb36a1,NCT05133544,pending,keep,Core AI/ML medical device / clinical software,keep_core
+204cf3bf-826f-460b-ae19-e099cb958c9b,NCT04691401,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9a5d0c1d-9ba3-4673-a400-8d1d314bce53,NCT05383053,pending,keep,Core AI/ML medical device / clinical software,keep_core
+2c07206c-0127-4da3-93f8-6cc9cfabd0fe,NCT05862948,pending,keep,Core AI/ML medical device / clinical software,keep_core
+aad06221-ceb3-43b3-ba92-1d9eaf3e26f0,NCT05740137,pending,keep,Core AI/ML medical device / clinical software,keep_core
+cbfe28d2-0ad2-4230-8dc1-2512b3d0fa6a,NCT06317103,pending,keep,Core AI/ML medical device / clinical software,keep_core
+112e896d-f69a-419d-ad5f-3f903e161ec7,NCT05034185,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4f77ff79-2ced-451f-aa1c-b021d4bafee3,NCT07158203,pending,keep,Core AI/ML medical device / clinical software,keep_core
+0ab0ce8f-c7a3-4636-ac70-b5b1632de976,NCT05941689,pending,keep,Core AI/ML medical device / clinical software,keep_core
+6661debf-3436-44d7-8719-512e1d2ad3c2,NCT05230563,pending,keep,Core AI/ML medical device / clinical software,keep_core
+b534f419-4307-4b42-b6e7-41306f1be011,NCT02185495,pending,keep,Core AI/ML medical device / clinical software,keep_core
+63272d12-d672-43af-87b6-9d6e8836eedb,NCT03600051,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f3bc0405-d49f-4e19-884f-25484ea1b122,NCT03842059,pending,keep,Core AI/ML medical device / clinical software,keep_core
+4893fbb5-3c0e-4126-b54e-ff787331f643,NCT07395570,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9bc20f48-1e1e-4da7-9b73-735cefe567e0,NCT05619614,pending,keep,Core AI/ML medical device / clinical software,keep_core
+89f1dab0-26fe-4184-9979-973065ea1559,NCT07470827,pending,keep,Core AI/ML medical device / clinical software,keep_core
+998347bd-4416-4b27-9149-b494b97b9af2,NCT05497258,pending,keep,Core AI/ML medical device / clinical software,keep_core
+3d0a76c2-4dcb-45dd-ac36-849ec5d446e0,NCT05320185,pending,keep,Core AI/ML medical device / clinical software,keep_core
+a984438c-95cf-469b-8141-e817164010bc,NCT03887611,pending,keep,Core AI/ML medical device / clinical software,keep_core
+7cd6f97e-6174-4b43-ad59-e1fc45942cff,NCT03822390,pending,keep,Core AI/ML medical device / clinical software,keep_core
+43224220-143c-4db0-8d98-04e25e747ba3,NCT05349110,pending,keep,Core AI/ML medical device / clinical software,keep_core
+772b9586-182e-4da7-9c01-94c99d9f4e1c,NCT05141409,pending,keep,Core AI/ML medical device / clinical software,keep_core
+5614b91a-d3cc-4daf-bbbb-c74c99d3822a,NCT05414383,pending,keep,Core AI/ML medical device / clinical software,keep_core
+26e8a5bd-48ac-401b-8ac1-4b4ace16e6d7,NCT02012751,pending,keep,Core AI/ML medical device / clinical software,keep_core
+60e76a82-23d9-4511-8ad6-db4fc24e9043,NCT03887598,pending,keep,Core AI/ML medical device / clinical software,keep_core
+f7ea28df-57d5-49b7-b6b5-4a7c6fa8cbb1,NCT07267403,approved,keep,Core AI/ML medical device / clinical software,keep_core
+77df0997-5cf8-47f3-a3ea-21741a315780,NCT05713266,pending,keep,Core AI/ML medical device / clinical software,keep_core
+78a1cd54-25bb-4fef-9e49-ff0c78c03579,NCT04758429,pending,keep,Core AI/ML medical device / clinical software,keep_core
+835ba539-d8c5-4cba-b8b2-76c4801a297a,NCT03635710,pending,keep,Core AI/ML medical device / clinical software,keep_core
+dfb461fa-657a-4ce4-a66d-25e29a780ed4,NCT05739331,pending,keep,Core AI/ML medical device / clinical software,keep_core
+1a5f710f-b3f6-4a6c-b54f-bcab38935a72,NCT05220306,pending,keep,Core AI/ML medical device / clinical software,keep_core
+37add0f4-255e-4f1b-86b1-9d8197549c79,NCT03164551,pending,keep,Core AI/ML medical device / clinical software,keep_core
+38d99a91-08e2-4eae-b4c9-aca919b75404,NCT05318027,pending,keep,Core AI/ML medical device / clinical software,keep_core
+8a87ce05-def9-486c-87a3-8f8ab9e0d257,NCT05470478,pending,keep,Core AI/ML medical device / clinical software,keep_core
+e592dae2-196b-4c37-bfb7-f0fc99ad1eb0,NCT03214627,pending,keep,Core AI/ML medical device / clinical software,keep_core
+2f2d7d5b-cdd2-4347-b1e6-7ce3ff47f1a1,NCT04821349,pending,keep,Core AI/ML medical device / clinical software,keep_core
+c3bfe2db-8ab5-4800-9ccf-b10ca83fe359,NCT05603949,pending,keep,Core AI/ML medical device / clinical software,keep_core
+9a90fc31-ae2e-4e60-ad53-3f492fb3018d,NCT07111715,pending,keep,Core AI/ML medical device / clinical software,keep_core
+282aada6-0ea7-4d39-8655-a6539d1dfdba,NCT07181083,pending,keep,Core AI/ML medical device / clinical software,keep_core
+de4f3b7b-a256-41d2-81e4-a14538000857,NCT03623971,pending,keep,Core AI/ML medical device / clinical software,keep_core
+d178851d-c012-4695-8f0c-7da5153c6f9b,NCT02765958,pending,keep,Core AI/ML medical device / clinical software,keep_core
+dd8a0eb5-e82e-4f3e-bc3c-45e475133191,NCT05782283,approved,keep,Core AI/ML medical device / clinical software,keep_core
+dcad06ae-36c1-45d6-a9f5-e9eff7192d9d,NCT05303051,approved,keep,Core AI/ML medical device / clinical software,keep_core
+a3d4525b-1a4d-47c4-bf2f-e443cad22fbd,NCT04816981,approved,keep,Core AI/ML medical device / clinical software,keep_core
+aa3ceda0-0bad-4077-b5db-022b2f0c54ed,NCT04592068,approved,keep,Core AI/ML medical device / clinical software,keep_core
+ce5642e5-41d9-488a-814f-49db865f8696,NCT05260281,approved,keep,Core AI/ML medical device / clinical software,keep_core
+10a03eb1-761d-425b-9e76-1e60965b0eef,NCT06019390,approved,keep,Core AI/ML medical device / clinical software,keep_core
+e4948275-20c5-41e7-8aca-f853aafac455,NCT07022444,approved,keep,Core AI/ML medical device / clinical software,keep_core
+5df33d5d-7a5d-4504-9b40-08a1d16b5dc0,NCT05045456,approved,keep,Core AI/ML medical device / clinical software,keep_core
+a28665b1-3b60-4b09-ac12-f8a974846fbc,NCT05126173,approved,keep,Core AI/ML medical device / clinical software,keep_core
+183fecab-8046-4685-956d-e182eb9fd6d9,NCT06862297,approved,keep,Core AI/ML medical device / clinical software,keep_core
+dae0f449-65f4-4e4e-afce-8dd5f3f9dc27,NCT04792905,approved,keep,Core AI/ML medical device / clinical software,keep_core
+48a576a2-443d-4053-9eac-f87687aa6b9d,NCT06041945,approved,keep,Core AI/ML medical device / clinical software,keep_core
+7c3913e1-c3d6-4252-a2d3-2e10e74cbbdc,NCT05167058,approved,keep,Core AI/ML medical device / clinical software,keep_core
+5a33186b-1300-424b-92a7-40be0ffa667e,NCT05386654,approved,keep,Core AI/ML medical device / clinical software,keep_core
+33b4bbd4-aa6d-4f8e-b182-1978e816973e,NCT06637293,approved,keep,Core AI/ML medical device / clinical software,keep_core
+c64afcaa-f8eb-4e0f-882e-36bba40b4bfa,NCT05675540,approved,keep,Core AI/ML medical device / clinical software,keep_core
+b120502c-0104-44a7-a7ae-2dcb0575e88b,NCT05033678,approved,keep,Core AI/ML medical device / clinical software,keep_core
+06bb5a82-e506-4194-b6f8-c9f4e91669bb,NCT07173673,approved,keep,Core AI/ML medical device / clinical software,keep_core
+f63dfcc0-c3f7-47ab-9f22-de0f0c151922,NCT04116983,approved,keep,Core AI/ML medical device / clinical software,keep_core
+9b3201ce-71d8-48ae-9eed-34f1839aa7ad,NCT06824909,approved,keep,Core AI/ML medical device / clinical software,keep_core
+fc2caeb8-eaa8-439d-a1fe-e839cbd8cfa9,NCT03761771,approved,keep,Core AI/ML medical device / clinical software,keep_core
+a15b5b6d-6e1a-4761-9102-fadc2cbf7f61,NCT07121920,approved,keep,Core AI/ML medical device / clinical software,keep_core
+1e2f581b-63d1-43e0-aa16-e1794697c93c,NCT07121972,approved,keep,Core AI/ML medical device / clinical software,keep_core
+bb1d2742-5e50-4937-8020-8a8f92c1355d,NCT06255613,approved,keep,Core AI/ML medical device / clinical software,keep_core
+4e5822bf-17ac-41c0-914a-db3864b1b095,NCT06868940,pending,reject,Not AI/ML medical device,reject
+44865f7f-2f9d-457e-97f7-204c701be3d6,NCT07396181,approved,reject,Not AI/ML medical device,reject
+5dde3ef8-9807-4dd8-9406-a8948c4fcfd1,NCT04523649,pending,reject,Not AI/ML medical device,reject
+9d94b3c6-32b6-44f8-830f-dd00a527ec17,NCT06357039,pending,reject,Not AI/ML medical device,reject
+83bc30ff-0668-4bfe-b2b3-309fc8071982,NCT06550960,pending,reject,Not AI/ML medical device,reject
+74572392-a43b-4bb5-9de0-d8fe51780104,NCT06573801,pending,reject,Not AI/ML medical device,reject
+6e76fd61-9e7a-46f0-a9b5-61b67f510262,NCT06879210,pending,reject,Not AI/ML medical device,reject
+02fd1304-4349-4c11-81f0-66d114d40dc5,NCT06465212,pending,reject,Not AI/ML medical device,reject
+ededed6c-71c6-49cf-8b68-42e107d222d3,NCT03611387,pending,reject,Not AI/ML medical device,reject
+17f5e618-c3d4-417e-8e47-2265b21d6663,NCT06915909,pending,reject,Not AI/ML medical device,reject
+7cca0578-f384-46c2-8ce0-c7ee839a1aaf,NCT05843682,pending,reject,Not AI/ML medical device,reject
+e4759db4-9ff1-4a74-a743-6ae94430533d,NCT05077722,pending,reject,Not AI/ML medical device,reject
+3442bc9c-97c7-4eae-919c-7f402fc827ca,NCT05734664,pending,reject,Not AI/ML medical device,reject
+15dc4bb5-86bd-4aed-a237-67bcc2c4b833,NCT05504096,pending,reject,Not AI/ML medical device,reject
+0f6954bd-6049-45b5-973e-10c6969e2e59,NCT05012202,pending,reject,Not AI/ML medical device,reject
+1f6c93b1-f019-4f8c-956a-1fca0c045eaf,NCT04918693,pending,reject,Not AI/ML medical device,reject
+3c25ae7c-e6a3-4119-b3ca-7c57b1c492d2,NCT04455568,pending,reject,Not AI/ML medical device,reject
+c3bf1b02-75b5-498f-b8cb-d47299418f52,NCT06113757,pending,reject,Not AI/ML medical device,reject
+67a0d5ef-3e6f-44b3-9102-9013780fb522,NCT04765163,pending,reject,Not AI/ML medical device,reject
+09a2e697-7e2d-414f-bf5f-ad3a01316672,NCT06754020,pending,reject,Not AI/ML medical device,reject
+69e606ef-f344-4304-8cde-d96bc715796a,NCT05949723,pending,reject,Not AI/ML medical device,reject
+10f5c117-f912-44a9-b187-29c0b47098c6,NCT06931743,pending,reject,Not AI/ML medical device,reject
+d1d9bb58-363f-48e1-8547-c561ac0341d9,NCT06350344,pending,reject,Not AI/ML medical device,reject
+e2f9933b-627f-4185-9c5c-5f95b73b6046,NCT06173258,pending,reject,Not AI/ML medical device,reject
+c9334196-7a79-4cd5-b8cd-45c9c9af6453,NCT06418516,pending,reject,Not AI/ML medical device,reject
+94c5bcab-b700-405b-98b8-8fd12cfb6925,NCT07040501,pending,reject,Not AI/ML medical device,reject
+275843ee-068f-4ba5-bea4-c5ddaf8187f1,NCT05156099,pending,reject,Not AI/ML medical device,reject
+b805603d-9940-4350-b191-11f14ad2a1a9,NCT06512779,pending,reject,Not AI/ML medical device,reject
+fb7d9da8-7c0f-4ef0-8be0-47c8daf9a692,NCT05926531,pending,reject,Not AI/ML medical device,reject
+9bebc21f-066b-4b40-bedd-10e8d5417dcf,NCT05731466,pending,reject,Not AI/ML medical device,reject
+fe9b0350-31e3-4fb5-a4d9-005046378e18,NCT05365646,pending,reject,Not AI/ML medical device,reject
+b35a4c7f-dfd9-42d8-89ef-91145bcebf8c,NCT04710615,pending,reject,Not AI/ML medical device,reject
+5c0dd33f-61b9-48c0-b551-bbc224d23a4e,NCT05442203,pending,reject,Not AI/ML medical device,reject
+fe2e1b17-3cc5-4fd6-a8aa-5f1d0dffadf9,NCT02833428,pending,reject,Not AI/ML medical device,reject
+aef07d3c-8ad2-4488-ad09-8b589ed90c07,NCT04675424,pending,reject,Not AI/ML medical device,reject
+70a72811-3f63-4171-b482-e03f02153df7,NCT05659225,pending,reject,Not AI/ML medical device,reject
+9b2b16a8-609e-43a4-a15f-0ac25522fd7b,NCT04369833,pending,reject,Not AI/ML medical device,reject
+8f2a924e-62f2-4d3f-8bab-04c08c1f1846,NCT07208734,pending,reject,Not AI/ML medical device,reject
+56c2655e-465a-4857-993f-fc281ba16874,NCT05815472,pending,reject,Not AI/ML medical device,reject
+56e09cd0-3c9c-4da4-9abb-52ef63d11a01,NCT07448103,pending,reject,Not AI/ML medical device,reject
+fba1b226-0f11-4960-9583-94c62ba5a60d,NCT04891705,pending,reject,Not AI/ML medical device,reject
+150d40b2-ab9e-48ed-a63e-f21f1f59cad3,NCT05009277,pending,reject,Not AI/ML medical device,reject
+ae833ce4-328f-46ee-af29-951fd0f182fe,NCT04894955,pending,reject,Not AI/ML medical device,reject
+b49b2b5b-0c26-4358-823c-0bcdc620581f,NCT06322524,pending,reject,Not AI/ML medical device,reject
+a2463853-62d0-40ad-a394-34daac6395e4,NCT07058831,pending,reject,Not AI/ML medical device,reject
+565fb866-814e-4e8d-aef9-154a8ea3db0f,NCT06173089,pending,reject,Not AI/ML medical device,reject
+2ad69296-d6ca-4751-8561-920bac84ad71,NCT07018648,pending,reject,Not AI/ML medical device,reject
+755e7cc8-9495-402a-b9cb-e3f9f0a1ce01,NCT07202767,pending,reject,Not AI/ML medical device,reject
+f24a2959-99c0-45ae-9005-5a573fb8afd7,NCT05775133,pending,reject,Not AI/ML medical device,reject
+a92a90d2-1180-4f51-834e-20a042e1df14,NCT06534151,pending,reject,Not AI/ML medical device,reject
+f29378a9-6d22-4f92-b713-986a9d68678d,NCT06842147,pending,reject,Not AI/ML medical device,reject
+7691e145-ac2a-47f9-97f3-c32362e35db8,NCT07254026,pending,reject,Not AI/ML medical device,reject
+dda7e1cf-67e6-4c63-adeb-4831518c3152,NCT07300579,pending,reject,Not AI/ML medical device,reject
+c3baa311-5fb3-4702-a5ad-1cd10aec6788,NCT07422597,pending,reject,Not AI/ML medical device,reject
+80776235-28a5-48f9-a742-c1625bc44c0a,NCT06196307,pending,reject,Not AI/ML medical device,reject
+bac197ce-723e-474a-b7e9-653152f2c5f5,NCT06256666,pending,reject,Not AI/ML medical device,reject
+5b3497d4-2f11-447d-b9a1-1429c1328608,NCT03962426,pending,reject,Not AI/ML medical device,reject
+380f039f-d1f3-4e68-b12f-28b380c414e3,NCT07232784,pending,reject,Not AI/ML medical device,reject
+e0883a46-638a-4beb-8dbb-0397c484bab3,NCT05771740,pending,reject,Not AI/ML medical device,reject
+0a2d0acc-a975-4bfe-83b9-ca0b8589144c,NCT04100486,pending,reject,Not AI/ML medical device,reject
+c24bb0df-8a8f-414d-b866-881114b5b20b,NCT07325513,pending,reject,Not AI/ML medical device,reject
+ec7dee6e-b5cb-46a1-b90e-ba7d84ee2ce6,NCT04788732,pending,reject,Not AI/ML medical device,reject
+ddb82c4e-4b4a-43b5-9215-db3bc253cc3d,NCT06733077,pending,reject,Not AI/ML medical device,reject
+4ee243e9-6101-43d2-b87e-eda1d550e8cd,NCT05035511,pending,reject,Not AI/ML medical device,reject
+b37d702c-101d-478e-8ee6-04ed0e67f773,NCT06828679,pending,reject,Not AI/ML medical device,reject
+e71d85bf-64b5-4aa0-8ac9-a9abb18c1191,NCT04409340,pending,reject,Not AI/ML medical device,reject
+44480786-cb5b-4be8-bbcd-ab57f4321101,NCT07037966,pending,reject,Not AI/ML medical device,reject
+9a28a235-712d-4d4e-b737-282fdfb653d9,NCT06725901,pending,reject,Not AI/ML medical device,reject
+01534aab-70e3-454b-b00d-fb27abfda30c,NCT07188506,pending,reject,Not AI/ML medical device,reject
+9d03e546-796d-4291-b18d-dc962bc624fb,NCT04401319,pending,reject,Not AI/ML medical device,reject
+6fcdf0ce-adf9-4333-9884-7be1c9e02dac,NCT05661266,pending,reject,Not AI/ML medical device,reject
+adcba87c-5c91-42fd-9c6b-2ee08b1f0b6a,NCT05274919,pending,reject,Not AI/ML medical device,reject
+f423f7be-08d4-44a9-b70c-74850818cb51,NCT05479643,pending,reject,Not AI/ML medical device,reject
+2e246804-5de0-4328-96c9-8e36e4ae0d69,NCT06398431,pending,reject,Not AI/ML medical device,reject
+c64f95bc-0ac3-42e9-a791-d905d38ab365,NCT03711656,pending,reject,Not AI/ML medical device,reject
+5f8f366f-8657-41ff-a90f-f759f1b0a21d,NCT06531317,pending,reject,Not AI/ML medical device,reject
+678d1885-b45e-4d58-890d-76d1988b5d08,NCT06213766,pending,reject,Not AI/ML medical device,reject
+db1ee98b-33ee-4986-9712-6c27912551bb,NCT03348761,pending,reject,Not AI/ML medical device,reject
+31edc7a6-5a14-4af9-881b-0610ed1f6d45,NCT07116278,pending,reject,Not AI/ML medical device,reject
+f46966a2-7bee-4f17-84cd-9d12d6e994b0,NCT05545397,pending,reject,Not AI/ML medical device,reject
+e5fdd3ed-3ec8-4e90-85e7-e1026282fb88,NCT07491588,pending,reject,Not AI/ML medical device,reject
+347fb706-957f-46a6-8ace-c33f303c4e1b,NCT06734247,pending,reject,Not AI/ML medical device,reject
+a4c5d507-fbb2-4354-8726-b364e69879a8,NCT05462925,pending,reject,Not AI/ML medical device,reject
+9ce16618-d4a6-41fc-852a-dadfab4fadd3,NCT05608824,pending,reject,Not AI/ML medical device,reject
+b8f5a066-0c5e-4e74-bffd-4f56d9201d54,NCT07282184,pending,reject,Not AI/ML medical device,reject
+866cebba-fe5a-4a97-b2a9-ac986af878c9,NCT06629207,pending,reject,Not AI/ML medical device,reject
+6de732a1-8181-431e-9850-44e26d0dccbe,NCT06526754,pending,reject,Not AI/ML medical device,reject
+43250d54-44b9-4ff2-baf0-61a498fac2a3,NCT06244680,pending,reject,Not AI/ML medical device,reject
+30229784-3fa4-4703-8b81-5f0637407666,NCT06988020,pending,reject,Not AI/ML medical device,reject
+9bb00fb9-a812-46d0-9c71-bc682c4cba3d,NCT05963841,pending,reject,Not AI/ML medical device,reject
+72502c3f-cd56-46cc-9a03-db34e109dad6,NCT01668979,pending,reject,Not AI/ML medical device,reject
+576f2b46-7880-448a-a94f-802db4601a8f,NCT05913843,pending,reject,Not AI/ML medical device,reject
+b27a30ab-4990-4177-a6e1-19476488544b,NCT06152640,pending,reject,Not AI/ML medical device,reject
+06e1dd12-757a-4ec6-8887-8fa7d52efd45,NCT06524310,pending,reject,Not AI/ML medical device,reject
+483c9e5d-97aa-440e-8bf7-e57e4c2b7aa3,NCT06953362,pending,reject,Not AI/ML medical device,reject
+92d47590-a305-4603-9724-9dd58f5055fc,NCT07496762,pending,reject,Not AI/ML medical device,reject
+cb9ae2b2-4bba-49b7-b94f-8da73e7c5fe4,NCT05712057,pending,reject,Not AI/ML medical device,reject
+db9660d1-5153-4b7c-b066-06912ef825c9,NCT06159595,pending,reject,Not AI/ML medical device,reject
+812dd2b5-5324-4db1-a349-a7302f413e1b,NCT07057700,pending,reject,Not AI/ML medical device,reject
+3acdb064-f3c8-4bee-b947-fb3d8b2b9502,NCT04018092,pending,reject,Not AI/ML medical device,reject
+fd6fbca3-eea7-4c20-9a03-bb048a99f3aa,NCT06762535,pending,reject,Not AI/ML medical device,reject
+c6af7c85-afff-4c4b-8196-83f8627410c1,NCT05188105,pending,reject,Not AI/ML medical device,reject
+02905dce-8121-4160-adf1-d1d4420b46ad,NCT04348591,pending,reject,Not AI/ML medical device,reject
+d3408f33-1399-451a-a661-14456fa80306,NCT02844049,pending,reject,Not AI/ML medical device,reject
+d451c94d-3769-4f00-8366-2d6b98d344ea,NCT04670640,pending,reject,Not AI/ML medical device,reject
+c95d6083-3487-43d0-8784-b7cf404b0f47,NCT05643326,pending,reject,Not AI/ML medical device,reject
+d91d0855-77c7-466a-bfef-2bda6a00214e,NCT05670873,pending,reject,Not AI/ML medical device,reject
+dd565012-d5a3-46f5-9fa2-824b2d1c3ab1,NCT05099406,pending,reject,Not AI/ML medical device,reject
+9d325385-cdd2-45f2-aed3-be7d08e01e1d,NCT02843373,pending,reject,Not AI/ML medical device,reject
+39633c3e-8805-4e19-86ba-15c5e96a0a09,NCT03088592,pending,reject,Not AI/ML medical device,reject
+ee2e29de-3bd4-43ad-9ba2-c69ae9075488,NCT06900959,pending,reject,Not AI/ML medical device,reject
+bf5022d4-802a-4d01-a55a-e71616985da5,NCT07316413,pending,reject,Not AI/ML medical device,reject
+ba552e56-3467-4384-922d-1aab8155b175,NCT05210166,pending,reject,Not AI/ML medical device,reject
+8c420c75-465a-48b3-ac65-e89140c1a8cc,NCT04326205,pending,reject,Not AI/ML medical device,reject
+62df7f29-b81b-4149-94c5-eb379c0055fa,NCT05311982,pending,reject,Not AI/ML medical device,reject
+063d4493-5095-42cc-904e-2d53ec884265,NCT01984710,pending,reject,Not AI/ML medical device,reject
+9e3e7769-5acf-42d2-ad85-e4d87f795376,NCT06214065,pending,reject,Not AI/ML medical device,reject
+3e9b37bf-8cf4-4bf0-b687-4ec43ccfd9db,NCT03964467,pending,reject,Not AI/ML medical device,reject
+2c903c5b-7218-4054-9e0c-84780262d979,NCT06464835,pending,reject,Not AI/ML medical device,reject
+29bdf693-9f85-4b3e-9eee-0e34d6583893,NCT03604367,pending,reject,Not AI/ML medical device,reject
+78ad85db-388e-4716-a098-928f74131918,NCT02880917,pending,reject,Not AI/ML medical device,reject
+7bb26002-0929-4d62-bd32-d8851ad02825,NCT01476228,pending,reject,Not AI/ML medical device,reject
+c3e48ba2-4f2b-4b4b-9aa2-377638d8bb08,NCT05595356,pending,reject,Not AI/ML medical device,reject
+a70cd8ec-85eb-49ba-8ffd-1fba36b2d240,NCT04968418,pending,reject,Not AI/ML medical device,reject
+a1a40a1b-6454-4ab7-a126-0c970778601d,NCT03121066,pending,reject,Not AI/ML medical device,reject
+837aed43-ab63-4301-8219-14d0081bf1cf,NCT04150198,pending,reject,Not AI/ML medical device,reject
+4e0587dd-af45-41c8-bc07-3bd3977bf54f,NCT02302534,pending,reject,Not AI/ML medical device,reject
+647a4a5d-4b6c-4229-9d11-001dd002fc95,NCT05003830,approved,reject,Not AI/ML medical device,reject
+558742d9-c09e-4200-9a2b-a3c0411d6cd9,NCT05964725,approved,reject,Not AI/ML medical device,reject
+d21c62c6-d740-468e-b926-aa7e440ef598,NCT07173920,approved,reject,Not AI/ML medical device,reject
+e13c169d-cb47-4f33-b2fc-13f6b282af8c,NCT02802293,approved,reject,Not AI/ML medical device,reject
+d0daf01b-4c71-402e-9b95-cf9f2992c740,NCT02408237,approved,reject,Not AI/ML medical device,reject
+c725fd61-94fd-4993-913f-f1f4cd4c31ce,NCT01920490,approved,reject,Not AI/ML medical device,reject
