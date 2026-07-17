@@ -159,6 +159,110 @@ export function buildSpecialtyEvidence(rawData: any, _source?: string): Specialt
 }
 
 // -----------------------------------------------------------------------
+// device_master evidence (backbone de-baring pass, July 2026)
+// -----------------------------------------------------------------------
+
+/**
+ * Input for building evidence from a device_master row plus its FDA-derived
+ * descriptive texts. Used by scripts/debar-specialty-master.ts.
+ *
+ * CONSTRUCT-VALIDITY NOTE: classificationNames / classificationDefinitions are
+ * the openFDA *classification* device_name and definition for the device's
+ * product code(s) — e.g. "radiological computer-assisted triage and
+ * notification software". These are functional descriptions of what the device
+ * IS, so they are legitimate clinical-text evidence for the deterministic
+ * matcher. This is NOT the FDA advisory panel (a regulatory review lane),
+ * which remains carried-but-never-matched, same as everywhere else.
+ */
+export interface DeviceMasterEvidenceInput {
+  name: string | null;
+  intendedUse: string | null;
+  description: string | null;
+  /** Device names from FDA list submissions attached to this device (may differ from master name). */
+  fdaListDeviceNames?: string[];
+  /** openFDA classification device_name per product code — descriptive text, matched. */
+  classificationNames?: string[];
+  /** openFDA classification definition per product code — descriptive text, matched. */
+  classificationDefinitions?: string[];
+  /** Carried for provenance only — never matched. */
+  panels?: string[];
+  productCodes?: string[];
+}
+
+/**
+ * Build a SpecialtyEvidence bundle from a device_master row (+ optional
+ * FDA-list and openFDA classification texts). Mirrors buildSpecialtyEvidence
+ * but for the master shape: master rows are not raw_data records, so the
+ * alias-path machinery doesn't apply — the caller supplies named fields.
+ */
+export function buildDeviceMasterEvidence(input: DeviceMasterEvidenceInput): SpecialtyEvidence {
+  const used: string[] = [];
+
+  const deviceName = (input.name ?? '').trim();
+  if (deviceName) used.push('master.name');
+
+  const intendedUseText = (input.intendedUse ?? '').trim();
+  if (intendedUseText) used.push('master.intended_use');
+
+  // Title carries FDA-list submission device names that differ from the master
+  // name — often longer / more descriptive (e.g. list says "BriefCase for ICH
+  // triage" where master says "BriefCase").
+  const listNames = dedupeNonEmpty(input.fdaListDeviceNames).filter(
+    (n) => n.toLowerCase() !== deviceName.toLowerCase()
+  );
+  const title = listNames.join(' | ');
+  if (title) used.push('fda_list.device_name');
+
+  const classNames = dedupeNonEmpty(input.classificationNames);
+  if (classNames.length) used.push('openfda.classification.device_name');
+
+  const masterDescription = (input.description ?? '').trim();
+  if (masterDescription) used.push('master.description');
+  const descriptionText = truncate(
+    [masterDescription, ...classNames].filter(Boolean).join(' | '),
+    2000
+  );
+
+  const classDefs = dedupeNonEmpty(input.classificationDefinitions);
+  if (classDefs.length) used.push('openfda.classification.definition');
+  const summaryText = truncate(classDefs.join(' | '), 2000);
+
+  const panel = dedupeNonEmpty(input.panels).join(' | ');
+  if (panel) used.push('fda_list.panel');
+  const productCode = dedupeNonEmpty(input.productCodes).join(' | ');
+  if (productCode) used.push('fda_list.product_code');
+
+  return {
+    deviceName,
+    manufacturerName: '',
+    title,
+    descriptionText,
+    intendedUseText,
+    conditionsText: '',
+    summaryText,
+    panel,
+    productCode,
+    emdnDescription: '',
+    riskClass: '',
+    sourceFieldsUsed: Array.from(new Set(used)),
+  };
+}
+
+function dedupeNonEmpty(values?: string[]): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const v of values ?? []) {
+    const s = (v ?? '').trim();
+    if (!s) continue;
+    const key = s.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(s);
+  }
+  return out;
+}
+
+// -----------------------------------------------------------------------
 // Helpers
 // -----------------------------------------------------------------------
 

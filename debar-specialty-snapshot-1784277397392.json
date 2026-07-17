@@ -1,0 +1,5446 @@
+{
+  "applied_at": "2026-07-17T08:36:38.788Z",
+  "decisions_file": "debar-specialty-decisions-final.csv",
+  "writes": [
+    {
+      "aletia_id": "ALT-004571",
+      "specialty_link_before": null,
+      "specialty_link_after": "Anaesthesiology"
+    },
+    {
+      "aletia_id": "ALT-006696",
+      "specialty_link_before": null,
+      "specialty_link_after": "Anaesthesiology"
+    },
+    {
+      "aletia_id": "ALT-001187",
+      "specialty_link_before": null,
+      "specialty_link_after": "Anaesthesiology"
+    },
+    {
+      "aletia_id": "ALT-006473",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006754",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001183",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006976",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006361",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007062",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006353",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006083",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006834",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006286",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006365",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006193",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006170",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006150",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006153",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006175",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006159",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006179",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006157",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006158",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001015",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001026",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004594",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004668",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006487",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006779",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006722",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007002",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006245",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004457",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-003499",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004559",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001155",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001156",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001157",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001174",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006608",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006050",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006609",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006805",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001087",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004342",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006424",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007025",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001145",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004443",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007097",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-003020",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007114",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006935",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-003567",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004211",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006313",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004022",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006656",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001034",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001065",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-003525",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007130",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-003522",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006337",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-003180",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001055",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007148",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-003520",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006965",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004123",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007191",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007090",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007022",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006757",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006468",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004538",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006410",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004539",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007203",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006587",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006618",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-003261",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004339",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004144",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004602",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-003444",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006896",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-003556",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007144",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dentistry"
+    },
+    {
+      "aletia_id": "ALT-006480",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dentistry"
+    },
+    {
+      "aletia_id": "ALT-006898",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dentistry"
+    },
+    {
+      "aletia_id": "ALT-006482",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dentistry"
+    },
+    {
+      "aletia_id": "ALT-001088",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dentistry"
+    },
+    {
+      "aletia_id": "ALT-006553",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dentistry"
+    },
+    {
+      "aletia_id": "ALT-006524",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dentistry"
+    },
+    {
+      "aletia_id": "ALT-007155",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-006152",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-006178",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-006151",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-006708",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-007072",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-006146",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-006537",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-007199",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-007053",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-007157",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-007112",
+      "specialty_link_before": null,
+      "specialty_link_after": "Dermatology"
+    },
+    {
+      "aletia_id": "ALT-006190",
+      "specialty_link_before": null,
+      "specialty_link_after": "Endocrinology"
+    },
+    {
+      "aletia_id": "ALT-007179",
+      "specialty_link_before": null,
+      "specialty_link_after": "Endocrinology"
+    },
+    {
+      "aletia_id": "ALT-007118",
+      "specialty_link_before": null,
+      "specialty_link_after": "Endocrinology"
+    },
+    {
+      "aletia_id": "ALT-007124",
+      "specialty_link_before": null,
+      "specialty_link_after": "Endocrinology"
+    },
+    {
+      "aletia_id": "ALT-007168",
+      "specialty_link_before": null,
+      "specialty_link_after": "Endocrinology"
+    },
+    {
+      "aletia_id": "ALT-006556",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004070",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-006154",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-006149",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004312",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-003857",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004138",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-001184",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004305",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004402",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004163",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004545",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004420",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004525",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004080",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-003933",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-004587",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-001598",
+      "specialty_link_before": null,
+      "specialty_link_after": "Hematology"
+    },
+    {
+      "aletia_id": "ALT-001273",
+      "specialty_link_before": null,
+      "specialty_link_after": "Hematology"
+    },
+    {
+      "aletia_id": "ALT-004514",
+      "specialty_link_before": null,
+      "specialty_link_after": "Hematology"
+    },
+    {
+      "aletia_id": "ALT-007057",
+      "specialty_link_before": null,
+      "specialty_link_after": "Intensive Care"
+    },
+    {
+      "aletia_id": "ALT-001036",
+      "specialty_link_before": null,
+      "specialty_link_after": "Intensive Care"
+    },
+    {
+      "aletia_id": "ALT-001054",
+      "specialty_link_before": null,
+      "specialty_link_after": "Intensive Care"
+    },
+    {
+      "aletia_id": "ALT-006635",
+      "specialty_link_before": null,
+      "specialty_link_after": "Nephrology"
+    },
+    {
+      "aletia_id": "ALT-004086",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006174",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006166",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006181",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-003637",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-007171",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004106",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004313",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006543",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006335",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006567",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-007181",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-007052",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006539",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006133",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004082",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004264",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004071",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004404",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004085",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-001151",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006421",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-003805",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004428",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004430",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006876",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004597",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006263",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006295",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004373",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006518",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-007103",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006689",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-001060",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-001071",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004275",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004002",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-004087",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006382",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006650",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-001039",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006452",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006303",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-007142",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006693",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-004272",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-007195",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006938",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006417",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-007020",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-004421",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-004584",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-004527",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006933",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-003907",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-007066",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-007205",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006919",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-001178",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006984",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006532",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-001086",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006359",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006379",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-004542",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006653",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006180",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-006156",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-006182",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-006183",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-006720",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-003577",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-004515",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-006973",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-006893",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-007133",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-007183",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-006485",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-007107",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-001117",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-001118",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-001143",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-006895",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-006925",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-001114",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-001115",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-001116",
+      "specialty_link_before": null,
+      "specialty_link_after": "Ophthalmology"
+    },
+    {
+      "aletia_id": "ALT-004308",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-007120",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-001050",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-007006",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-004519",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-001153",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-004626",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006550",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-004379",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006654",
+      "specialty_link_before": null,
+      "specialty_link_after": "Otolaryngology"
+    },
+    {
+      "aletia_id": "ALT-006085",
+      "specialty_link_before": null,
+      "specialty_link_after": "Paediatrics"
+    },
+    {
+      "aletia_id": "ALT-001185",
+      "specialty_link_before": null,
+      "specialty_link_after": "Paediatrics"
+    },
+    {
+      "aletia_id": "ALT-006775",
+      "specialty_link_before": null,
+      "specialty_link_after": "Paediatrics"
+    },
+    {
+      "aletia_id": "ALT-004295",
+      "specialty_link_before": null,
+      "specialty_link_after": "Paediatrics"
+    },
+    {
+      "aletia_id": "ALT-006321",
+      "specialty_link_before": null,
+      "specialty_link_after": "Paediatrics"
+    },
+    {
+      "aletia_id": "ALT-006177",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-006155",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-006173",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-001189",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-004361",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-001005",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-006208",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-001186",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-007212",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-001158",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-007202",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-007200",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-007196",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-007136",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pathology"
+    },
+    {
+      "aletia_id": "ALT-001152",
+      "specialty_link_before": null,
+      "specialty_link_after": "Psychiatry"
+    },
+    {
+      "aletia_id": "ALT-001167",
+      "specialty_link_before": null,
+      "specialty_link_after": "Psychiatry"
+    },
+    {
+      "aletia_id": "ALT-001168",
+      "specialty_link_before": null,
+      "specialty_link_after": "Psychiatry"
+    },
+    {
+      "aletia_id": "ALT-001169",
+      "specialty_link_before": null,
+      "specialty_link_after": "Psychiatry"
+    },
+    {
+      "aletia_id": "ALT-006065",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006176",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-004093",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006538",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-004625",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-007077",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006909",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006458",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-004394",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006390",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-007115",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006913",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006074",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006527",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006885",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006566",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006148",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006872",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006692",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006838",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001028",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001056",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004180",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006849",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006425",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003635",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006454",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006103",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007099",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001020",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006070",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001077",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006762",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006345",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006788",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006391",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006432",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003455",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006402",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006407",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004490",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004548",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006565",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006317",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004477",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004665",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006950",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004643",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007058",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007108",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006686",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007014",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006308",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006786",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006056",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006212",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006222",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006579",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006455",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006403",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004337",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007024",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004230",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006853",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001031",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001064",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001072",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001019",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001092",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001017",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001049",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001018",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001042",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001023",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001041",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001062",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001024",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001025",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001066",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001079",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001022",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006235",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006833",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001075",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007000",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006061",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006224",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006195",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006776",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006615",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006841",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007197",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006232",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006200",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007092",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006869",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003223",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007100",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006623",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006249",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006325",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006617",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006676",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006732",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006806",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006530",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006823",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006429",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006576",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006882",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006865",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006939",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006932",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007070",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007018",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006773",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006511",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006385",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007065",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006735",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007015",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006688",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006603",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006561",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006546",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006661",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004569",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007165",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006809",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006301",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003697",
+      "specialty_link_before": null,
+      "specialty_link_after": "Urology"
+    },
+    {
+      "aletia_id": "ALT-007023",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006949",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006396",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004586",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006904",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006645",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006959",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004503",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006709",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006967",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006512",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006995",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006719",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006634",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001127",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001128",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001129",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006348",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006198",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004621",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001057",
+      "specialty_link_before": null,
+      "specialty_link_after": "Urology"
+    },
+    {
+      "aletia_id": "ALT-006236",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007081",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006559",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006368",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006836",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006717",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003894",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004479",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006230",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006242",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006756",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006936",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006296",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006628",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006383",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006597",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006571",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006879",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003935",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003950",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006704",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006714",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006716",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006726",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006730",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006740",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006778",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006783",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006795",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006937",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006966",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006987",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007027",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007071",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007080",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007116",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004187",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004414",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006484",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006570",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006573",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006221",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006304",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006362",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006394",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006413",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006460",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006577",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006906",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006088",
+      "specialty_link_before": null,
+      "specialty_link_after": "Obstetrics & Gynaecology"
+    },
+    {
+      "aletia_id": "ALT-007011",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006288",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006372",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006237",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006670",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006544",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004321",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006641",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006997",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006691",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006826",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006810",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006254",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004328",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006562",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007098",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006529",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006665",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001035",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006886",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006354",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006985",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006897",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006428",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006517",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006475",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006297",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003528",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004370",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006801",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006863",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001051",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001061",
+      "specialty_link_before": null,
+      "specialty_link_after": "Urology"
+    },
+    {
+      "aletia_id": "ALT-001085",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001069",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001083",
+      "specialty_link_before": null,
+      "specialty_link_after": "Urology"
+    },
+    {
+      "aletia_id": "ALT-007127",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007169",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006746",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-007194",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006400",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006811",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007166",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006349",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006309",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006334",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006589",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007085",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007145",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-001094",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006729",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006446",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006306",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006427",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007140",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006982",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006369",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001074",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006942",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007048",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006490",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006521",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007167",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006214",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006998",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006808",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007187",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006751",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006227",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006414",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003080",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006843",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007054",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006541",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001016",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001021",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001030",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003638",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004088",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006488",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007063",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004440",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006338",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006591",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006610",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006260",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007198",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007121",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007016",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006586",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001130",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001131",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006376",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007139",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007134",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004383",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-006739",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006267",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004631",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006558",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006907",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006246",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006631",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006489",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006290",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007039",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006839",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007122",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004375",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006284",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006753",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006958",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006908",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004190",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006474",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006505",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006360",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006736",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006721",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006803",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006592",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006397",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006599",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003964",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006772",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003896",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006996",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006647",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006870",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006392",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004197",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006384",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006980",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006946",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006642",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-007101",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006120",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006064",
+      "specialty_link_before": null,
+      "specialty_link_after": "Obstetrics & Gynaecology"
+    },
+    {
+      "aletia_id": "ALT-006681",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003841",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006827",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006671",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006974",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006329",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006278",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006943",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006444",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006862",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007036",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006526",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007069",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006940",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006978",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006796",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007076",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006840",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006993",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004446",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-001029",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006637",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007188",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-006931",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-006802",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006659",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006866",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006415",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006483",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006339",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006596",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006548",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003822",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006463",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006449",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006639",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007204",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006657",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006520",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007174",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006409",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-007012",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-007143",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006436",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006918",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006121",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006318",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006983",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007149",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006299",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006668",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004192",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006861",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006495",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006552",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007138",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004429",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007095",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006601",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006422",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004484",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006352",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007042",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007001",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006327",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006755",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006240",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006387",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006416",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006955",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-007067",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-006738",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-006835",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-007209",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004207",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006226",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006575",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006560",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006651",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006430",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004562",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001081",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007186",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007160",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006605",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006238",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007125",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004345",
+      "specialty_link_before": null,
+      "specialty_link_after": "Pulmonology"
+    },
+    {
+      "aletia_id": "ALT-006852",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004052",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006956",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006986",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007176",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007210",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006678",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006804",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006569",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006294",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006551",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004243",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006293",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006889",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006767",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006218",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006572",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006791",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003979",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006733",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004237",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006201",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004224",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006612",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006813",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006912",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006582",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004385",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006921",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006202",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004441",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006467",
+      "specialty_link_before": null,
+      "specialty_link_after": "Urology"
+    },
+    {
+      "aletia_id": "ALT-007040",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006989",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006902",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007046",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004212",
+      "specialty_link_before": null,
+      "specialty_link_after": "Gastroenterology"
+    },
+    {
+      "aletia_id": "ALT-006744",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006819",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006457",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006680",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006710",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006340",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006707",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006655",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007091",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001124",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001125",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001126",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006741",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001137",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001138",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001139",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004338",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006420",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006118",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004241",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006513",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006364",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006533",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006203",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-004501",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006947",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006408",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006412",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006441",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006604",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006585",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003651",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006924",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004469",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006731",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004322",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006215",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006598",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006356",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006846",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006625",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006448",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001076",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006389",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001181",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006256",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006712",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006789",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006209",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006522",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006431",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006602",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004530",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004647",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006197",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006285",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006398",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007035",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006711",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006860",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006793",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006426",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006289",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007172",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006887",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007162",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006259",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006828",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006891",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006375",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006903",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006945",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006136",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006445",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006988",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006251",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006880",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006728",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007028",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006892",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006705",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004201",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006555",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-007177",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-007164",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006830",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007094",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006952",
+      "specialty_link_before": null,
+      "specialty_link_after": "Urology"
+    },
+    {
+      "aletia_id": "ALT-007117",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007201",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003795",
+      "specialty_link_before": null,
+      "specialty_link_after": "Urology"
+    },
+    {
+      "aletia_id": "ALT-006357",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007170",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006837",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006600",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006547",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006616",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007030",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006534",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006470",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006675",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001121",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001122",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001123",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001159",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001160",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001161",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001162",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007146",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006818",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006535",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006621",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004623",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006283",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003639",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006734",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006981",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004486",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006374",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006252",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006784",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006703",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004229",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007208",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006780",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004511",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006344",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006873",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-007013",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006471",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001073",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006941",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006523",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006272",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001188",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006472",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007038",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001040",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006459",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006388",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006905",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006342",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006264",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-006216",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006358",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006315",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007207",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006812",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006377",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006331",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006310",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006320",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004474",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006219",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006790",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006250",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006951",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006964",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006817",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006531",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006825",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004362",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006999",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007089",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003875",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006347",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006248",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006700",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007163",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007083",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007051",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006469",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006652",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006715",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004327",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006462",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006239",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006486",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003231",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004426",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004287",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006298",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006643",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006624",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006583",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006257",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007007",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004431",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006848",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006685",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006630",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006633",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-004351",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006584",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001078",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003892",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006554",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004476",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007050",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006648",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006461",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006220",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007075",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006258",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006856",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006243",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006847",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006302",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006312",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006926",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004496",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007158",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006563",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006228",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006477",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006718",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006822",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007029",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006824",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006911",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007008",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006627",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006332",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006894",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006944",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006307",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004517",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004413",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006255",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006373",
+      "specialty_link_before": null,
+      "specialty_link_after": "Cardiology"
+    },
+    {
+      "aletia_id": "ALT-004546",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006745",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-006850",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006406",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003612",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006557",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006434",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006300",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006341",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006503",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003753",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006706",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006875",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006194",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006545",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006423",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003650",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006433",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004485",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006378",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006381",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006697",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006316",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006877",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006244",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006324",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001053",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006134",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001140",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001141",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001142",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004199",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006666",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006366",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006504",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006698",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006994",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006494",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006516",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006723",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006280",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006270",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-007159",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006626",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006481",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006549",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006500",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006476",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006884",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004289",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003448",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006991",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006395",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001080",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006867",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006763",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006363",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006279",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006594",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006466",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006844",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006502",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007009",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006929",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006979",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007096",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006916",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-006857",
+      "specialty_link_before": null,
+      "specialty_link_after": "Oncology"
+    },
+    {
+      "aletia_id": "ALT-004204",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006464",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-006435",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004405",
+      "specialty_link_before": null,
+      "specialty_link_after": "Orthopaedics"
+    },
+    {
+      "aletia_id": "ALT-007128",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007047",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004359",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006765",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007129",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006766",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006769",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006275",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003970",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006864",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006419",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006326",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004188",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-003698",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006797",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006702",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006660",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006478",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006614",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006928",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006619",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-001089",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007104",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007109",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006975",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004000",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004494",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006961",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006977",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006962",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004079",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006815",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007131",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006528",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007005",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006724",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003997",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006752",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004551",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003488",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007178",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006386",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006777",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006816",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006305",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006831",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006519",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006638",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006274",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006322",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006405",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-004179",
+      "specialty_link_before": null,
+      "specialty_link_after": "Neurology"
+    },
+    {
+      "aletia_id": "ALT-007119",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006948",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006231",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006690",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-003706",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006607",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007189",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-006479",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007111",
+      "specialty_link_before": null,
+      "specialty_link_after": "Radiology"
+    },
+    {
+      "aletia_id": "ALT-007206",
+      "specialty_link_before": null,
+      "specialty_link_after": "Rheumatology"
+    },
+    {
+      "aletia_id": "ALT-007152",
+      "specialty_link_before": null,
+      "specialty_link_after": "Urology"
+    },
+    {
+      "aletia_id": "ALT-001048",
+      "specialty_link_before": null,
+      "specialty_link_after": "Urology"
+    },
+    {
+      "aletia_id": "ALT-006147",
+      "specialty_link_before": null,
+      "specialty_link_after": "Urology"
+    }
+  ]
+}

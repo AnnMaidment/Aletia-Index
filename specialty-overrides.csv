@@ -1,0 +1,144 @@
+aletia_id,action,specialty,note
+ALT-001183,override,Cardiology,Caption Guidance — echo/cardiac ultrasound guidance (spot-check 8 Jul)
+ALT-006834,override,Cardiology,TOMTEC-ARENA — cardiovascular/echo analysis
+ALT-006976,override,Cardiology,Caption Interpretation AutoEF — echo cardiac function
+ALT-007062,override,Cardiology,iNtuition Structural Heart Module — cardiac structural planning
+ALT-006083,override,Cardiology,syngo Dynamics — cardiovascular imaging/reporting
+ALT-006365,override,Cardiology,Vivid T9/T8 — GE Vivid echo family (brand knowledge)
+ALT-007155,override,Dermatology,DeepView — wound imaging (Dermatology per canonical-25 mapping)
+ALT-006286,override,Cardiology,Vivid Pioneer — GE Vivid echo family (brand knowledge)
+ALT-004070,override,Gastroenterology,Velacur — liver elastography (Hepatology → Gastroenterology per canonical-25)
+ALT-007152,override,Urology,BladderScan Prime PLUS — bladder volume
+ALT-006556,override,Gastroenterology,NaviCam ProScan — GI/capsule endoscopy
+ALT-006754,override,Cardiology,AI4CMR — cardiac MRI (clinical-use-led per reviewer decision)
+ALT-001039,override,Oncology,MVision AI Segmentation — radiotherapy contouring (Radiation Oncology → Oncology per canonical-25)
+ALT-006473,override,Cardiology,Cardiac CT Function — clinical-use-led
+ALT-006361,override,Cardiology,CaRi-Plaque — coronary plaque analysis
+ALT-006566,override,Radiology,syngo.via MI Workflows/Scenium/MBF — nuclear medicine bundle spans organs; Radiology as organizational home absent a Nuclear Medicine value (flagged for reviewer)
+ALT-004086,override,Neurology,Brainlab Elements Trajectory — Neurosurgery → Neurology per canonical-25 (no-op vs computed)
+ALT-004308,override,Orthopaedics,Automatic Registration — spine/surgical navigation
+ALT-007120,override,Orthopaedics,NuVasive Pulse — spine surgical navigation/monitoring
+ALT-006353,override,Cardiology,Myomics — myocardium/cardiac imaging
+ALT-006650,override,Oncology,Auto Segmentation (QKB) — radiotherapy segmentation
+ALT-006548,confirm,Radiology,HM70 EVO — modality-led default confirmed
+ALT-007129,confirm,Radiology,Venue POC ultrasound — modality-led default confirmed
+ALT-006870,confirm,Radiology,EPIQ/Affiniti — modality-led default confirmed
+ALT-006392,confirm,Radiology,EPIQ/Affiniti — modality-led default confirmed
+ALT-007101,confirm,Radiology,FerriSmart — confirmed
+ALT-006889,confirm,Radiology,MAGNETOM Free.Max — confirmed
+ALT-006479,confirm,Radiology,YSIO X.pree — confirmed
+ALT-006302,confirm,Radiology,Swoop Portable MR — confirmed
+ALT-006195,confirm,Radiology,AIR Recon DL — confirmed
+ALT-006735,confirm,Radiology,Aquilion Precision AiCE — confirmed
+ALT-006643,confirm,Radiology,Sonic DL — confirmed
+ALT-006523,confirm,Radiology,Revolution Ascend Sliding — confirmed
+ALT-007018,confirm,Radiology,Aquilion ONE Spectral — confirmed
+ALT-007009,confirm,Radiology,Vantage Galan 3T AiCE — confirmed
+ALT-006502,confirm,Radiology,Vantage Fortian/Orian AiCE — confirmed
+ALT-006951,confirm,Radiology,SIGNA 7.0T — confirmed
+ALT-006877,confirm,Radiology,uCT ATLAS — confirmed
+ALT-006238,confirm,Radiology,LungQ 4 — confirmed
+ALT-006698,confirm,Radiology,uMR 680 — confirmed
+ALT-007023,confirm,Radiology,Auto Positioning — confirmed
+ALT-006524,confirm,Dentistry,X-Guide — keep current (Dentistry); reviewer 'keep' read as keep-current
+ALT-006430,confirm,Radiology,LumiNE US — confirmed (demotes to medium under arbitration)
+ALT-006583,confirm,Radiology,Sonix Health — confirmed (demotes to medium under arbitration)
+ALT-004190,confirm,Radiology,EdgeFlow UH10 — confirmed
+ALT-006848,confirm,Radiology,Soteria.AI — confirmed
+ALT-001126,confirm,Radiology,MRI image interpretive software — confirmed
+ALT-006214,confirm,Radiology,CT VScore+ — confirmed
+ALT-001125,confirm,Radiology,MRI image interpretive software — confirmed
+ALT-001139,confirm,Radiology,MRI system application software — confirmed
+ALT-006641,confirm,Radiology,CAC Software — reviewer kept Radiology (modality-led; note tension with cardiac-CT overrides)
+ALT-001017,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-001049,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-001057,override,Urology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-001061,override,Urology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-001083,override,Urology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-003697,override,Urology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-003795,override,Urology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004179,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004188,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004192,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004212,override,Gastroenterology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004241,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004345,override,Pulmonology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004351,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004375,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004383,override,Gastroenterology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004405,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004440,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004446,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004501,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-004623,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006064,override,Obstetrics & Gynaecology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006088,override,Obstetrics & Gynaecology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006203,override,Oncology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006227,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006240,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006242,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006254,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006256,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006259,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006264,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006270,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006284,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006288,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006290,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006296,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006329,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006368,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006373,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006409,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006412,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006441,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006464,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006467,override,Urology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006545,override,Oncology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006555,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006559,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006596,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006604,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006628,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006633,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006642,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006671,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006738,override,Gastroenterology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006745,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006746,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006753,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006755,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006756,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006810,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006835,override,Gastroenterology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006839,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006846,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006857,override,Oncology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006873,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006916,override,Oncology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006931,override,Gastroenterology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006936,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006940,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006947,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006952,override,Urology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006955,override,Gastroenterology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006958,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-006959,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007012,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007039,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007067,override,Gastroenterology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007122,override,Cardiology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007145,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007159,override,Orthopaedics,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007160,override,Pulmonology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007164,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007174,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007177,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007188,override,Gastroenterology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-007204,override,Neurology,Full-review decision 13 Jul 2026 (suggested-changes accept)
+ALT-001022,confirm,Radiology,Full-review decision 13 Jul 2026 (suggestion rejected — keep Radiology)
+ALT-001023,confirm,Radiology,Full-review decision 13 Jul 2026 (suggestion rejected — keep Radiology)
+ALT-001041,confirm,Radiology,Full-review decision 13 Jul 2026 (suggestion rejected — keep Radiology)
+ALT-001062,confirm,Radiology,Full-review decision 13 Jul 2026 (suggestion rejected — keep Radiology)
+ALT-006358,confirm,Radiology,Full-review decision 13 Jul 2026 (suggestion rejected — keep Radiology)
+ALT-007165,override,Cardiology,"Arterys Cardio DL — cardiac MR quantification (decided 13 Jul, closes review skip)"

@@ -18,7 +18,8 @@
  * fda_dedup rows are skipped automatically (cluster objects, not devices).
  */
 
-import 'dotenv/config';
+import { config } from 'dotenv';
+config({ path: '.env.local' });
 import { extractQueueSpecialty, getAdminClient, ExtractOptions } from '../lib/extractQueueSpecialty';
 
 function parseArgs(argv: string[]): ExtractOptions & { help?: boolean } {

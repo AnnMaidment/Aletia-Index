@@ -715,3 +715,137 @@ export function inferSpecialty(evidence: SpecialtyEvidence): SpecialtyMatch {
     },
   };
 }
+
+// -----------------------------------------------------------------------
+// Master-pass arbitration (backbone de-baring, July 2026)
+//
+// The device_master evidence channel includes openFDA classification text,
+// which for imaging devices is saturated with MODALITY-LANE vocabulary
+// ("radiological image processing", "imaging", "x-ray system"). In trial
+// text those words often do signal Radiology as the clinical home; in
+// classification text they signal the modality lane. inferSpecialty() —
+// tuned for queue/trial text — must not change. This master-specific
+// arbitration implements the reviewed policy (spot-check, 8 Jul 2026):
+//
+//   1. Collect matches across ALL confidence levels for ALL specialties
+//      (inferSpecialty stops at the first winning level, which let generic
+//      'imaging' at medium beat organ-specific signals at the same level
+//      because Radiology is listed first — the NaviCam bug).
+//   2. Radiology matches split into HOME-class (mammography, chest
+//      radiograph, fracture detection… — Radiology is the clinical home)
+//      and MODALITY-class (imaging, radiological, x-ray, MRI, CT… — lane
+//      vocabulary).
+//   3. Any organ-specific specialty match, or a HOME-class Radiology match,
+//      beats MODALITY-class-only Radiology.
+//   4. MODALITY-class-only evidence → Radiology at MEDIUM (the modality-led
+//      default the reviewer confirmed for CT/MR/x-ray/ultrasound platforms),
+//      flagged modalityOnly=true — which is also the candidate list for the
+//      future cross-specialty "imaging role" axis.
+//
+// Brand-knowledge exceptions (Vivid → Cardiology etc.) are NOT encoded here —
+// they live in specialty-overrides.csv and take precedence in the script.
+// -----------------------------------------------------------------------
+
+/**
+ * Radiology pattern sources classified as MODALITY-lane vocabulary for the
+ * master pass. Everything else in the Radiology blocks is HOME-class.
+ * A fixture asserts every entry still exists in PATTERNS (drift guard).
+ */
+export const MASTER_MODALITY_CLASS_SOURCES: readonly string[] = [
+  '\\bradiolog(y|ist|ical)\\b',
+  '\\bmri\\b',
+  '\\bmagnetic resonance\\b',
+  '\\bct\\s+(scan|angiograph|pulmonary)\\b',
+  '\\bcomputed tomography\\b',
+  '\\bx-?ray\\b',
+  '\\bimaging\\b',
+  '\\bscreening imag',
+];
+
+/** All Radiology pattern regex sources — exported for the drift-guard fixture. */
+export function radiologyPatternSources(): string[] {
+  return PATTERNS.filter((p) => p.specialty === 'Radiology').flatMap((p) =>
+    p.patterns.map((rx) => rx.source)
+  );
+}
+
+export interface MasterSpecialtyMatch extends SpecialtyMatch {
+  /** True when the ONLY evidence was modality-lane Radiology vocabulary. */
+  modalityOnly: boolean;
+}
+
+export function inferSpecialtyForMaster(evidence: SpecialtyEvidence): MasterSpecialtyMatch {
+  const none: MasterSpecialtyMatch = {
+    specialty: null,
+    confidence: 'none',
+    signals: { matched_patterns: [], source_fields: [] },
+    modalityOnly: false,
+  };
+  if (!evidence || typeof evidence !== 'object') return none;
+
+  const sources: Record<string, string> = {
+    deviceName:   evidence.deviceName || '',
+    title:        evidence.title || '',
+    conditions:   evidence.conditionsText || '',
+    intendedUse:  evidence.intendedUseText || '',
+    description:  evidence.descriptionText || '',
+    summary:      evidence.summaryText || '',
+  };
+
+  const modalitySet = new Set(MASTER_MODALITY_CLASS_SOURCES);
+
+  interface Hit { pattern: Pattern; rxSource: string; field: string; isModality: boolean }
+  const hits: Hit[] = [];
+  for (const p of PATTERNS) {
+    for (const rx of p.patterns) {
+      for (const [field, text] of Object.entries(sources)) {
+        if (!text) continue;
+        if (rx.test(text)) {
+          hits.push({
+            pattern: p,
+            rxSource: rx.source,
+            field,
+            isModality: p.specialty === 'Radiology' && modalitySet.has(rx.source),
+          });
+        }
+      }
+    }
+  }
+  if (hits.length === 0) return none;
+
+  const matchedPatterns = Array.from(
+    new Set(hits.map((h) => `${h.pattern.specialty}:${h.rxSource}`))
+  ).slice(0, 10);
+  const sourceFields = Array.from(new Set(hits.map((h) => h.field)));
+
+  // Candidate pool: everything except modality-class Radiology.
+  const pool = hits.filter((h) => !h.isModality);
+
+  if (pool.length > 0) {
+    // Same semantics as inferSpecialty, restricted to the pool: high → medium
+    // → low; within a level, PATTERNS array order (organ-specific before
+    // Oncology; Radiology home-class competes normally).
+    const order: SpecialtyConfidence[] = ['high', 'medium', 'low'];
+    for (const level of order) {
+      for (const p of PATTERNS) {
+        if (p.confidence !== level) continue;
+        if (pool.some((h) => h.pattern === p)) {
+          return {
+            specialty: p.specialty,
+            confidence: p.confidence,
+            signals: { matched_patterns: matchedPatterns, source_fields: sourceFields },
+            modalityOnly: false,
+          };
+        }
+      }
+    }
+  }
+
+  // Only modality-class Radiology matched → modality-led default.
+  return {
+    specialty: 'Radiology',
+    confidence: 'medium',
+    signals: { matched_patterns: matchedPatterns, source_fields: sourceFields },
+    modalityOnly: true,
+  };
+}

@@ -1,0 +1,1089 @@
+aletia_id,name,final_specialty
+ALT-004571,Nerveblox,Anaesthesiology
+ALT-006696,PMD-200,Anaesthesiology
+ALT-001187,ScanNav Anatomy Peripheral Nerve Block,Anaesthesiology
+ALT-006473,Cardiac CT Function Software Application,Cardiology
+ALT-006754,AI4CMR v1.0,Cardiology
+ALT-001183,Caption Guidance,Cardiology
+ALT-006976,Caption Interpretation Automated Ejection Fraction Software,Cardiology
+ALT-006361,CaRi-Plaque,Cardiology
+ALT-007062,iNtuition-Structural Heart Module,Cardiology
+ALT-006353,Myomics,Cardiology
+ALT-006083,syngo Dynamics (Version VA41D),Cardiology
+ALT-006834,TOMTEC-ARENA,Cardiology
+ALT-006286,Vivid Pioneer,Cardiology
+ALT-006365,Vivid T9/Vivid T8,Cardiology
+ALT-006193,ACE (AI-Cirrhosis-ECG) 2.0,Cardiology
+ALT-006170,AI Stethoscope,Cardiology
+ALT-006150,AI-ECG Guided Care (SmartECG-AFrisk),Cardiology
+ALT-006153,Belun Ring,Cardiology
+ALT-006175,Cardiologs,Cardiology
+ALT-006159,Cardiologs Platform,Cardiology
+ALT-006179,Cardiologs Platform,Cardiology
+ALT-006157,DeepECG plateform diagnosis & recommendations,Cardiology
+ALT-006158,imPulse™ Tor System,Cardiology
+ALT-001015,AI-ECG Platform,Cardiology
+ALT-001026,AI-ECG Tracker,Cardiology
+ALT-004594,Assert-IQ  (DM5000); Assert-IQ (DM5300); Assert-IQ (DM5500); Merlin.net (MN7000),Cardiology
+ALT-004668,Assert-IQ (DM5100),Cardiology
+ALT-006487,ASSURE Wearable ECG,Cardiology
+ALT-006779,Atrial Fibrillation History Feature,Cardiology
+ALT-006722,Avive Automated External Defibrillator (AED) System,Cardiology
+ALT-007002,BodyGuardian Remote Monitoring System,Cardiology
+ALT-006245,Bunkerhill ECG-EF,Cardiology
+ALT-004457,Cardiac Guidance,Cardiology
+ALT-003499,Cardio-TriTest v6.5,Cardiology
+ALT-004559,Cardiologs Holter Platform,Cardiology
+ALT-001155,Cardiology information system application software,Cardiology
+ALT-001156,Cardiology information system application software,Cardiology
+ALT-001157,Cardiology information system application software,Cardiology
+ALT-001174,CardioVision,Cardiology
+ALT-006608,Cleerly ISCHEMIA,Cardiology
+ALT-006050,Corvair,Cardiology
+ALT-006609,CorVista® System,Cardiology
+ALT-006805,DEEPVESSEL FFR,Cardiology
+ALT-001087,ECG-AI Low Ejection Fraction (LEF) 12-Lead algorithm (1010),Cardiology
+ALT-004342,EchoGo Amyloidosis (1.0),Cardiology
+ALT-006424,EchoGo Heart Failure (2.0),Cardiology
+ALT-007025,Eko Analysis Software,Cardiology
+ALT-001145,Electrocardiographic long-term ambulatory recording analyser application software,Cardiology
+ALT-004443,Empatica Health Monitoring Platform; EmbracePlus; Empatica Care; Care Portal,Cardiology
+ALT-007097,FFRangio System,Cardiology
+ALT-003020,FFRct,Cardiology
+ALT-007114,FibriCheck,Cardiology
+ALT-006935,HeartFlow Analysis,Cardiology
+ALT-003567,HeartFlow FFRct Analysis,Cardiology
+ALT-004211,Impala,Cardiology
+ALT-006313,InVision Precision Cardiac Amyloid,Cardiology
+ALT-004022,LINQ II Insertable Cardiac Monitor,Cardiology
+ALT-006656,"LINQ II Insertable Cardiac Monitor, CareLink SmartSync LINQ II ICM Application",Cardiology
+ALT-001034,"LINQ II Insertable Cardiac Monitor, Zelda AI ECG Classification System",Cardiology
+ALT-001065,Low Ejection Fraction AI-ECG Algorithm,Cardiology
+ALT-003525,PeraMobile and PeraWatch,Cardiology
+ALT-007130,PeraServer and PeraTrend,Cardiology
+ALT-003522,physIQ Heart Rhythm and Respiratory Module,Cardiology
+ALT-006337,QFR (3.0),Cardiology
+ALT-003180,Reveal LINQ,Cardiology
+ALT-001055,"Reveal LINQ Insertable Cardiac Monitor, LINQ II Insertable Cardiac Monitor, AccuRhythm AI ECG Classification System",Cardiology
+ALT-007148,"Rooti Rx ECG Event Recorder, Rooti Link APP Software",Cardiology
+ALT-003520,"RTHawk, HeartVista Cardiac Package",Cardiology
+ALT-006965,RX-1 Rhythm Express Remote Cardiac Monitoring System,Cardiology
+ALT-004123,Samsung ECG Monitor Application with Irregular Heart Rhythm Notification,Cardiology
+ALT-007191,SENSICARDIAC MOBI DIAGNOSTIC HEART MURMUR APPLICATION,Cardiology
+ALT-007090,Study Watch,Cardiology
+ALT-007022,Study Watch with Irregular Pulse Monitor,Cardiology
+ALT-006757,"Study Watch with Irregular Pulse Monitor (Home), Study Watch with Irregular Pulse Monitor",Cardiology
+ALT-006468,Tempus ECG-AF,Cardiology
+ALT-004538,Tempus ECG-Low EF,Cardiology
+ALT-006410,TeraRecon Cardiac.Chambers.MR (1.0.0),Cardiology
+ALT-004539,Us2.ca,Cardiology
+ALT-007203,VISENSIA,Cardiology
+ALT-006587,Vivio® LVEDP System,Cardiology
+ALT-006618,Viz HCM,Cardiology
+ALT-003261,WAVE Clinical Platform,Cardiology
+ALT-004339,Withings ECG App,Cardiology
+ALT-004144,Withings Scan Monitor 2.0,Cardiology
+ALT-004602,X1-FFR,Cardiology
+ALT-003444,"Zio AT ECG Monitoring System, ZEUS System",Cardiology
+ALT-006896,Zio ECG Utilization Software (ZEUS) System,Cardiology
+ALT-003556,"Zio XT ECG Monitoring System, Zio AT ECG Monitoring System",Cardiology
+ALT-007144,CEREC Ortho Software,Dentistry
+ALT-006480,DentalMonitoring,Dentistry
+ALT-006898,Overjet Dental Assist,Dentistry
+ALT-006482,RAYDENT SW,Dentistry
+ALT-001088,Videa Dental AI,Dentistry
+ALT-006553,Videa Dental Assist,Dentistry
+ALT-006524,X-Guide Surgical Navigation System,Dentistry
+ALT-007155,SPECTRALMD DEEPVIEW WOUND IMAGING SYSTEM 2.0,Dermatology
+ALT-006152,Deep Ensemble for the Recognition of Malignancy (DERM),Dermatology
+ALT-006178,Deep Ensemble for the Recognition of Malignancy (DERM),Dermatology
+ALT-006151,Diagnostic algorithms,Dermatology
+ALT-006708,Alpha Control Liner System (ACLS),Dermatology
+ALT-007072,COMPLETE CONTROL System Gen2,Dermatology
+ALT-006146,Deep Ensemble for Recognition of Malignancy (DERM) — AI-based standalone software that analyses dermoscopic images of skin lesions to return a suspected diagnosis and referral recommendation. Outputs (refer / discharge / monitor) may be issued without a second read from a human clinician. Indicated for patients aged 18+ with suspicion of skin cancer.,Dermatology
+ALT-006537,DermaSensor,Dermatology
+ALT-007199,MELAFIND,Dermatology
+ALT-007053,Myo Plus,Dermatology
+ALT-007157,NEVISENSE,Dermatology
+ALT-007112,Sense System with IBT Electrodes,Dermatology
+ALT-006190,Application Validation,Endocrinology
+ALT-007179,Dario Blood Glucose Monitoring System,Endocrinology
+ALT-007118,DIP/U.S. Urine Analysis Test System,Endocrinology
+ALT-007124,DreaMed Advisor Pro,Endocrinology
+ALT-007168,One Drop Blood Glucose Monitoring System,Endocrinology
+ALT-006556,NaviCam ProScan,Gastroenterology
+ALT-004070,Velacur,Gastroenterology
+ALT-006154,colonoscopy withdrawal with the ADS monitoring,Gastroenterology
+ALT-006149,Confocal Laser Endomicroscopy,Gastroenterology
+ALT-004312,CADDIE,Gastroenterology
+ALT-003857,EndoScreener,Gastroenterology
+ALT-004138,EW10-EC02 Endoscopy Support Program,Gastroenterology
+ALT-001184,GI Genius,Gastroenterology
+ALT-004305,GI Genius Module 100 (GGM100.US); GI Genius Module 200 (GGM200.US); ColonPRO 4.0 (CPRO40.US),Gastroenterology
+ALT-004402,GI Genius Module 100 (GGM100.US); GI Genius Module 200 (GGM200.US); ColonPRO 4.0 (CPRO40.US); GI Genius Module 300 (GGM300-US); ColonPRO 4.0 (CPRO40S-US),Gastroenterology
+ALT-004163,GI Genius System 100 and GI Genius System 200,Gastroenterology
+ALT-004545,HyperSnap Surgical System (HSS),Gastroenterology
+ALT-004420,Maestro System (REF100),Gastroenterology
+ALT-004525,MAGENTIQ-COLO (ME-APDS),Gastroenterology
+ALT-004080,ME-APDS; MAGENTIQ-COLO,Gastroenterology
+ALT-003933,SKOUT Software,Gastroenterology
+ALT-004587,SKOUT system,Gastroenterology
+ALT-001598,CELLAVISION DM96 AUTOMATIC HEMATOLOGY ANALYZER,Hematology
+ALT-001273,DIFFMASTER OCTAVIA AUTOMATIC HEMATOLOGY ANALYZER,Hematology
+ALT-004514,Opulus Lymphoma Precision,Hematology
+ALT-007057,Critical Care Suite,Intensive Care
+ALT-001036,Critical Care Suite with Endotracheal Tube Positing AI algorithm,Intensive Care
+ALT-001054,"Critical Care Suite with Pneumothorax Detection AI Algorithm, Critical Care Suite 2.1, Critical Care Suite",Intensive Care
+ALT-006635,KidneyIntelX.dkd,Nephrology
+ALT-004086,"Brainlab Elements  Trajectory Planning (2.6), Elements Stereotaxy, Elements Lead Localization, Elements Trajectory Planning Cranial",Neurology
+ALT-006174,EEG Headset,Neurology
+ALT-006166,Empatica EmbracePlus,Neurology
+ALT-006181,Presage care,Neurology
+ALT-003637,7D Surgical System Cranial Biopsy and Ventricular Catheter Placement Application,Neurology
+ALT-007171,Ahead 300,Neurology
+ALT-004106,"Alignment System Cranial, Alignment Software Cranial, Cirq Alignment Software Cranial Biopsy, Cirq Alignment Software Cranial sEEG, Varioguide Alignment Software Cranial",Neurology
+ALT-004313,ARVIS® Shoulder,Neurology
+ALT-006543,autoSCORE,Neurology
+ALT-006335,autoSCORE (V 2.0.0),Neurology
+ALT-006567,Brainomix 360 Triage Stroke,Neurology
+ALT-007181,Brainscope Ahead 200,Neurology
+ALT-007052,BrainScope TBI,Neurology
+ALT-006539,BrainSee,Neurology
+ALT-006133,Ceribell Delirium Monitor System,Neurology
+ALT-004082,Ceribell Status Epilepticus Monitor,Neurology
+ALT-004264,ClearPoint System (Software Version 2.2),Neurology
+ALT-004071,"Cranial Navigation, Navigation Software Cranial, Navigation Software Craniofacial, Cranial EM System, Automatic Registration iMRI",Neurology
+ALT-004404,DeepRESP,Neurology
+ALT-004085,Dreem 3S,Neurology
+ALT-001151,Electroencephalographic diagnosis-support software,Neurology
+ALT-006421,encevis (2.1),Neurology
+ALT-003805,EnsoSleep,Neurology
+ALT-004428,Falcon HST,Neurology
+ALT-004430,FLASH EVD System (10-0002),Neurology
+ALT-006876,InferRead CT Stroke.AI,Neurology
+ALT-004597,Mazor X System / Mazor X Stealth Edition,Neurology
+ALT-006263,Methinks CTA Stroke,Neurology
+ALT-006295,Methinks NCCT Stroke,Neurology
+ALT-004373,NeuroMatch,Neurology
+ALT-006518,OTS Hip,Neurology
+ALT-007103,Persyst 14 EEG Review and Analysis Software,Neurology
+ALT-006689,Rapid NCCT Stroke,Neurology
+ALT-001060,REMI AI Discrete Detection Module,Neurology
+ALT-001071,REMI-AI Rapid Detection Module (REMI-AI RDM),Neurology
+ALT-004275,SleepStageML,Neurology
+ALT-004002,SomnoMetry,Neurology
+ALT-004087,"Spine Planning (2.0), Elements Spine Planning, Elements Planning Spine",Neurology
+ALT-006382,TMINI Miniature Robotic System,Neurology
+ALT-006650,Auto Segmentation,Oncology
+ALT-001039,MVision AI Segmentation,Oncology
+ALT-006452,AISAP Cardio V1.0,Oncology
+ALT-006303,Allix5,Oncology
+ALT-007142,Arterys Oncology DL,Oncology
+ALT-006693,Brainomix 360 e-ASPECTS,Oncology
+ALT-004272,CINA-ASPECTS,Oncology
+ALT-007195,DUNE MEDICAL DEVICES MARGINPROBE SYSTEM,Oncology
+ALT-006938,EchoGo Pro,Oncology
+ALT-006417,EchoSolv AS,Oncology
+ALT-007020,"Ethos Treatment Management, Ethos Treatment Planning, Ethos Radiotherapy System, Halcyon",Oncology
+ALT-004421,Fetal EchoScan,Oncology
+ALT-004584,Fetal EchoScan (v1.1),Oncology
+ALT-004527,GENESEEQPRIME NGS Tumor Profiling Assay (FFPE) (GS6005),Oncology
+ALT-006933,Imagio Breast Imaging System,Oncology
+ALT-003907,Koios DS,Oncology
+ALT-007066,Koios DS for Breast,Oncology
+ALT-007205,LUMA CERVICAL IMAGING SYSTEM,Oncology
+ALT-006919,"Optellum Virtual Nodule Clinic, Optellum software, Optellum platform",Oncology
+ALT-001178,QuantX,Oncology
+ALT-006984,Rapid ASPECTS,Oncology
+ALT-006532,Rapid ASPECTS (v3),Oncology
+ALT-001086,"RT Elements  (4.5); (Elements) Multiple Brain Mets SRS; (Elements) Cranial SRS; (Elements) Spine SRS; (Elements) Cranial SRS w/ Cones; (Elements) RT Planning Platform; (Elements) Dose Review; (Elements) Retreatment Review; Elements Segmentation [Cranial , Basal Ganglia, Head & Neck, Pelvic, Spine, Thoracic & Spine, Extracranial] RT; Elements AI Tumor Segmentation RT; Elements SmartBrush [Angio, Spine] RT; Elements Object Management RT",Oncology
+ALT-006359,Sonio Suspect,Oncology
+ALT-006379,SpotLight/SpotLight Duo with Low Dose Lung Cancer Screening Option,Oncology
+ALT-004542,StrokeSENS ASPECTS Software Application,Oncology
+ALT-006653,xT CDx,Oncology
+ALT-006180,IOL-MASTER 700,Ophthalmology
+ALT-006156,Macusense Assessment Software,Ophthalmology
+ALT-006182,MONA algorithm,Ophthalmology
+ALT-006183,Retinal multi-diseases diagnosed by DL algorithm,Ophthalmology
+ALT-006720,AEYE-DS,Ophthalmology
+ALT-003577,CLARUS,Ophthalmology
+ALT-004515,CLARUS (700),Ophthalmology
+ALT-006973,EyeArt,Ophthalmology
+ALT-006893,IDx-DR,Ophthalmology
+ALT-007133,IDx-DR,Ophthalmology
+ALT-007183,IRIS INTELLIGENT RETINAL IMAGING SYSTEM,Ophthalmology
+ALT-006485,Notal Vision Home Optical Coherence Tomography (OCT) System,Ophthalmology
+ALT-007107,"NvisionVLE Imaging System, NvisionVLE Optical Probe, NvisionVLE Inflation System",Ophthalmology
+ALT-001117,Ophthalmic image analysis software,Ophthalmology
+ALT-001118,Ophthalmic image analysis software,Ophthalmology
+ALT-001143,Ophthalmology PACS software,Ophthalmology
+ALT-006895,"OPTIS Mobile Next Imaging System, OPTIS Integrated Next Imaging System",Ophthalmology
+ALT-006925,"OTIS 2.1 Optical Coherence Tomography System, THiA Optical Coherence Tomography System",Ophthalmology
+ALT-001114,Retinal image analysis software,Ophthalmology
+ALT-001115,Retinal image analysis software,Ophthalmology
+ALT-001116,Retinal image analysis software,Ophthalmology
+ALT-004308,Automatic Registration,Orthopaedics
+ALT-007120,NuVasive Pulse System,Orthopaedics
+ALT-001050,AI-Rad Companion (Musculoskeletal),Orthopaedics
+ALT-007006,Al-Rad Companion (Musculoskeletal),Orthopaedics
+ALT-004519,ARVIS® Shoulder,Orthopaedics
+ALT-001153,Osteoporosis/fracture risk assessment interpretive software,Orthopaedics
+ALT-004626,SpineAR SNAP (SyncAR Spine),Orthopaedics
+ALT-006550,United Orthopedic Knee Patient Specific Instrumentation,Orthopaedics
+ALT-004379,xvision Spine System,Orthopaedics
+ALT-006654,ENT EM,Otolaryngology
+ALT-006085,Canvas Dx,Paediatrics
+ALT-001185,Cognoa ASD Diagnosis Aid,Paediatrics
+ALT-006775,EarliPoint System,Paediatrics
+ALT-004295,Overjet Caries Assist-Pediatric,Paediatrics
+ALT-006321,Second Opinion® Pediatric,Paediatrics
+ALT-006177,EBUS-Elastography,Pathology
+ALT-006155,ROSE-AI diagnostic system,Pathology
+ALT-006173,"Standard, high-definition colonoscopy with the use of CADe assistance",Pathology
+ALT-001189,ArteraAI Prostate,Pathology
+ALT-004361,Galen Second Read,Pathology
+ALT-001005,Genius Digital Diagnostics System with the Genius Cervical AI algorithm,Pathology
+ALT-006208,INFINITT DPS,Pathology
+ALT-001186,Paige Prostate,Pathology
+ALT-007212,PAPNET Testing System,Pathology
+ALT-001158,Pathology information system application software,Pathology
+ALT-007202,PATHWORK DIAGNOSTICS TISSUE OF ORIGIN TEST,Pathology
+ALT-007200,PATHWORK TISSUE OF ORIGIN TEST KIT-FFPE (ORIGIN TEST KIT-FFPE,Pathology
+ALT-007196,TISSUE OF ORIGIN TEST KIT FFPE,Pathology
+ALT-007136,Tissue of Origin Test Kit-FFPE,Pathology
+ALT-001152,Electrophysiological marker psychiatric analysis interpretive software,Psychiatry
+ALT-001167,"Mental health/function therapeutic software, screen-viewed",Psychiatry
+ALT-001168,"Mental health/function therapeutic software, screen-viewed",Psychiatry
+ALT-001169,"Mental health/function therapeutic software, virtual reality",Psychiatry
+ALT-006065,Sleep Apnea Notification Feature (SANF),Pulmonology
+ALT-006176,Ultrasonic Jaw Tracking Device,Pulmonology
+ALT-004093,FaceHeart Vitals Software Development Kit (FH vitals SDK),Pulmonology
+ALT-006538,Fibresolve,Pulmonology
+ALT-004625,Fibresolve (with PCCP),Pulmonology
+ALT-007077,FluChip-8G Influenza A+B Assay,Pulmonology
+ALT-006909,Gili Pro BioSensor (also known as Gili BioSensor System),Pulmonology
+ALT-006458,Huxley SANSA Home Sleep Apnea Test (1000-00),Pulmonology
+ALT-004394,Informed Vital Core Application (IVC App),Pulmonology
+ALT-006390,IQ-UIP,Pulmonology
+ALT-007115,MATRx plus,Pulmonology
+ALT-006913,Oxehealth Vital Signs,Pulmonology
+ALT-006074,ScreenDx,Pulmonology
+ALT-006527,Sleep Apnea Feature,Pulmonology
+ALT-006885,Vital Signs,Pulmonology
+ALT-006566,syngo.via MI Workflows; Scenium; syngo MBF,Radiology
+ALT-006148,Artificial Intelligence (AI),Radiology
+ALT-006872,Auto Lung Nodule Detection,Radiology
+ALT-006692,AVIEW Lung Nodule CAD,Radiology
+ALT-006838,BU-CAD,Radiology
+ALT-001028,Genius AI Detection,Radiology
+ALT-001056,Genius AI Detection 2.0 with CC-MLO Correlation,Radiology
+ALT-004180,Lunit INSIGHT DBT,Radiology
+ALT-006849,Lunit INSIGHT MMG,Radiology
+ALT-006425,MAMMOMAT B.brilliant with Tomosynthesis Option,Radiology
+ALT-003635,MammoScreen,Radiology
+ALT-006454,MammoScreen® (3),Radiology
+ALT-006103,MammoScreen® (4),Radiology
+ALT-007099,PowerLook Tomo Detection V2 Software,Radiology
+ALT-001020,ProFound AI Software V2.1,Radiology
+ALT-006070,ProFound Detection (V4.0),Radiology
+ALT-001077,Prostate MR AI (VA10A),Radiology
+ALT-006762,ProstatID,Radiology
+ALT-006345,QP-Prostate® CAD,Radiology
+ALT-006788,Saige-Dx,Radiology
+ALT-006391,Saige-Dx (3.1.0),Radiology
+ALT-006432,"See-Mode Augmented Reporting Tool, Thyroid (SMART-T)",Radiology
+ALT-003455,Transpara,Radiology
+ALT-006402,Transpara (2.1.0),Radiology
+ALT-006407,1CMR Pro,Radiology
+ALT-004490,3DXR,Radiology
+ALT-004548,3mensio Workstation,Radiology
+ALT-006565,6440 MyLabX90,Radiology
+ALT-006317,6450 Ultrasound System (MyLabE80); 6450 Ultrasound System (MyLabE85),Radiology
+ALT-004477,6600 Ultrasound System (MyLabA50); 6600 Ultrasound System (MyLabA70),Radiology
+ALT-004665,7600 Ultrasound System (MyLabC25); 7600 Ultrasound System (MyLabC30),Radiology
+ALT-006950,A View LCS,Radiology
+ALT-004643,a2z-Unified-Triage,Radiology
+ALT-007058,aBSI,Radiology
+ALT-007108,Accipiolx,Radiology
+ALT-006686,AccuContour,Radiology
+ALT-007014,AccuContour,Radiology
+ALT-006308,Accuro 3S,Radiology
+ALT-006786,"Achieva, Ingenia, Ingenia CX, Ingenia Elition and Ingenia Ambition MR Systems",Radiology
+ALT-006056,Acorn 3D Software (AC-SEG-4009); Acorn 3DP Model (AC-101-XX),Radiology
+ALT-006212,Acorn 3D Software (AC-SEG-4009); Acorn 3DP Model (AC-101-XX),Radiology
+ALT-006222,Acorn 3D Software (AC-SEG-4009); Acorn 3DP Model (AC-101-XX),Radiology
+ALT-006579,"ACUSON Sequoia Diagnostic Ultrasound System, ACUSON Sequoia Select Diagnostic Ultrasound System, ACUSON Origin Diagnostic Ultrasound System",Radiology
+ALT-006455,"ACUSON Sequoia Diagnostic Ultrasound System, ACUSON Sequoia Select Diagnostic Ultrasound System, ACUSON Origin Diagnostic Ultrasound System, ACUSON Origin ICE  Diagnostic Ultrasound System",Radiology
+ALT-006403,ACUSON Sequoia Diagnostic Ultrasound System; ACUSON Sequoia Select Diagnostic Ultrasound System; ACUSON Origin Diagnostic Ultrasound System; ACUSON Origin ICE Diagnostic Ultrasound System,Radiology
+ALT-004337,ADAS 3D,Radiology
+ALT-007024,ADAS 3D,Radiology
+ALT-004230,Adravision Perio,Radiology
+ALT-006853,Advanced Algorithms for Treatment Management Applications (AATMA),Radiology
+ALT-001031,AI Metrics,Radiology
+ALT-001064,AI Platform (AIP001),Radiology
+ALT-001072,AI Platform 2.0 (AIP002),Radiology
+ALT-001019,AI Rad Companion (Engine),Radiology
+ALT-001092,AI-CVD,Radiology
+ALT-001017,AI-Rad Companion (Cardiovascular),Cardiology
+ALT-001049,AI-Rad Companion (Cardiovascular),Cardiology
+ALT-001018,AI-Rad Companion (Pulmonary),Radiology
+ALT-001042,AI-Rad Companion (Pulmonary),Radiology
+ALT-001023,AI-Rad Companion Brain MR,Radiology
+ALT-001041,AI-Rad Companion Brain MR,Radiology
+ALT-001062,AI-Rad Companion Brain MR,Radiology
+ALT-001024,AI-Rad Companion Engine,Radiology
+ALT-001025,AI-Rad Companion Organs RT,Radiology
+ALT-001066,AI-Rad Companion Organs RT,Radiology
+ALT-001079,AI-Rad Companion Organs RT,Radiology
+ALT-001022,AI-Rad Companion Prostate MR,Radiology
+ALT-006235,AIAS Cephalon,Radiology
+ALT-006833,AIBOLIT 3D+,Radiology
+ALT-001075,aiCockpit AI Viewer,Radiology
+ALT-007000,AIMI-Triage CXR PTX,Radiology
+ALT-006061,AiMIFY (1.x),Radiology
+ALT-006224,AiORTA - Plan,Radiology
+ALT-006195,AIR Recon DL,Radiology
+ALT-006776,AIR Recon DL,Radiology
+ALT-006615,AIRAscore,Radiology
+ALT-006841,Al-Rad Companion (Pulmonary),Radiology
+ALT-007197,ALPHAPOINT IMAGING SOFTWARE,Radiology
+ALT-006232,"Alphenix, INFX-8000V/B, INFX-8000V/S, V9.6 with aEvolve Imaging",Radiology
+ALT-006200,Alzevita,Radiology
+ALT-007092,AmCAD-UO,Radiology
+ALT-006869,AmCAD-UT,Radiology
+ALT-003223,AmCAD-UV,Radiology
+ALT-007100,AMRA Profiler,Radiology
+ALT-006623,ANDI,Radiology
+ALT-006249,AngioWaveNet,Radiology
+ALT-006325,Annalise Enterprise,Radiology
+ALT-006617,Annalise Enterprise CTB Triage-OH,Radiology
+ALT-006676,Annalise Enterprise CXR Triage Trauma,Radiology
+ALT-006732,Aorta-CAD,Radiology
+ALT-006806,"Aplio a550, Aplio a450, and Aplio a, Diagnostic Ultrasound System, Software V6.5",Radiology
+ALT-006530,"Aplio i900, Aplio i800 and Aplio i700 Software V8.1 Diagnostic Ultrasound System",Radiology
+ALT-006823,"Aplio i900/i800/i700 Diagnostic Ultrasound System, Software V6.5",Radiology
+ALT-006429,"Aplio i900/i800/i700 Diagnostic Ultrasound System, Software V7.0 (TUS-AI900, TUS-AI800, TUS-AI700)",Radiology
+ALT-006576,aprevo® Digital Segmentation,Radiology
+ALT-006882,aPROMISE,Radiology
+ALT-006865,Aquilion Exceed LB,Radiology
+ALT-006939,Aquilion Exceed LB (TSX-202A/3) V10.6 with AiCE-I,Radiology
+ALT-006932,Aquilion Lightning (TSX-036A/7) V10.2 with AiCE-i,Radiology
+ALT-007070,Aquilion ONE (TSX-305A/6) V8.9 with AiCE,Radiology
+ALT-007018,Aquilion ONE (TSX-306A/3) V10.0 with Spectral Imaging System,Radiology
+ALT-006773,"Aquilion ONE (TSX-306A/3) V10.12 with Spectral Imaging System, Vitrea Software Package, VSTP-001A",Radiology
+ALT-006511,Aquilion ONE (TSX-308A/3) V1.4 with PIQE Reconstruction System,Radiology
+ALT-006385,Aquilion ONE (TSX-308A/3) V1.5,Radiology
+ALT-007065,Aquilion Precision (TSX-304A/1 and /2) V8.8 with AiCE,Radiology
+ALT-006735,Aquilion Precision (TSX-304A/4) V10.10 with AiCE,Radiology
+ALT-007015,Aquilion Prime SP (TSX-303B8) V10.2 with AiCE-i,Radiology
+ALT-006688,Aquilion Serve (TSX-307A/1) V1.2 with AiCE-i,Radiology
+ALT-006603,Aquilion Serve (TSX-307A/1) V1.3,Radiology
+ALT-006561,Aquilion Serve SP (TSX-307B/1) V1.3,Radiology
+ALT-006546,ART-Plan,Radiology
+ALT-006661,ART-Plan,Radiology
+ALT-004569,ARTAssistant,Radiology
+ALT-007165,Arterys Cardio DL,Cardiology
+ALT-006809,Arterys MICA,Radiology
+ALT-006301,AudaxCeph Cephalogram Analysis Software,Radiology
+ALT-003697,Auto 3D Bladder Volume Tool,Urology
+ALT-007023,Auto Positioning,Radiology
+ALT-006949,AutoContour,Radiology
+ALT-006396,AutoContour (Model RADAC V4),Radiology
+ALT-004586,AutoDensity,Radiology
+ALT-006904,Automatic Anatomy Recognition (AAR),Radiology
+ALT-006645,Autoplaque,Radiology
+ALT-006959,AVA (Augmented Vascular Analysis),Cardiology
+ALT-004503,AVIEW,Radiology
+ALT-006709,AVIEW,Radiology
+ALT-006967,AVIEW,Radiology
+ALT-006512,AVIEW CAC,Radiology
+ALT-006995,AVIEW LCS,Radiology
+ALT-006719,AVIEW RT ACS,Radiology
+ALT-006634,Axial3D Insight,Radiology
+ALT-001127,Basic diagnostic x-ray system application software,Radiology
+ALT-001128,Basic diagnostic x-ray system application software,Radiology
+ALT-001129,Basic diagnostic x-ray system application software,Radiology
+ALT-006348,Better Diagnostics Caries Assist (BDCA) Version 1.0,Radiology
+ALT-006198,BioticsAI,Radiology
+ALT-004621,BioTraceIO Vision  (V1.7),Radiology
+ALT-001057,Bladder AI (AIBV01),Urology
+ALT-006236,BlineSlide,Radiology
+ALT-007081,Bone VCAR (BVCAR),Radiology
+ALT-006559,Bonelogic,Orthopaedics
+ALT-006368,BoneMetrics (US),Orthopaedics
+ALT-006836,BoneMRI,Radiology
+ALT-006717,BoneMRI v1.4,Radiology
+ALT-003894,BoneView,Radiology
+ALT-004479,brAIn Shoulder Positioning,Radiology
+ALT-006230,brAIn Shoulder Positioning,Radiology
+ALT-006242,Brain WMH,Neurology
+ALT-006756,BrainInsight,Neurology
+ALT-006936,BrainInsight,Neurology
+ALT-006296,Brainlab Elements (7.0); Brainlab Elements Image Fusion (5.0); Brainlab Elements Image Fusion Angio (1.0); Brainlab Elements Contouring (5.0); Brainlab Elements Fibertracking (3.0); Brainlab Elements BOLD MRI Mapping (1.0),Neurology
+ALT-006628,"Brainlab Elements Image Fusion, Contouring (4.5);Image Fusion  (4.5);Fibertracking (2.0);BOLD MRI Mapping  (1.0);Image Fusion Angio  (1.0)",Neurology
+ALT-006383,Brainomix 360 e-CTA,Radiology
+ALT-006597,Brainomix 360 Triage LVO,Radiology
+ALT-006571,BraveCX,Radiology
+ALT-006879,breastscape v1.0,Radiology
+ALT-003935,BriefCase,Radiology
+ALT-003950,BriefCase,Radiology
+ALT-006704,BriefCase,Radiology
+ALT-006714,BriefCase,Radiology
+ALT-006716,BriefCase,Radiology
+ALT-006726,BriefCase,Radiology
+ALT-006730,BriefCase,Radiology
+ALT-006740,BriefCase,Radiology
+ALT-006778,BriefCase,Radiology
+ALT-006783,BriefCase,Radiology
+ALT-006795,BriefCase,Radiology
+ALT-006937,BriefCase,Radiology
+ALT-006966,BriefCase,Radiology
+ALT-006987,BriefCase,Radiology
+ALT-007027,BriefCase,Radiology
+ALT-007071,BriefCase,Radiology
+ALT-007080,BriefCase,Radiology
+ALT-007116,BriefCase,Radiology
+ALT-004187,BriefCase-Quantification,Radiology
+ALT-004414,BriefCase-Quantification,Radiology
+ALT-006484,BriefCase-Quantification,Radiology
+ALT-006570,BriefCase-Quantification,Radiology
+ALT-006573,BriefCase-Quantification,Radiology
+ALT-006221,BriefCase-Triage,Radiology
+ALT-006304,BriefCase-Triage,Radiology
+ALT-006362,BriefCase-Triage,Radiology
+ALT-006394,BriefCase-Triage,Radiology
+ALT-006413,BriefCase-Triage,Radiology
+ALT-006460,BriefCase-Triage,Radiology
+ALT-006577,BriefCase-Triage,Radiology
+ALT-006906,"BriefCase, RIB Fractures Triage (RibFx)",Radiology
+ALT-006088,BrightHeart View Classifier,Obstetrics & Gynaecology
+ALT-007011,Broncholab,Radiology
+ALT-006288,Bunkerhill Abdominal Aortic Quantification (AAQ),Cardiology
+ALT-006372,Bunkerhill AVC,Radiology
+ALT-006237,Bunkerhill MAC,Radiology
+ALT-006670,Butterfly iQ/iQ+ Ultrasound System,Radiology
+ALT-006544,Butterfly iQ3 Ultrasound System,Radiology
+ALT-004321,CAC (gated) Algorithm,Radiology
+ALT-006641,CAC Software,Radiology
+ALT-006997,Caption Guidance,Radiology
+ALT-006691,Caption Interpretation Automated Ejection Fraction Software,Radiology
+ALT-006826,Caption Interpretation Automated Ejection Fraction Software,Radiology
+ALT-006810,CardIQ Suite,Cardiology
+ALT-006254,Careverse CoronaryDoc (Careverse CoronaryDoc),Cardiology
+ALT-004328,CDM Insights,Radiology
+ALT-006562,Ceevra Reveal 3+,Radiology
+ALT-007098,Centricity Universal Viewer,Radiology
+ALT-006529,CEPHX- Cephalometric Analysis Software,Radiology
+ALT-006665,CerebralGo Plus,Radiology
+ALT-001035,Change Healthcare Anatomical AI,Radiology
+ALT-006886,Chest-CAD,Radiology
+ALT-006354,ChestView US,Radiology
+ALT-006985,CINA,Radiology
+ALT-006897,CINA CHEST,Radiology
+ALT-006428,CINA-CSpine,Radiology
+ALT-006517,CINA-iPE,Radiology
+ALT-006475,CINA-VCF,Radiology
+ALT-006297,Cirrus Resting State fMRI Software,Radiology
+ALT-003528,ClariCT.AI,Radiology
+ALT-004370,Clarify DL,Radiology
+ALT-006801,ClariPulmo,Radiology
+ALT-006863,ClariSIGMAM,Radiology
+ALT-001051,Clarius AI,Radiology
+ALT-001061,Clarius Bladder AI,Urology
+ALT-001085,Clarius Median Nerve AI,Radiology
+ALT-001069,Clarius OB AI,Radiology
+ALT-001083,Clarius Prostate AI,Urology
+ALT-007127,Clarius Ultrasound Scanner,Radiology
+ALT-007169,Clarius Ultrasound System,Radiology
+ALT-006746,ClearPoint Maestro Brain Model,Neurology
+ALT-007194,CLEARREAD +CONFIRM,Radiology
+ALT-006400,ClearRead CT CAC,Radiology
+ALT-006811,ClearRead Xray Pneumothorax,Radiology
+ALT-007166,ClearView cCAD,Radiology
+ALT-006349,Cleerly LABS (v2.0),Radiology
+ALT-006309,Clever One,Radiology
+ALT-006334,cmAngio® (V1.6),Radiology
+ALT-006589,cmAngio® V1.0,Radiology
+ALT-007085,cmTriage,Radiology
+ALT-007145,cNeuro cMRI,Neurology
+ALT-001094,CogNet AI-MT+,Radiology
+ALT-006729,CogNet QmTRIAGE,Radiology
+ALT-006446,CoLumbo,Radiology
+ALT-006306,CoLumboX,Radiology
+ALT-006427,Constellation (CON-001),Radiology
+ALT-007140,ContaCT,Radiology
+ALT-006982,Contour ProtegeAI,Radiology
+ALT-006369,Contour ProtégéAI+,Radiology
+ALT-001074,Contour+ (MVision AI Segmentation),Radiology
+ALT-006942,CorInsights MRI,Radiology
+ALT-007048,CS-series-FP Radiographic / Fluoroscopic Systems with Optional CA-100S / FluoroShield (ROI Assembly),Radiology
+ALT-006490,CT 5300,Radiology
+ALT-006521,CT Cardiomegaly,Radiology
+ALT-007167,CT CoPilot,Radiology
+ALT-006214,CT VScore+,Radiology
+ALT-006998,CuraRad-ICH,Radiology
+ALT-006808,Customize,Radiology
+ALT-007187,CVI42,Radiology
+ALT-006751,cvi42 Auto Imaging Software Application,Radiology
+ALT-006227,cvi42 Coronary Plaque Software Application,Cardiology
+ALT-006414,cvi42 Software Application,Radiology
+ALT-003080,Cydar EV,Radiology
+ALT-006843,Cydar EV (Series B) and Cydar EV Maps,Radiology
+ALT-007054,D2P,Radiology
+ALT-006541,DASI Dimensions (V1.0),Radiology
+ALT-001016,Deep Learning Image Reconstruction,Radiology
+ALT-001021,Deep Learning Image Reconstruction,Radiology
+ALT-001030,Deep Learning Image Reconstruction for Gemstone Spectral Imaging,Radiology
+ALT-003638,Deep Recon,Radiology
+ALT-004088,DeepCatch,Radiology
+ALT-006488,DeepContour (V1.0),Radiology
+ALT-007063,DeepCT,Radiology
+ALT-004440,DEEPECHO,Cardiology
+ALT-006338,DeepFoqus (DeepFoqus-Accelerate),Radiology
+ALT-006591,DeepTek CXR Analyzer v1.0,Radiology
+ALT-006610,DeepXray,Radiology
+ALT-006260,Definium Tempo Select,Radiology
+ALT-007198,DELTAVIEW MODEL 2.1,Radiology
+ALT-007121,DenSeeMammo,Radiology
+ALT-007016,densitas densityai,Radiology
+ALT-006586,Denti.AI Detect,Radiology
+ALT-001130,Diagnostic x-ray digital imaging system workstation application software,Radiology
+ALT-001131,Diagnostic x-ray digital imaging system workstation application software,Radiology
+ALT-006376,Digital Color Doppler Ultrasound System (P60 Series),Radiology
+ALT-007139,DM-Density,Radiology
+ALT-007134,DR 800 with MUSICA Dynamic,Radiology
+ALT-004383,DrAid for Liver Segmentation,Gastroenterology
+ALT-006739,DrAid for Radiology v1,Radiology
+ALT-006267,DS Core Diagnosis,Radiology
+ALT-004631,DTX Studio Assist,Radiology
+ALT-006558,DTX Studio Clinic (4.0),Radiology
+ALT-006907,DV. Target,Radiology
+ALT-006246,ECHELON Synergy,Radiology
+ALT-006631,ECHELON Synergy MRI system,Radiology
+ALT-006489,ECHELON Synergy V10.0,Radiology
+ALT-006290,EchoConfidence (USA),Cardiology
+ALT-007039,EchoGo Core,Cardiology
+ALT-006839,EchoGo Core (2.0),Cardiology
+ALT-007122,EchoMD Automated Ejection Fraction Software,Cardiology
+ALT-004375,EchoMeasure,Cardiology
+ALT-006284,EchoPAC Software Only / EchoPAC Plug-in,Cardiology
+ALT-006753,"EchoPAC Software Only, EchoPAC Plug-in",Cardiology
+ALT-006958,"EchoPAC Software Only, EchoPAC Plug-In",Cardiology
+ALT-006908,Eclipse II with Smart Noise Cancellation,Radiology
+ALT-004190,EdgeFlow UH10,Radiology
+ALT-006474,EFAI Bonesuite XR Bone Age Pro Assessment System (BAP-XR-100),Radiology
+ALT-006505,EFAI CARDIOSUITE CTA ACUTE AORTIC SYNDROME ASSESSMENT SYSTEM,Radiology
+ALT-006360,EFAI Chestsuite XR Malpositioned ETT Assessment System (ETT-XR-100),Radiology
+ALT-006736,EFAI ChestSuite XR Pleural Effusion Assessment System,Radiology
+ALT-006721,EFAI ChestSuite XR Pneumothorax Assessment System,Radiology
+ALT-006803,EFAI Intelligent Cardiothoracic Ratio (iCTR) Assessment System,Radiology
+ALT-006592,EFAI NeuroSuite CT ICH Assessment System,Radiology
+ALT-006397,EFAI Neurosuite CT Midline Shift Assessment System (MLS-CT-100),Radiology
+ALT-006599,EFAI RTSUITE CT HCAP-Segmentation System,Radiology
+ALT-003964,EFAI RTSuite CT HN-Segmentation System,Radiology
+ALT-006772,ElucidVivo A.3,Radiology
+ALT-003896,EndoNaut,Radiology
+ALT-006996,"EPIQ Diagnostic Ultrasound System Series, Affiniti Diagnostic Ultrasound System Series, CX50 Diagnostic Ultrasound System, Sparq Diagnostic Ultrasound System, Lumify Diagnostic Ultrasound System",Radiology
+ALT-006647,EPIQ Series Diagnostic Ultrasound System,Radiology
+ALT-006870,"EPIQ Series Diagnostic Ultrasound System, Affiniti Series Diagnostic Ultrasound System",Radiology
+ALT-006392,EPIQ Series Diagnostic Ultrasound System; Affiniti Series Diagnostic Ultrasound System,Radiology
+ALT-004197,Ez3D-i /E3,Radiology
+ALT-006384,Ezra Flash,Radiology
+ALT-006980,Ezra Plexo Software,Radiology
+ALT-006946,"FastStroke, CT Perfusion 4D",Radiology
+ALT-006642,"FEops HEARTguideTM, FEops HEARTguideTM ALPACA",Cardiology
+ALT-007101,FerriSmart Analysis System,Radiology
+ALT-006120,FETOLY,Radiology
+ALT-006064,FETOLY-HEART,Obstetrics & Gynaecology
+ALT-006681,FlightPlan for Embolization,Radiology
+ALT-003841,FlightPlan for Liver,Radiology
+ALT-006827,Follicle Clarity,Radiology
+ALT-006671,Formus Hip,Orthopaedics
+ALT-006974,FractureDetect (FX),Radiology
+ALT-006329,GBrain MRI,Neurology
+ALT-006278,GyriCalc (Version 1.0.0),Radiology
+ALT-006943,HALO,Radiology
+ALT-006444,HealthCCSng,Radiology
+ALT-006862,HealthCCSng,Radiology
+ALT-007036,HealthCXR,Radiology
+ALT-006526,HealthFLD,Radiology
+ALT-007069,HealthICH,Radiology
+ALT-006940,HealthJOINT,Orthopaedics
+ALT-006978,HealthMammo,Radiology
+ALT-006796,HealthOST,Radiology
+ALT-007076,HealthPNX,Radiology
+ALT-006840,HealthPPT,Radiology
+ALT-006993,HealthVCF,Radiology
+ALT-004446,HeartFocus (V.1.1.1),Cardiology
+ALT-001029,HepaFat-AI,Radiology
+ALT-006637,HepaFatSmart (V2.0.0),Radiology
+ALT-007188,HEPATIC VCAR,Gastroenterology
+ALT-006931,Hepatica v1 (Hepatica v1.0.0),Gastroenterology
+ALT-006802,"HERA W10 Diagnostic Ultrasound System, HERA W9 Diagnostic Ultrasound System",Radiology
+ALT-006659,HERA W10 Diagnostic Ultrasound System; HERA W9 Diagnostic Ultrasound System,Radiology
+ALT-006866,"HERA W9, HERA W10 Diagnostic Ultrasound System",Radiology
+ALT-006415,"HERA Z20, R20, HERA Z30, R30 Diagnostic Ultrasound System",Radiology
+ALT-006483,Heuron ICH,Radiology
+ALT-006339,Hi-D Imaging 4TAVR,Radiology
+ALT-006596,HipCheck,Orthopaedics
+ALT-006548,HM70 EVO Diagnostic Ultrasound System,Radiology
+ALT-003822,HS40 Diagnostic Ultrasound System,Radiology
+ALT-006463,Hyper Insight - ICH,Radiology
+ALT-006449,i2Contour,Radiology
+ALT-006639,IB Lab LAMA,Radiology
+ALT-007204,"IB NEURO, VERSION 1.0",Neurology
+ALT-006657,iCAC Device,Radiology
+ALT-006520,iCAS-LV,Radiology
+ALT-007174,icobrain,Neurology
+ALT-006409,icobrain aria,Neurology
+ALT-007012,icobrain-ctp,Neurology
+ALT-007143,Illumeo System,Radiology
+ALT-006436,Imbio PHA (4.0.0),Radiology
+ALT-006918,Imbio RV/LV Software,Radiology
+ALT-006121,InferOperate Suite,Radiology
+ALT-006318,InferRead Lung CT.AI,Radiology
+ALT-006983,InferRead Lung CT.AI,Radiology
+ALT-007149,Infinitt PACS 7.0,Radiology
+ALT-006299,"Ingenia, Ingenia CX, Ingenia Elition, Ingenia Ambition, BlueSeal, MR 5300 and MR 7700 MR System",Radiology
+ALT-006668,"Ingenia, Ingenia CX, Ingenia Elition, Ingenia Ambition, MR 5300 and MR 7700 MR Systems",Radiology
+ALT-004192,inHEART Models,Cardiology
+ALT-006861,Intelligent NR,Radiology
+ALT-006495,InVision Precision LVEF (LVEF),Radiology
+ALT-006552,iQ-solutions,Radiology
+ALT-007138,iQMR,Radiology
+ALT-004429,IRISeg,Radiology
+ALT-007095,iSchemaView RAPID,Radiology
+ALT-006601,Jazz,Radiology
+ALT-006422,JBS-LVO,Radiology
+ALT-004484,JLK-ICH,Radiology
+ALT-006352,JLK-SDH,Radiology
+ALT-007042,KOALA,Radiology
+ALT-007001,KOSMOS,Radiology
+ALT-006327,LARALAB,Radiology
+ALT-006755,Libby Echo:Prio,Cardiology
+ALT-006240,Ligence Heart,Cardiology
+ALT-006387,Lightning Viewer,Radiology
+ALT-006416,Limbus Contour,Radiology
+ALT-006955,LiverMultiScan,Gastroenterology
+ALT-007067,LiverMultiScan (LMSv3),Gastroenterology
+ALT-006738,LiverMultiScan v5 (LMSv5),Gastroenterology
+ALT-006835,LiverSmart,Gastroenterology
+ALT-007209,LOGICON CARIES DETECTOR,Radiology
+ALT-004207,LOGIQ E10,Radiology
+ALT-006226,LOGIQ E10s,Radiology
+ALT-006575,"LOGIQ E10s, LOGIQ Fortis",Radiology
+ALT-006560,LOGIQ Totus,Radiology
+ALT-006651,Lumify Diagnostic Ultrasound System,Radiology
+ALT-006430,LumiNE US; Lumi,Radiology
+ALT-004562,LUMINOS Q.namix T; LUMINOS Q.namix R,Radiology
+ALT-001081,Lung AI (LAI001),Radiology
+ALT-007186,Lung Density Analysis,Radiology
+ALT-007160,Lung Vision,Pulmonology
+ALT-006605,Lung-CAD,Radiology
+ALT-006238,LungQ 4,Radiology
+ALT-007125,LungQ Software,Radiology
+ALT-004345,LungVision,Pulmonology
+ALT-006852,Lunit INSIGHT CXR Triage,Radiology
+ALT-004052,LVivo IQS,Radiology
+ALT-006956,LVivo Seamless,Radiology
+ALT-006986,LVivo Software Application,Radiology
+ALT-007176,LVivo Software Application,Radiology
+ALT-007210,M1000 IMAGECHECKER,Radiology
+ALT-006678,MAGNETOM Amira; MAGNETOM Sempra,Radiology
+ALT-006804,MAGNETOM Avanto Fit,Radiology
+ALT-006569,MAGNETOM Avanto fit; MAGNETOM Skyra fit,Radiology
+ALT-006294,MAGNETOM Avanto Fit; MAGNETOM Skyra Fit; MAGNETOM Sola Fit; MAGNETOM Viato.Mobile,Radiology
+ALT-006551,MAGNETOM Cima.X,Radiology
+ALT-004243,MAGNETOM Cima.X Fit,Radiology
+ALT-006293,MAGNETOM Flow.Ace; MAGNETOM Flow.Plus,Radiology
+ALT-006889,MAGNETOM Free.Max,Radiology
+ALT-006767,"MAGNETOM Free.Max, MAGNETOM Free.Star",Radiology
+ALT-006218,MAGNETOM Free.Max; MAGNETOM Free.Star,Radiology
+ALT-006572,MAGNETOM Free.Max; MAGNETOM Free.Star,Radiology
+ALT-006791,MAGNETOM Lumina and MAGNETOM Vida Fit with syngo MR XA50A,Radiology
+ALT-003979,MAGNETOM Skyra Fit,Radiology
+ALT-006733,"MAGNETOM Sola, MAGNETOM Altea, MAGNETOM Sola Fit",Radiology
+ALT-004237,MAGNETOM Sola; MAGNETOM Altea,Radiology
+ALT-006201,MAGNETOM Sola; MAGNETOM Altea; MAGNETOM Sola Fit; MAGNETOM Viato.Mobile; MAGNETOM Vida; MAGNETOM Lumina; MAGNETOM Vida Fit; MAGNETOM Flow.Elite; MAGNETOM Flow.Neo; MAGNETOM Flow.Rise,Radiology
+ALT-004224,MAGNETOM Terra; MAGNETOM Terra.X,Radiology
+ALT-006612,MAGNETOM Viato.Mobile,Radiology
+ALT-006813,MAGNETOM Vida with syngo MR XA50A,Radiology
+ALT-006912,"MAGNETOM Vida, MAGNETOM Sola, MAGNETOM Lumina, MAGNETOM Altea",Radiology
+ALT-006582,MAGNETOM Vida; MAGNETOM Lumina; MAGNETOM Aera; MAGNETOM Skyra; MAGNETOM Prisma; MAGNETOM Prisma fit,Radiology
+ALT-004385,MammoScreen BD,Radiology
+ALT-006921,MaxFOV 2,Radiology
+ALT-006202,MediAI-BA,Radiology
+ALT-004441,Medical Image Post-processing Software (uOmnispace.CT),Radiology
+ALT-006467,Medihub Prostate,Urology
+ALT-007040,MEDIP PRO,Radiology
+ALT-006989,MEDO ARIA,Radiology
+ALT-006902,MEDO-Thyroid,Radiology
+ALT-007046,Merge PACS,Radiology
+ALT-004212,MeVis Liver Suite,Gastroenterology
+ALT-006744,MI View&GO,Radiology
+ALT-006819,"Micro C Medical Imaging System, M01",Radiology
+ALT-006457,MICSI-RMT,Radiology
+ALT-006680,MPXA-2000,Radiology
+ALT-006710,MR 5300 and MR 7700 R11 MR Systems,Radiology
+ALT-006340,MR Contour DL,Radiology
+ALT-006707,MR Diffusion Perfusion Mismatch V1.0,Radiology
+ALT-006655,MR DWI/FLAIR Measurement V1.0,Radiology
+ALT-007091,MRCP+ v1.0,Radiology
+ALT-001124,MRI image interpretive software,Radiology
+ALT-001125,MRI image interpretive software,Radiology
+ALT-001126,MRI image interpretive software,Radiology
+ALT-006741,MRI Planner,Radiology
+ALT-001137,MRI system application software,Radiology
+ALT-001138,MRI system application software,Radiology
+ALT-001139,MRI system application software,Radiology
+ALT-004338,MSKai,Radiology
+ALT-006420,MuscleView,Radiology
+ALT-006118,MuscleView 2.0,Radiology
+ALT-004241,Myocardial Strain Software Application,Cardiology
+ALT-006513,NAEOTOM Alpha,Radiology
+ALT-006364,NAEOTOM Alpha.Peak/ NAEOTOM Alpha; NAEOTOM Alpha.Pro; NAEOTOM Alpha.Prime,Radiology
+ALT-006533,NemoScan,Radiology
+ALT-006203,Neosoma Brain Mets,Oncology
+ALT-004501,Neuro Insight V1.0,Neurology
+ALT-006947,Neuro.Al Algorithm,Neurology
+ALT-006408,NeuroICH,Radiology
+ALT-006412,Neurophet AQUA (V3.1),Neurology
+ALT-006441,NeuroQuant,Neurology
+ALT-006604,NEUROShield,Neurology
+ALT-006585,NeuViz 128 Multi-Slice CT Scanner System,Radiology
+ALT-003651,NinesAI,Radiology
+ALT-006924,NinesMeasure,Radiology
+ALT-004469,nordicMEDiVA,Radiology
+ALT-006731,NS-HGlio,Radiology
+ALT-004322,O-arm O2 Imaging System,Radiology
+ALT-006215,OEC One CFD,Radiology
+ALT-006598,OFIX MIS App,Radiology
+ALT-006356,OncoStudio (OS-01),Radiology
+ALT-006846,OnQ Neuro,Neurology
+ALT-006625,OptimMRI,Radiology
+ALT-006448,OptimMRI (v2),Radiology
+ALT-001076,Ortho AI,Radiology
+ALT-006389,OrthoNext Platform System,Radiology
+ALT-001181,OsteoDetect,Radiology
+ALT-006256,OsteoSight Hip (v1),Orthopaedics
+ALT-006712,Overjet Calculus Assist,Radiology
+ALT-006789,Overjet Caries Assist,Radiology
+ALT-006209,Overjet CBCT Assist,Radiology
+ALT-006522,Overjet Charting Assist,Radiology
+ALT-006431,Overjet Image Enhancement Assist,Radiology
+ALT-006602,Overjet Periapical Radiolucency Assist,Radiology
+ALT-004530,PeekMed web,Radiology
+ALT-004647,PeekMed web,Radiology
+ALT-006197,PeekMed web,Radiology
+ALT-006285,PeekMed web,Radiology
+ALT-006398,PeekMed web,Radiology
+ALT-007035,PhantomMSK Trauma,Radiology
+ALT-006711,Philips CT 3500,Radiology
+ALT-006860,"Philips EPIQ Diagnostic Ultrasound System, Philips Affiniti Diagnostic Ultrasound System",Radiology
+ALT-006793,Philips Incisive CT,Radiology
+ALT-006426,PIUR tUS Infinity,Radiology
+ALT-006289,PIUR tUS inside,Radiology
+ALT-007172,PixelShine,Radiology
+ALT-006887,PowerLook Density Assessment V4.0,Radiology
+ALT-007162,PowerLook® Tomo Detection Software,Radiology
+ALT-006259,PRAEVAorta®2,Cardiology
+ALT-006828,Precise Image,Radiology
+ALT-006891,Precise Position,Radiology
+ALT-006375,Prenuvo Body Composition,Radiology
+ALT-006903,Preview Shoulder,Radiology
+ALT-006945,PROView,Radiology
+ALT-006136,PVAD IQ Software,Radiology
+ALT-006445,qCT LN Quant,Radiology
+ALT-006988,qER,Radiology
+ALT-006251,qER-CTA (v1.0),Radiology
+ALT-006880,qER-Quant,Radiology
+ALT-006728,QIR Suite,Radiology
+ALT-007028,QLAB Advanced Quantification Software,Radiology
+ALT-006892,Qmenta Care Platform Family,Radiology
+ALT-006705,QOCA image Smart CXR Image Processing System,Radiology
+ALT-004201,QOCA® image Smart RT Contouring System,Radiology
+ALT-006555,QP-Brain®,Neurology
+ALT-007177,Quantib Brain 1,Neurology
+ALT-007164,Quantib Brain 1.2,Neurology
+ALT-006830,Quantib ND,Radiology
+ALT-007094,Quantib ND,Radiology
+ALT-006952,Quantib Prostate,Urology
+ALT-007117,Quantitative Total Extensible Imaging (QTxI),Radiology
+ALT-007201,QUANTRA,Radiology
+ALT-003795,QUIBIM Precision Prostate (qp-Prostate),Urology
+ALT-006357,QuickRad,Radiology
+ALT-007170,QVCAD System,Radiology
+ALT-006837,qXR-BT,Radiology
+ALT-006600,qXR-CTR,Radiology
+ALT-006547,qXR-LN,Radiology
+ALT-006616,qXR-PTX-PE,Radiology
+ALT-007030,QyScore Software,Radiology
+ALT-006534,Radify Triage,Radiology
+ALT-006470,Radiography 7300 C,Radiology
+ALT-006675,RadioLens v1.0,Radiology
+ALT-001121,Radiology DICOM image processing application software,Radiology
+ALT-001122,Radiology DICOM image processing application software,Radiology
+ALT-001123,Radiology DICOM image processing application software,Radiology
+ALT-001159,Radiology information system application software,Radiology
+ALT-001160,Radiology information system application software,Radiology
+ALT-001161,Radiology workstation display quality assurance software,Radiology
+ALT-001162,Radiology workstation display quality assurance software,Radiology
+ALT-007146,Radiomics App v1.0,Radiology
+ALT-006818,Rapid,Radiology
+ALT-006535,Rapid (6.0),Radiology
+ALT-006621,Rapid Aneurysm Triage and Notification,Radiology
+ALT-004623,Rapid Aortic Measurements,Cardiology
+ALT-006283,Rapid CTA 360,Radiology
+ALT-003639,Rapid ICH,Radiology
+ALT-006734,Rapid ICH,Radiology
+ALT-006981,Rapid LVO,Radiology
+ALT-004486,Rapid MLS,Radiology
+ALT-006374,Rapid Neuro3D,Radiology
+ALT-006252,"Rapid Obstructive Hydrocephalus, Rapid OH",Radiology
+ALT-006784,Rapid PE Triage and Notification (PETN),Radiology
+ALT-006703,Rapid RV/LV,Radiology
+ALT-004229,Rapid SDH,Radiology
+ALT-007208,RAPIDSCREEN RS-2000,Radiology
+ALT-006780,Rayvolve,Radiology
+ALT-004511,Rayvolve LN,Radiology
+ALT-006344,Rayvolve PTX-PE,Radiology
+ALT-006873,RBknee,Orthopaedics
+ALT-007013,Red Dot,Radiology
+ALT-006471,Relu Creator,Radiology
+ALT-001073,RemedyLogic AI MRI Lumbar Spine Reader,Radiology
+ALT-006941,Revolution Ascend,Radiology
+ALT-006523,Revolution Ascend Sliding,Radiology
+ALT-006272,Revolution Vibe,Radiology
+ALT-001188,Rho,Radiology
+ALT-006472,RS85 Diagnostic Ultrasound System,Radiology
+ALT-007038,RSI-MRI+,Radiology
+ALT-001040,RT-Mind-AI,Radiology
+ALT-006459,RUS,Radiology
+ALT-006388,Saige-Density (2.5.0),Radiology
+ALT-006905,Saige-Q,Radiology
+ALT-006342,Salix Central,Radiology
+ALT-006264,Salix Coronary Plaque (V1.0.0),Cardiology
+ALT-006216,Scaida BrainCT-ICH (v1.0),Radiology
+ALT-006358,ScanDiags Ortho L-Spine MR-Q,Radiology
+ALT-006315,SCENARIA View Phase 5.0,Radiology
+ALT-007207,SECOND LOOK ™,Radiology
+ALT-006812,Second Opinion,Radiology
+ALT-006377,Second Opinion CC,Radiology
+ALT-006331,Second Opinion Periapical Radiolucency Contours,Radiology
+ALT-006310,Second Opinion® 3D,Radiology
+ALT-006320,Second Opinion® BLE,Radiology
+ALT-004474,Second Opinion® CS,Radiology
+ALT-006219,Second Opinion® Panoramic,Radiology
+ALT-006790,Segment 3DPrint,Radiology
+ALT-006250,Segmentron Viewer,Radiology
+ALT-006951,SIGNA 7.0T,Radiology
+ALT-006964,SIGNA Artist,Radiology
+ALT-006817,SIGNA Artist Evo,Radiology
+ALT-006531,SIGNA Champion,Radiology
+ALT-006825,SIGNA Hero,Radiology
+ALT-004362,SIGNA MAGNUS,Radiology
+ALT-006999,SIGNA Premier,Radiology
+ALT-007089,SIGNA Premier,Radiology
+ALT-003875,SIGNA Prime,Radiology
+ALT-006347,SIGNA Prime Elite,Radiology
+ALT-006248,SIGNA Sprint,Radiology
+ALT-006700,SIGNA Victor,Radiology
+ALT-007163,SIS Software,Radiology
+ALT-007083,SIS Software version 3.3.0,Radiology
+ALT-007051,SIS Software Version 3.6.0,Radiology
+ALT-006469,SIS System,Radiology
+ALT-006652,SIS System,Radiology
+ALT-006715,SIS System (Version 5.6.0),Radiology
+ALT-004327,SMART Bun-Yo-Matic CT,Radiology
+ALT-006462,SMART Bun-Yo-Matic X-Ray,Radiology
+ALT-006239,SMART PCFD,Radiology
+ALT-006486,SmartChest,Radiology
+ALT-003231,SmartTarget,Radiology
+ALT-004426,Smile Dx®,Radiology
+ALT-004287,SOMATOM go.Up; SOMATOM go.Now; SOMATOM go.All; SOMATOM go.Top; SOMATOM go.Sim; SOMATOM go.Open Pro; SOMATOM X.cite; SOMATOM X.ceed,Radiology
+ALT-006298,Sonic DL,Radiology
+ALT-006643,Sonic DL,Radiology
+ALT-006624,Sonio Detect,Radiology
+ALT-006583,Sonix Health,Radiology
+ALT-006257,Sonosite LX and Sonosite PX Ultrasound Systems,Radiology
+ALT-007007,SonoVision Ultrasound Imaging System,Radiology
+ALT-004431,Soteria E-View,Radiology
+ALT-006848,Soteria.AI,Radiology
+ALT-006685,Spectral Bone Marrow,Radiology
+ALT-006630,Spine Auto Views,Radiology
+ALT-006633,Spine CAMP (1.1),Orthopaedics
+ALT-004351,SpineUs System,Orthopaedics
+ALT-006584,SpotLight/SpotLight Duo (with DLIR option),Radiology
+ALT-001078,Strain AI (SAI001),Radiology
+ALT-003892,StrokeSENS LVO,Radiology
+ALT-006554,StrokeViewer Perfusion,Radiology
+ALT-004476,SubtleHD (1.x),Radiology
+ALT-007050,SubtleMR,Radiology
+ALT-006648,SubtleMR (2.3.x),Radiology
+ALT-006461,SubtleSYNTH (1.x),Radiology
+ALT-006220,SugarBug (1.x),Radiology
+ALT-007075,SurgicalAR,Radiology
+ALT-006258,SurgiTwin,Radiology
+ALT-006856,SwiftMR,Radiology
+ALT-006243,SwiftSight-Brain,Radiology
+ALT-006847,Swoop Point-of-Care Magnetic Resonance Imaging (POC MRI) Scanner System,Radiology
+ALT-006302,Swoop® Portable MR Imaging® System (V2),Radiology
+ALT-006312,Synapse 3D Base Tools (V7.0),Radiology
+ALT-006926,"Synapse 3D, Synapse 3D Base Tools v6.1",Radiology
+ALT-004496,Synapse PACS (7.5),Radiology
+ALT-007158,syngo Application Software,Radiology
+ALT-006563,Syngo Carbon Clinicals,Radiology
+ALT-006228,Syngo Carbon Clinicals (VA41),Radiology
+ALT-006477,Syngo Carbon Enterprise Access (VA40A),Radiology
+ALT-006718,Syngo Dynamics (Version VA40F),Radiology
+ALT-006822,syngo.CT Brain Hemorrhage,Radiology
+ALT-007029,syngo.CT CaScoring,Radiology
+ALT-006824,syngo.CT Extended Functionality,Radiology
+ALT-006911,syngo.CT Lung CAD,Radiology
+ALT-007008,syngo.CT Lung CAD,Radiology
+ALT-006627,syngo.CT Lung CAD (Version VD30),Radiology
+ALT-006332,syngo.CT LVO Detection,Radiology
+ALT-006894,"syngo.via MI WorkFlows, Scenium, syngo MBF",Radiology
+ALT-006944,"syngo.via MI Workflows, syngo MBF",Radiology
+ALT-006307,TAIMedImg DeepMets,Radiology
+ALT-004517,TAVIPILOT,Radiology
+ALT-004413,TechCare Trauma,Radiology
+ALT-006255,Tempus Pixel,Radiology
+ALT-006373,TeraRecon Aorta.CT (1.1.0),Cardiology
+ALT-004546,TeraRecon Cardiovascular.Calcification.CT,Radiology
+ALT-006745,TeraRecon Neuro,Neurology
+ALT-006850,"TEX20/TEX20 Pro/TEX20S/TEX20T/TEX20 Exp/TEX20 Elite Diagnostic Ultrasound System, TEX10/ TEX10 Pro/TEX10S/TEX10T/TEX10 Exp/TEX10 Elite/TE X/TE X Lite Diagnostic Ultrasound System",Radiology
+ALT-006406,The 5000 Compact Series Ultrasound Systems,Radiology
+ALT-003612,THINQ,Radiology
+ALT-006557,Transpara Density 1.0.0,Radiology
+ALT-006434,TRAQinform IQ,Radiology
+ALT-006300,TraumaCad Neo (1.1),Radiology
+ALT-006341,TribusConnect,Radiology
+ALT-006503,True Enhance DL,Radiology
+ALT-003753,TruPlan,Radiology
+ALT-006706,TruPlan Computed Tomography (CT) Imaging Software,Radiology
+ALT-006875,TruSPECT  Radiological Image Processing Station,Radiology
+ALT-006194,TruSPECT Processing Station,Radiology
+ALT-006545,TumorSight Viz,Oncology
+ALT-006423,uAI Easy Triage ICH,Radiology
+ALT-003650,uAI EasyTriage-Rib,Radiology
+ALT-006433,uAI Portal,Radiology
+ALT-004485,uAngio AVIVA CX,Radiology
+ALT-006378,uCT 550,Radiology
+ALT-006381,uCT 780,Radiology
+ALT-006697,uCT ATLAS Astound with uWS-CT-Dual Energy Analysis,Radiology
+ALT-006316,uCT ATLAS Astound with uWS-CT-Dual Energy Analysis; uCT ATLAS with uWS-CT-Dual Energy Analysis,Radiology
+ALT-006877,uCT ATLAS with uWS-CT-Dual Energy Analysis,Radiology
+ALT-006244,uDR Aurora CX,Radiology
+ALT-006324,UltraExtend NX CUW-U001S V2.0 Ultrasound Image Analysis Program,Radiology
+ALT-001053,UltraSight AI Guidance,Radiology
+ALT-006134,UltraSight Guidance,Radiology
+ALT-001140,Ultrasound imaging system application software,Radiology
+ALT-001141,Ultrasound imaging system application software,Radiology
+ALT-001142,Ultrasound imaging system application software,Radiology
+ALT-004199,Ultrasound System 1300,Radiology
+ALT-006666,Ultrasound System 2300,Radiology
+ALT-006366,Ultrasound Workspace (UWS 6.0),Radiology
+ALT-006504,uMR 680,Radiology
+ALT-006698,uMR 680,Radiology
+ALT-006994,uMR 780,Radiology
+ALT-006494,uMR Jupiter,Radiology
+ALT-006516,uMR Omega,Radiology
+ALT-006723,uMR Omega with uWS-MR-MRS,Radiology
+ALT-006280,uMR Ultra,Radiology
+ALT-006270,UNiD Spine Analyzer,Orthopaedics
+ALT-007159,UNiD Spine Analyzer,Orthopaedics
+ALT-006626,uOmnispace,Radiology
+ALT-006481,uOmnispace.CT,Radiology
+ALT-006549,uOmnispace.MI,Radiology
+ALT-006500,uOmnispace.MR,Radiology
+ALT-006476,uPMR 790,Radiology
+ALT-006884,Us2.v1,Radiology
+ALT-004289,Us2.v2,Radiology
+ALT-003448,Uscan,Radiology
+ALT-006991,uWS-MR,Radiology
+ALT-006395,"V5 Diagnostic Ultrasound System, H5 Diagnostic Ultrasound System, XV5 Diagnostic Ultrasound System, XH5 Diagnostic Ultrasound System, V4 Diagnostic Ultrasound System, H4 Diagnostic Ultrasound System, XV4 Diagnostic Ultrasound System, XH4 Diagnostic Ultrasound System",Radiology
+ALT-001080,V5med Lung AI,Radiology
+ALT-006867,V8 Diagnostic Ultrasound System,Radiology
+ALT-006763,"V8 Diagnostic Ultrasound System, V7 Diagnostic Ultrasound System",Radiology
+ALT-006363,V8 Diagnostic Ultrasound System; cV8 Diagnostic Ultrasound System; V7 Diagnostic Ultrasound System; cV7 Diagnostic Ultrasound System; V6 Diagnostic Ultrasound System; cV6 Diagnostic Ultrasound System,Radiology
+ALT-006279,V8 Diagnostic Ultrasound System; cV8 Diagnostic Ultrasound System; V7 Diagnostic Ultrasound System; cV7 Diagnostic Ultrasound System; V6 Diagnostic Ultrasound System; cV6 Diagnostic Ultrasound System; V5 Diagnostic Ultrasound System; cV5 Diagnostic Ultrasound System; V4 Diagnostic Ultrasound System; cV4 Diagnostic Ultrasound System,Radiology
+ALT-006594,"V8/H8 Diagnostic Ultrasound System, V7/H7 Diagnostic Ultrasound System, V6/H6 Diagnostic Ultrasound System",Radiology
+ALT-006466,"V8/XV8/XH8, V7/XV7/XH7, V6/XV6/XH6 Diagnostic Ultrasound System",Radiology
+ALT-006844,"Vantage Fortian 1.5T, MRT-1550, V8.0 with AiCE Reconstruction Processing Unit for MR",Radiology
+ALT-006502,"Vantage Fortian/Orian 1.5T, MRT-1550, V9.0 with AiCE Reconstruction Processing Unit for MR",Radiology
+ALT-007009,"Vantage Galan 3T, MRT-3020, V6.0 with AiCE Reconstruction Processing Unit for MR",Radiology
+ALT-006929,"Vantage Orian 1.5T, MRT-1550, V6.0",Radiology
+ALT-006979,"Vantage Orian 1.5T, MRT-1550, V6.0 with AiCE Reconstruction Processing Unit for MR",Radiology
+ALT-007096,vascuCAP,Radiology
+ALT-006916,VBrain,Oncology
+ALT-006857,VBrain-OAR,Oncology
+ALT-004204,VEA Align,Radiology
+ALT-006464,VEA Align; spineEOS,Orthopaedics
+ALT-006435,Velmeni for Dentists (V4D),Radiology
+ALT-004405,Vent Creativity Knee v1.0 (Hermes),Orthopaedics
+ALT-007128,Ventripoint Medical System Plus (VMS+),Radiology
+ALT-007047,Ventripoint Medical System Plus (VMS+) 3.0,Radiology
+ALT-004359,Ventripoint Medical System Plus (VMS+) 4.0,Radiology
+ALT-006765,Venue,Radiology
+ALT-007129,Venue,Radiology
+ALT-006766,Venue Fit,Radiology
+ALT-006769,Venue Go,Radiology
+ALT-006275,Venue; Venue Go; Venue Fit; Venue Sprint,Radiology
+ALT-003970,Versana Balance,Radiology
+ALT-006864,Versana Premier,Radiology
+ALT-006419,Versana Premier; Versana Premier Lotus; LOGIQ F,Radiology
+ALT-006326,VersaViewer,Radiology
+ALT-004188,Veuron-Brain-pAb3,Neurology
+ALT-003698,VIDAvision,Radiology
+ALT-006797,Videa Caries Assist,Radiology
+ALT-006702,Videa Perio Assist,Radiology
+ALT-006660,ViewFinder Software Version 1.1,Radiology
+ALT-006478,VinDr-Mammo,Radiology
+ALT-006614,VisAble.IO,Radiology
+ALT-006928,Visage Breast Density,Radiology
+ALT-006619,VisiRad XR,Radiology
+ALT-001089,"Vista OS, Vista AI Scan, RTHawk",Radiology
+ALT-007104,Vitrea CT Brain Perfusion,Radiology
+ALT-007109,"Vivid E80, Vivid E90, Vivid E95",Radiology
+ALT-006975,Vivid E80/ Vivid E90/ Vivid E95,Radiology
+ALT-004000,Vivid iq,Radiology
+ALT-004494,Vivid iq,Radiology
+ALT-006961,Vivid iq,Radiology
+ALT-006977,"Vivid S60N, Vivid S70N",Radiology
+ALT-006962,"Vivid T8, Vivid T9",Radiology
+ALT-004079,Viz AAA,Radiology
+ALT-006815,"Viz ANEURYSM, Viz ANX",Radiology
+ALT-007131,Viz CTP,Radiology
+ALT-006528,"Viz HDS, Viz Volume Plus, Viz ICH+",Radiology
+ALT-007005,Viz ICH,Radiology
+ALT-006724,Viz LVO ContaCT,Radiology
+ALT-003997,Viz RV/LV,Radiology
+ALT-006752,Viz SDH,Radiology
+ALT-004551,"Viz Subdural+, Viz SUBDURAL PLUS",Radiology
+ALT-003488,Volpara Imaging Software,Radiology
+ALT-007178,Volpara Imaging Software,Radiology
+ALT-006386,Voluson Expert 18; Voluson Expert 20; Voluson Expert 22,Radiology
+ALT-006777,"Voluson Expert 22, Voluson Expert 20, Voluson Expert 18",Radiology
+ALT-006816,"Voluson P6, Voluson P8",Radiology
+ALT-006305,Voluson Performance 16; Voluson Performance 18,Radiology
+ALT-006831,"Voluson S6, Voluson S8, Voluson S8t, Voluson S10, Voluson S10 Expert",Radiology
+ALT-006519,"Voluson Signature 20, Voluson Signature 18",Radiology
+ALT-006638,Voluson SWIFT; Voluson SWIFT+,Radiology
+ALT-006274,Voxel Dosimetry (00859873006226),Radiology
+ALT-006322,Vscan Air,Radiology
+ALT-006405,VUNO Med-Chest X-ray Triage/VUNO Med-CXR Link Triage,Radiology
+ALT-004179,VUNO Med-DeepBrain,Neurology
+ALT-007119,Workflow Box,Radiology
+ALT-006948,WRDensity by Whiterabbit.ai,Radiology
+ALT-006231,X9 Ultrasound System,Radiology
+ALT-006690,Xeleris V Processing and Review System,Radiology
+ALT-003706,Xeleris V Processing and Review Systems,Radiology
+ALT-006607,"XIDF-AWS801, Angio Workstation (Alphenix Workstation), V9.5",Radiology
+ALT-007189,YSIO MAX,Radiology
+ALT-006479,YSIO X.pree,Radiology
+ALT-007111,Ziostation2,Radiology
+ALT-007206,BIOPLEX 2200 ANA SCREEN WITH MEDICAL DECISION SUPPORT SOFTWARE FOR USE WITH BIOPLEX 2200 MULTI-ANALYTE DETECTION SYSTEM,Rheumatology
+ALT-007152,BladderScan Prime PLUS System,Urology
+ALT-001048,Avenda Health AI Prostate Cancer Planning Software,Urology
+ALT-006147,Prostate Intelligence (PI) — radiological analysis software intended to assist analysis of MRI for suspected prostate cancer. Indicated for assessment of MRI images of males aged 21+ with suspicion of prostate cancer. Intended users: radiologists.,Urology

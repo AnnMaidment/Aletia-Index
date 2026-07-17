@@ -40,3 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 scope-apply-snapshot-*.json
+
+# debar-specialty run artifacts (reports/spot-checks/snapshots — keep the applied snapshot durable outside git or commit it deliberately)
+debar-specialty-report-*.json
+debar-specialty-spotcheck-*.csv
+debar-specialty-snapshot-*.json

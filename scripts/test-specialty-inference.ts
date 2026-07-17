@@ -20,8 +20,8 @@
  *   - attempted-but-unclassified yields confidence 'none'
  */
 
-import { buildSpecialtyEvidence } from '../lib/specialtyEvidence';
-import { inferSpecialty } from '../lib/specialtyTaxonomy';
+import { buildSpecialtyEvidence, buildDeviceMasterEvidence } from '../lib/specialtyEvidence';
+import { inferSpecialty, inferSpecialtyForMaster, radiologyPatternSources, MASTER_MODALITY_CLASS_SOURCES } from '../lib/specialtyTaxonomy';
 
 let passed = 0;
 let failed = 0;
@@ -264,6 +264,164 @@ expectSpecialty(
   'clinical_trials',
   'Pathology'
 );
+
+// ─────────────────────────────────────────────────────────────────────────
+// device_master evidence (backbone de-baring pass — buildDeviceMasterEvidence)
+//
+// Acceptance criteria for the July 2026 pass:
+//   - a bare brand name with no descriptive text stays 'none' (null preserved
+//     as the honest "not yet classified")
+//   - openFDA classification device_name/definition ARE matched (functional
+//     descriptions, construct-valid), so a brand-name-only device with a
+//     descriptive classification resolves
+//   - the FDA panel is carried but NEVER matched (a Radiology panel alone
+//     must not produce a Radiology label)
+//   - FDA-list submission names that differ from the master name contribute
+// ─────────────────────────────────────────────────────────────────────────
+
+function classifyMaster(input: Parameters<typeof buildDeviceMasterEvidence>[0]) {
+  return inferSpecialtyForMaster(buildDeviceMasterEvidence(input));
+}
+
+{
+  const r = classifyMaster({ name: 'BriefCase', intendedUse: null, description: null });
+  expectAssert(
+    'master — bare brand name stays none (honest null)',
+    r.specialty === null && r.confidence === 'none',
+    `got specialty=${JSON.stringify(r.specialty)} confidence=${r.confidence}`
+  );
+}
+
+{
+  const r = classifyMaster({
+    name: 'BriefCase',
+    intendedUse: null,
+    description: null,
+    classificationNames: ['Radiological computer-assisted triage and notification software'],
+    classificationDefinitions: [],
+  });
+  expectAssert(
+    'master — modality-lane classification text → Radiology at MEDIUM, flagged modality-only (Caption/LumiNE class)',
+    r.specialty === 'Radiology' && r.confidence === 'medium' && r.modalityOnly === true,
+    `got specialty=${JSON.stringify(r.specialty)} confidence=${r.confidence} modalityOnly=${r.modalityOnly}`
+  );
+}
+
+{
+  // The NaviCam bug: organ-specific signals must beat generic 'imaging' even
+  // at the same confidence level (old first-specialty-wins let Radiology take it).
+  const r = classifyMaster({
+    name: 'NaviCam ProScan',
+    intendedUse: null,
+    description: null,
+    classificationNames: ['Gastrointestinal capsule endoscopy imaging system'],
+  });
+  expectAssert(
+    'master — organ-specific (Gastroenterology) beats modality-class imaging at same level',
+    r.specialty === 'Gastroenterology' && r.modalityOnly === false,
+    `got specialty=${JSON.stringify(r.specialty)} confidence=${r.confidence} modalityOnly=${r.modalityOnly}`
+  );
+}
+
+{
+  // MAGNETOM class: MR platform, modality words only → Radiology medium default.
+  const r = classifyMaster({
+    name: 'MAGNETOM Free.Max',
+    intendedUse: null,
+    description: null,
+    classificationNames: ['Magnetic resonance diagnostic device'],
+  });
+  expectAssert(
+    'master — MR platform modality-only → Radiology medium (modality-led default)',
+    r.specialty === 'Radiology' && r.confidence === 'medium' && r.modalityOnly === true,
+    `got specialty=${JSON.stringify(r.specialty)} confidence=${r.confidence} modalityOnly=${r.modalityOnly}`
+  );
+}
+
+{
+  // Home-class Radiology (mammography) must remain HIGH and not be demoted.
+  const r = classifyMaster({
+    name: 'Transpara',
+    intendedUse: 'mammography screening reading support',
+    description: null,
+  });
+  expectAssert(
+    'master — home-class Radiology (mammography) stays high, not modality-only',
+    r.specialty === 'Radiology' && r.confidence === 'high' && r.modalityOnly === false,
+    `got specialty=${JSON.stringify(r.specialty)} confidence=${r.confidence} modalityOnly=${r.modalityOnly}`
+  );
+}
+
+{
+  // Cardiac signal must beat modality-lane 'radiological' text (echo devices).
+  const r = classifyMaster({
+    name: 'AutoEF Software',
+    intendedUse: 'automated left ventricular ejection fraction from echocardiography',
+    description: null,
+    classificationNames: ['Radiological machine learning-based software'],
+  });
+  expectAssert(
+    'master — echocardiography beats modality-lane radiological text → Cardiology',
+    r.specialty === 'Cardiology' && r.modalityOnly === false,
+    `got specialty=${JSON.stringify(r.specialty)} confidence=${r.confidence}`
+  );
+}
+
+{
+  // Drift guard: every modality-class source must still exist in the Radiology
+  // patterns — if someone edits the taxonomy, this fails loudly instead of the
+  // arbitration silently misclassifying.
+  const radSources = new Set(radiologyPatternSources());
+  const missing = MASTER_MODALITY_CLASS_SOURCES.filter((s) => !radSources.has(s));
+  expectAssert(
+    'master — modality-class source list matches live Radiology patterns (drift guard)',
+    missing.length === 0,
+    `sources missing from PATTERNS: ${JSON.stringify(missing)}`
+  );
+}
+
+{
+  const r = classifyMaster({
+    name: 'Device X',
+    intendedUse: null,
+    description: null,
+    panels: ['Radiology'],
+    productCodes: ['QAS'],
+  });
+  expectAssert(
+    'master — panel alone is never matched (carried for provenance only)',
+    r.specialty === null && r.confidence === 'none',
+    `got specialty=${JSON.stringify(r.specialty)} confidence=${r.confidence}`
+  );
+}
+
+{
+  const r = classifyMaster({
+    name: 'EchoGo',
+    intendedUse: null,
+    description: null,
+    fdaListDeviceNames: ['EchoGo Heart Failure — echocardiography analysis'],
+  });
+  expectAssert(
+    'master — FDA-list submission name contributes when it differs from master name',
+    r.specialty === 'Cardiology',
+    `got specialty=${JSON.stringify(r.specialty)} confidence=${r.confidence}`
+  );
+}
+
+{
+  const ev = buildDeviceMasterEvidence({
+    name: 'Some Device',
+    intendedUse: 'analysis of retinal fundus images for diabetic retinopathy',
+    description: null,
+  });
+  const r = inferSpecialty(ev);
+  expectAssert(
+    'master — intended_use text is matched (Ophthalmology) and provenance recorded',
+    r.specialty === 'Ophthalmology' && ev.sourceFieldsUsed.includes('master.intended_use'),
+    `got specialty=${JSON.stringify(r.specialty)} fields=${JSON.stringify(ev.sourceFieldsUsed)}`
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────────────
 // Report
