@@ -6,6 +6,30 @@ import {
   logIngestionAnomaly,
   type IngestDecision,
 } from './ingestion'
+import {
+  classifyCtgovScope,
+  mayAutoCreate,
+  type ScopeVerdict,
+  type ScopeReason,
+} from './ctgovScope'
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Auto-create kill switch.
+//
+// OFF until scripts/validate-ctgov-scope.ts reports ZERO false inclusions at
+// in_scope_high against the 487 labelled rows in scope-decisions.csv. The
+// classifier's tiering is implemented and its fixtures pass, but fixtures test
+// the rules, not whether the rules are right — only the labelled replay can
+// say that, and it needs database credentials to reach the trial text.
+//
+// Until then every in-scope trial queues, which costs review time and nothing
+// else. That is the cheap mistake; minting junk devices into the public index
+// with no human in the loop is the expensive one.
+//
+// Turn on by setting CTGOV_AUTO_CREATE=true in the environment, and only after
+// the validation run passes. Absent or anything else = off.
+// ─────────────────────────────────────────────────────────────────────────────
+const CTGOV_AUTO_CREATE = process.env.CTGOV_AUTO_CREATE === 'true'
 
 // =============================================================================
 // ClinicalTrials.gov ingest — rewritten for A2b (April 2026)
@@ -40,6 +64,9 @@ export interface ClinicalTrialsIngestResult {
   queuedCommercial: number       // commercial trial, merge candidates found → admin review
   queuedAcademic: number         // academic trial, no device match → admin review (never auto-create)
   alreadyQueued: number          // trial was already in the queue from a previous run
+  droppedOutOfScope: number      // failed the integrality bar — never queued (lib/ctgovScope.ts)
+  droppedByReason: Partial<Record<ScopeReason, number>>
+  skippedPriorDecision: number   // a human already rejected/duplicated/approved this NCT — not re-queued
   errors: string[]
 }
 
@@ -57,6 +84,9 @@ export async function runClinicalTrialsIngest(): Promise<ClinicalTrialsIngestRes
     queuedCommercial: 0,
     queuedAcademic: 0,
     alreadyQueued: 0,
+    skippedPriorDecision: 0,
+    droppedOutOfScope: 0,
+    droppedByReason: {},
     errors: [],
   }
 
@@ -72,14 +102,45 @@ export async function runClinicalTrialsIngest(): Promise<ClinicalTrialsIngestRes
   result.total = trials.length
   console.log(`[clinical-trials-ingest] Fetched ${trials.length} device trials`)
 
-  // ── Filter for AI/ML trials ──────────────────────────────────────────────
-  const aimlTrials: ClinicalTrial[] = []
+  // ── Scope gate ───────────────────────────────────────────────────────────
+  // Was: a flat keyword match (isAIMLTrial), which put 150 out-of-scope trials
+  // into the queue — mostly neuromodulation studies where 'neural network'
+  // means the brain. Now: lib/ctgovScope.ts, which applies the integrality bar
+  // and returns a tier. See that module's header for the rules.
+  const aimlTrials: { trial: ClinicalTrial; scope: ScopeVerdict }[] = []
   for (const trial of trials) {
     try {
-      const knownAIML = await sponsorHasAIMLDevices(trial.sponsorName, supabase)
-      if (knownAIML || isAIMLTrial(trial)) {
-        aimlTrials.push(trial)
+      const scope = classifyCtgovScope({
+        title:        trial.title,
+        briefSummary: trial.briefSummary,
+        deviceName:   trial.deviceName,
+        conditions:   trial.conditions,
+      })
+
+      // Known-AI-sponsor rescue. A sponsor whose other devices are AI/ML is a
+      // recall signal worth acting on — but only where the classifier found
+      // NOTHING. It must never overturn a positive out-of-scope finding: that
+      // Siemens runs a scanner trial does not make the scanner an AI device,
+      // and that is precisely the over-capture BUG-012 fixed on the FDA side.
+      // The rescue lands in the queue, never at auto-create tier.
+      let effective = scope
+      if (scope.reason === 'no_ai_signal') {
+        const knownAIML = await sponsorHasAIMLDevices(trial.sponsorName, supabase)
+        if (knownAIML) {
+          effective = {
+            ...scope,
+            tier: 'in_scope_low',
+            detail: 'no AI signal in the trial text, but the sponsor has known AI/ML devices — queued on sponsor evidence alone',
+          }
+        }
       }
+
+      if (effective.tier === 'out_of_scope') {
+        result.droppedOutOfScope++
+        result.droppedByReason[effective.reason] = (result.droppedByReason[effective.reason] ?? 0) + 1
+        continue
+      }
+      aimlTrials.push({ trial, scope: effective })
     } catch (err) {
       console.warn(
         `[clinical-trials-ingest] Filter error for ${trial.nctId}: ${String(err)}`
@@ -91,9 +152,9 @@ export async function runClinicalTrialsIngest(): Promise<ClinicalTrialsIngestRes
   console.log(`[clinical-trials-ingest] ${aimlTrials.length} trials passed AI/ML filter`)
 
   // ── Process each trial ───────────────────────────────────────────────────
-  for (const trial of aimlTrials) {
+  for (const { trial, scope } of aimlTrials) {
     try {
-      await processTrial(trial, supabase, result)
+      await processTrial(trial, supabase, result, scope)
     } catch (err) {
       result.errors.push(
         `Error processing ${trial.nctId} (${trial.sponsorName}): ${String(err)}`
@@ -113,6 +174,7 @@ async function processTrial(
   trial: ClinicalTrial,
   supabase: SupabaseClient,
   result: ClinicalTrialsIngestResult,
+  scope: ScopeVerdict,
 ): Promise<void> {
   // Shape sanity: an NCT from CT.gov should match NCT + 8 digits. If it
   // doesn't, log an anomaly and skip — we don't want malformed IDs leaking
@@ -155,9 +217,14 @@ async function processTrial(
                     : 'academic_no_device_match',
     manufacturerName: trial.sponsorName,
     deviceName:       trial.deviceName ?? trial.title,
-    payload:          { ...trial, sponsor_type: sponsorType },
-    // Academic sponsors never auto-create — if no identifier hit, they queue.
-    autoCreate: sponsorType === 'commercial',
+    payload:          { ...trial, sponsor_type: sponsorType, scope },
+    // Auto-create needs THREE conditions, all of them:
+    //   1. a commercial sponsor (an academic running a trial on someone else's
+    //      device must never mint a device row),
+    //   2. a scope tier the classifier is allowed to auto-create from, and
+    //   3. CTGOV_AUTO_CREATE below being on.
+    // The 4d gate adds the fourth: no merge candidates.
+    autoCreate: sponsorType === 'commercial' && CTGOV_AUTO_CREATE && mayAutoCreate(scope),
     // deviceSeed only used when autoCreate=true + no candidates.
     deviceSeed: sponsorType === 'commercial'
       ? buildDeviceSeed(trial, manufacturerMatch?.id ?? null)
@@ -183,6 +250,12 @@ async function processTrial(
 
     case 'already_queued':
       result.alreadyQueued++
+      return
+
+    case 'skipped_prior_decision':
+      // A human already ruled on this NCT. Re-queueing would ask the same
+      // question again next month; the whole point of the fix is that it does not.
+      result.skippedPriorDecision++
       return
 
     case 'failed':
@@ -316,42 +389,13 @@ function isAcademicSponsor(sponsorName: string): boolean {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// AI/ML filter — unchanged text pass
+// The old flat keyword filter (isAIMLTrial) lived here. It was superseded on
+// 25 Aug by lib/ctgovScope.ts, which applies the integrality bar and returns a
+// tier instead of a boolean. Deleted rather than left dead: its lexicon read
+// like a working filter, and 'neural network' / 'deep learning' sitting in a
+// positive-keyword list is exactly the mistake that put 150 out-of-scope rows
+// in the queue. Recover it from git history if the lexicon is ever needed.
 // ─────────────────────────────────────────────────────────────────────────────
-
-function isAIMLTrial(trial: ClinicalTrial): boolean {
-  const text = [
-    trial.title,
-    trial.briefSummary,
-    trial.deviceName ?? '',
-    trial.conditions.join(' '),
-  ]
-    .join(' ')
-    .toLowerCase()
-
-  const hardExclusions = [
-    'antimicrobial susceptibility', 'breakpoint', 'minimum inhibitory concentration',
-    'microbiology panel', 'culture media', 'susceptibility testing',
-    'spinal fixation', 'spinal fusion', 'bone screw', 'vascular graft',
-    'surgical access', 'infusion catheter', 'suture', 'wound closure',
-    'hip replacement', 'knee replacement', 'dental implant',
-    'face mask', 'respirator', 'rt-pcr', 'pcr assay', 'lateral flow', 'rapid antigen',
-  ]
-  if (hardExclusions.some((term) => text.includes(term))) return false
-
-  const positiveKeywords = [
-    'artificial intelligence', 'machine learning', 'deep learning',
-    'neural network', 'large language model', 'foundation model',
-    'generative ai', 'computer-aided detection', 'computer-aided diagnosis',
-    'computer aided detection', 'computer aided diagnosis', 'cad system',
-    'convolutional', 'transformer model', 'image recognition',
-    'image classification', 'automated segmentation', 'automated detection',
-    'automated analysis', 'predictive algorithm', 'clinical decision support',
-    'ai-powered', 'ai/ml', 'ml model', 'natural language processing',
-    'computer vision',
-  ]
-  return positiveKeywords.some((kw) => text.includes(kw))
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Manufacturer fast path — "do we already know this sponsor has AI/ML devices?"
