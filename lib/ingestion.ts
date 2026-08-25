@@ -21,6 +21,33 @@ import type { ExternalIdType, AnomalyType } from './types'
 // This is the "never auto-merge" discipline: the only auto-action is on
 // exact identifier match; everything else routes through admin.
 //
+// Durability of human decisions (25 August):
+//   The queue dedup step used to filter `.eq('status', 'pending')`, so it only
+//   saw un-actioned rows. Once a human rejected a row (or marked it duplicate),
+//   the next run of the same source could not see that decision, fell through
+//   to step 3, and inserted a fresh pending row — the same rejected candidate
+//   came back on every sweep, forever. The DB does not stop this either: the
+//   unique index on (source, source_id) is PARTIAL — `WHERE status = 'pending'`
+//   (baseline migration, idx_review_queue_source_id) — so a terminal row and a
+//   new pending row happily coexist.
+//
+//   The dedup now reads the LATEST queue row for (source, source_id) whatever
+//   its status, and a terminal decision suppresses re-queueing:
+//     pending             → already_queued        (an open row is waiting)
+//     rejected|duplicate  → skipped_prior_decision (a human already said no)
+//     approved            → skipped_prior_decision + anomaly
+//
+//   `approved` deserves the anomaly: an approved queue row means a device was
+//   created or merged, so step 1 should have matched the identifier. Reaching
+//   step 2 with an approved row means the accept did not write this
+//   (id_type, id_value) — the Mark-duplicate path is the known benign case
+//   (queue disposition only, device_master untouched), a lost external id is
+//   the pathological one. Either way, do not re-queue; make it visible.
+//
+//   Escape hatch: pass reconsiderPriorDecisions = true to ignore terminal rows
+//   and queue anyway. For deliberate re-review sweeps (e.g. after the scope
+//   rules change), never for routine cron ingest.
+//
 // Atomicity note (24 April):
 //   The create branch used to do device_master.insert() followed by a
 //   separate device_external_ids.insert(), which surfaced twice on staging
@@ -30,11 +57,15 @@ import type { ExternalIdType, AnomalyType } from './types'
 //   step fails, the whole transaction rolls back.
 // =============================================================================
 
+/** Terminal queue statuses — a human has decided; re-queueing would undo that. */
+export type PriorQueueDecision = 'approved' | 'rejected' | 'duplicate'
+
 export type IngestDecision =
   | { action: 'updated_existing';   aletia_id: string }
   | { action: 'created_new';        aletia_id: string }
   | { action: 'queued_for_review';  queue_id: string; candidateCount: number }
   | { action: 'already_queued';     queue_id: string }
+  | { action: 'skipped_prior_decision'; queue_id: string; prior_status: PriorQueueDecision }
   | { action: 'failed';             error: string }
 
 export interface ProcessExternalIdentifierInput {
@@ -91,6 +122,17 @@ export interface ProcessExternalIdentifierInput {
    * Default: true (the normal 4d behaviour).
    */
   autoCreate?: boolean
+
+  /**
+   * If true, a terminal queue decision (rejected / duplicate / approved) on
+   * this (queueSource, id_value) is ignored and the row may be queued again.
+   *
+   * Default: false — human decisions are durable. Set true ONLY for a
+   * deliberate re-review sweep after the inclusion rules themselves change.
+   * Never for routine/cron ingest: that is exactly the loop this flag's
+   * default exists to close.
+   */
+  reconsiderPriorDecisions?: boolean
 }
 
 /**
@@ -107,6 +149,7 @@ export async function processExternalIdentifier(
     manufacturerName, deviceName,
     payload, deviceSeed, trialSeed,
     autoCreate = true,
+    reconsiderPriorDecisions = false,
   } = input
 
   // Basic shape assertion — never proceed with an empty id_value.
@@ -143,22 +186,60 @@ export async function processExternalIdentifier(
     return { action: 'updated_existing', aletia_id: hit.aletia_id }
   }
 
-  // ── 2. Already queued for review? (dedup by queueSource + id_value) ───────
-  const { data: existingQueue, error: queueLookupErr } = await supabase
+  // ── 2. Already queued, or already decided? ────────────────────────────────
+  // Dedup by (queueSource, id_value) across ALL statuses — not just pending.
+  // The latest row wins: a fresh pending row means work is outstanding, a
+  // terminal row means a human already ruled on this identifier. See the
+  // "Durability of human decisions" note in the header.
+  const { data: queueRows, error: queueLookupErr } = await supabase
     .from('ingestion_review_queue')
-    .select('queue_id')
+    .select('queue_id, status')
     .eq('source',    queueSource)
     .eq('source_id', id_value)
-    .eq('status',    'pending')      // only dedup against un-actioned queue rows
+    .order('created_at', { ascending: false })
     .limit(1)
-    .maybeSingle()
 
   if (queueLookupErr) {
     return { action: 'failed', error: `queue dedup lookup failed: ${queueLookupErr.message}` }
   }
 
+  const existingQueue = queueRows?.[0] ?? null
+
   if (existingQueue) {
-    return { action: 'already_queued', queue_id: existingQueue.queue_id }
+    const priorStatus = String(existingQueue.status)
+
+    if (priorStatus === 'pending') {
+      // An open row is already waiting for review. Never duplicate it, and
+      // never treat it as a decision — it is simply outstanding work.
+      return { action: 'already_queued', queue_id: existingQueue.queue_id }
+    }
+
+    if (!reconsiderPriorDecisions) {
+      // 'approved' here is an integrity signal, not a routine skip: an approved
+      // row should have produced a device_external_ids entry that step 1 would
+      // have matched. Log it, then suppress like any other terminal decision.
+      if (priorStatus === 'approved') {
+        await logIngestionAnomaly(supabase, {
+          source:                   queueSource,
+          anomaly_type:             'unexpected_field_value',
+          identifier_value:         id_value,
+          identifier_type_expected: id_type,
+          context: {
+            phase:    'queue_dedup',
+            reason:   'approved queue row exists but identifier has no device_external_ids entry',
+            queue_id: existingQueue.queue_id,
+            note:     'benign if the row was accepted as a merge/duplicate; investigate otherwise',
+          },
+        })
+      }
+
+      return {
+        action:       'skipped_prior_decision',
+        queue_id:     existingQueue.queue_id,
+        prior_status: priorStatus as PriorQueueDecision,
+      }
+    }
+    // reconsiderPriorDecisions === true → fall through and queue again.
   }
 
   // ── 3. Compute merge candidates ───────────────────────────────────────────

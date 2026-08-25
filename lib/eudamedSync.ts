@@ -39,6 +39,7 @@ export interface EudamedIngestResult {
     | 'created_new'
     | 'queued_for_review'
     | 'already_queued'
+    | 'skipped_prior_decision'
     | 'failed';
   aletia_id: string | null;
   confidence: EudamedDeviceRecord['confidence'];
@@ -163,7 +164,11 @@ export async function ingestEudamedDevice(
     return { eu_uuid: euUuid, action: decision.action, aletia_id: decision.aletia_id, confidence };
   }
 
-  if (decision.action === 'queued_for_review' || decision.action === 'already_queued') {
+  if (
+    decision.action === 'queued_for_review' ||
+    decision.action === 'already_queued' ||
+    decision.action === 'skipped_prior_decision'
+  ) {
     return { eu_uuid: euUuid, action: decision.action, aletia_id: null, confidence };
   }
 
