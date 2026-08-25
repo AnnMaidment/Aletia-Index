@@ -41,6 +41,7 @@
 
 import { createAdminClient } from './supabase-admin'
 import { logIngestionAnomaly } from './ingestion'
+import { normaliseId, baseSubmissionId, classifySubmissionNumber } from './fdaSubmissionId'
 
 // ============================================================
 // ⚠️  URL VERIFICATION REQUIRED
@@ -84,6 +85,7 @@ export interface PCCPIngestResult {
   enriched_existing:         number   // device_external_ids hit → device_master updated
   already_up_to_date:        number   // device found but pccp fields already match
   unmatched_logged:          number   // no hit in device_external_ids → anomaly logged
+  supplements_collapsed:     number   // extra PMA supplement rows folded onto the same base device (BUG-013)
 
   errors:                    string[]
 }
@@ -143,21 +145,10 @@ function splitCSVLine(line: string): string[] {
 // e.g. "k251293" → "K251293", "den190040" → "DEN190040"
 // ============================================================
 
-function normaliseId(raw: string): string {
-  return raw.toUpperCase().replace(/\s+/g, '').trim()
-}
-
-// ============================================================
-// Classify submission-number shape → id_type.
-// Mirrors the classification in app/api/admin/queue/accept/route.ts.
-// ============================================================
-
-function classifySubmissionNumber(id: string): 'fda_k_number' | 'fda_de_novo' | 'fda_pma' | null {
-  if (/^K[0-9]+$/.test(id))   return 'fda_k_number'
-  if (/^DEN[0-9]+$/.test(id)) return 'fda_de_novo'
-  if (/^P[0-9]+$/.test(id))   return 'fda_pma'
-  return null
-}
+// Submission-number shape logic lives in lib/fdaSubmissionId.ts — it is shared
+// with the admin accept route, which carried the same BUG-013 defect. Re-exported
+// here so existing importers of this module keep working.
+export { normaliseId, baseSubmissionId, classifySubmissionNumber } from './fdaSubmissionId'
 
 // ============================================================
 // Parse date string → ISO date (YYYY-MM-DD).
@@ -198,6 +189,7 @@ export async function runPCCPIngest(): Promise<PCCPIngestResult> {
     enriched_existing:        0,
     already_up_to_date:       0,
     unmatched_logged:         0,
+    supplements_collapsed:    0,
     errors:                   [],
   }
 
@@ -262,9 +254,13 @@ export async function runPCCPIngest(): Promise<PCCPIngestResult> {
   // submission numbers in one IN() query across the three FDA id_types,
   // then work off an in-memory map.
   // ----------------------------------------------------------
-  const confirmedIds = confirmedRows
-    .map((r) => normaliseId(r.submission_number))
-    .filter(Boolean)
+  // Look up on the BASE identifier: device_external_ids holds "P190016", not
+  // "P190016/S007" (BUG-013).
+  const confirmedIds = Array.from(new Set(
+    confirmedRows
+      .map((r) => baseSubmissionId(normaliseId(r.submission_number)))
+      .filter(Boolean),
+  ))
 
   const { data: extIdHits, error: extIdErr } = await supabase
     .from('device_external_ids')
@@ -312,10 +308,31 @@ export async function runPCCPIngest(): Promise<PCCPIngestResult> {
   // ----------------------------------------------------------
   // 5. Process each confirmed PCCP row
   // ----------------------------------------------------------
+  // Several PMA supplements can resolve to one base device. Decide the date
+  // ONCE, deterministically, before the loop: earliest authorization wins.
+  //
+  // Judgement call (25 Aug): pccp_authorized_date answers "since when has this
+  // device carried an authorized PCCP", so the first authorization is the
+  // meaningful one. The alternative (latest) is defensible, but the decisive
+  // argument is determinism — the previous code took whichever supplement the
+  // CSV happened to list last, so the stored value could flip between runs
+  // with no data change. Flip the reducer below if the other reading is wanted.
+  const earliestDateByBaseId = new Map<string, string>()
   for (const row of confirmedRows) {
-    const submissionId  = normaliseId(row.submission_number)
+    const baseId = baseSubmissionId(normaliseId(row.submission_number))
+    const d = parseDate(row.date_decision)
+    if (!baseId || !d) continue
+    const prev = earliestDateByBaseId.get(baseId)
+    if (!prev || d < prev) earliestDateByBaseId.set(baseId, d)
+  }
+
+  const seenBaseIds = new Set<string>()
+
+  for (const row of confirmedRows) {
+    const submissionId  = normaliseId(row.submission_number)   // full id, incl. /Sxxx — for audit
+    const lookupId      = baseSubmissionId(submissionId)       // base id — for identity
     const classified    = classifySubmissionNumber(submissionId)
-    const authorizedDate = parseDate(row.date_decision)
+    const authorizedDate = earliestDateByBaseId.get(lookupId) ?? parseDate(row.date_decision)
 
     // ── Shape check on the submission number ──────────────────────────────
     if (!classified) {
@@ -330,7 +347,15 @@ export async function runPCCPIngest(): Promise<PCCPIngestResult> {
       continue
     }
 
-    const aletiaId = aletiaIdByIdValue.get(submissionId)
+    // Second and later supplements of the same PMA carry no new information:
+    // the date is already resolved above and the target device is identical.
+    if (seenBaseIds.has(lookupId)) {
+      result.supplements_collapsed++
+      continue
+    }
+    seenBaseIds.add(lookupId)
+
+    const aletiaId = aletiaIdByIdValue.get(lookupId)
 
     // ── No match in device_external_ids → log anomaly, do NOT queue ───────
     if (!aletiaId) {

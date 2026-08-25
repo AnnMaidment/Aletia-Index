@@ -52,6 +52,7 @@
  */
 
 import { NextResponse, type NextRequest } from 'next/server'
+import { resolveFdaSubmission } from '@/lib/fdaSubmissionId'
 import {
   getServiceClient,
   getAdminActor,
@@ -305,6 +306,11 @@ export async function POST(req: NextRequest) {
       health_status:       'Amber',
       pipeline_stage:      inferPipelineStage(raw),
       last_automated_sync: now,
+      // True because a human is accepting this row: the accept IS the
+      // in-scope judgement, whatever the discovery source's confidence was.
+      // This is only sound while every device enters through the drawer —
+      // it is NOT a claim the discovery sweeps may make on their own (see the
+      // MHRA posture note in lib/mhraSync.ts, and BUG-012 on the FDA side).
       ai_ml_integral:      true,
     }
 
@@ -441,12 +447,13 @@ function classifyQueueIdentifier(queueRow: {
       // source_id is the NCT number itself (e.g. "NCT05386654")
       return { id_type: 'nct', id_value: sourceId, jurisdiction: null }
 
-    case 'fda_sync':
-      // source_id is typically a K-number; classify by shape.
-      if (/^K[0-9]+$/.test(sourceId))   return { id_type: 'fda_k_number', id_value: sourceId, jurisdiction: 'US' }
-      if (/^DEN[0-9]+$/.test(sourceId)) return { id_type: 'fda_de_novo',  id_value: sourceId, jurisdiction: 'US' }
-      if (/^P[0-9]+$/.test(sourceId))   return { id_type: 'fda_pma',      id_value: sourceId, jurisdiction: 'US' }
-      return null
+    case 'fda_sync': {
+      // source_id is typically a K-number; classify by shape. resolveFdaSubmission
+      // also folds a PMA supplement (P######/Sxxx) onto its base PMA number,
+      // which is the form device_external_ids holds (BUG-013).
+      const fda = resolveFdaSubmission(sourceId)
+      return fda ? { ...fda, jurisdiction: 'US' } : null
+    }
 
     case 'mhra_sync':
       // source_id should be the raw numeric MHRA device ID (no MHRA- prefix).
@@ -465,16 +472,28 @@ function classifyQueueIdentifier(queueRow: {
       // Post-A2b PCCP ingest is enrichment-only; it should no longer create
       // queue rows. This arm is kept for legacy pre-A2b queue rows where
       // source_id is an FDA K-number (or DEN/PMA).
-      if (/^K[0-9]+$/.test(sourceId))   return { id_type: 'fda_k_number', id_value: sourceId, jurisdiction: 'US' }
-      if (/^DEN[0-9]+$/.test(sourceId)) return { id_type: 'fda_de_novo',  id_value: sourceId, jurisdiction: 'US' }
-      if (/^P[0-9]+$/.test(sourceId))   return { id_type: 'fda_pma',      id_value: sourceId, jurisdiction: 'US' }
+      // The K-number fallback is deliberate for these legacy arms, but it must
+      // not swallow a PMA supplement: before the shared resolver existed, the
+      // PMA branch missed "P######/Sxxx" and the fallback wrote it into
+      // device_external_ids as a K-number — a mistyped canonical identifier
+      // the 4d gate could never match again (BUG-013).
+      {
+        const fda = resolveFdaSubmission(sourceId)
+        if (fda) return { ...fda, jurisdiction: 'US' }
+      }
       return { id_type: 'fda_k_number', id_value: sourceId, jurisdiction: 'US' }
 
     // 'oleary_csv' is an alternate legacy source name for PCCP queue rows.
     case 'oleary_csv':
-      if (/^K[0-9]+$/.test(sourceId))   return { id_type: 'fda_k_number', id_value: sourceId, jurisdiction: 'US' }
-      if (/^DEN[0-9]+$/.test(sourceId)) return { id_type: 'fda_de_novo',  id_value: sourceId, jurisdiction: 'US' }
-      if (/^P[0-9]+$/.test(sourceId))   return { id_type: 'fda_pma',      id_value: sourceId, jurisdiction: 'US' }
+      // The K-number fallback is deliberate for these legacy arms, but it must
+      // not swallow a PMA supplement: before the shared resolver existed, the
+      // PMA branch missed "P######/Sxxx" and the fallback wrote it into
+      // device_external_ids as a K-number — a mistyped canonical identifier
+      // the 4d gate could never match again (BUG-013).
+      {
+        const fda = resolveFdaSubmission(sourceId)
+        if (fda) return { ...fda, jurisdiction: 'US' }
+      }
       return { id_type: 'fda_k_number', id_value: sourceId, jurisdiction: 'US' }
 
     case 'fda_breakthrough':
