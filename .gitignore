@@ -45,3 +45,15 @@ scope-apply-snapshot-*.json
 debar-specialty-report-*.json
 debar-specialty-spotcheck-*.csv
 debar-specialty-snapshot-*.json
+
+# Claude Code local settings — machine-specific, and permission rules can embed
+# API keys. Never commit.
+.claude/settings.local.json
+
+# Build archives and tarballs. aletia-index.zip was committed on 23 Apr 2026
+# with a .env.local inside it; every credential in it had to be rotated.
+*.zip
+*.tar.gz
+*.tgz
+*.7z
+*.rar
