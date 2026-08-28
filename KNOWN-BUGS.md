@@ -1,85 +1,124 @@
 # Aletia Index — Known Bugs
 
-**Last updated: 19 June 2026.** (EUDAMED localised-text envelope bugs A/B/C fixed + verified live; commit `e7a4cea`. Prior: 11 June queue-rewrite + FDA dedup, `706054b`.)
+**Last updated: 26 August 2026.** BUG-010 and BUG-013 resolved on `batch-b-ingest-hardening`; SEC-001 and SEC-002 added and resolved; SEC-003 opened.
 
-> **⚠ Reconstructed file.** The original `KNOWN-BUGS.md` was not available when this was rebuilt on 25 May. This version is reconstructed from BUG references across STATE, TODO, and the handovers. It should be **reconciled against the real `KNOWN-BUGS.md`** if one still exists in the repo or an earlier export — file:line references in particular need confirming against current code. Where a detail couldn't be recovered from the docs, it's marked *(detail unconfirmed)*.
+**Convention:** a bug is `[resolved]` only when the fix is committed to `main` and verified in production. Anything living on an unmerged branch is recorded as *fix written, not merged* and stays in the open section.
 
-**Convention:** a bug is `[resolved]` only when the fix is committed to `main` and verified in production. `[open]` means still reproducible or unverified.
+> File:line references drift. Re-grep before relying on any of them.
 
 ---
 
 ## Open
 
+### SEC-003 — public SELECT on `claim_requests` exposes every claim token
+`claim_requests` carries two permissive select policies for `anon`: the one added on 26 August, and the baseline `"Public can read claim requests by token"` which, despite its name, is a blanket `USING (true)`. A claim token is what proves entitlement to take control of a manufacturer listing, so publishing the tokens undermines the claim flow.
+
+Predates the RLS migration — enabling RLS preserved the existing behaviour rather than creating the problem.
+
+**Fix:** both consumers are server-side — `app/claim/[token]/page.tsx` (a server component) and `app/api/claim/request/route.ts` (a route handler). Move both to `createAdminClient()`, drop **both** select policies, and let the table be sealed like `ingestion_review_queue`. Code change, not a schema one.
+
 ### BUG-003 — `pipeline_stage` vocabulary split across code paths
-`pipeline_stage` is interpreted/written inconsistently between ingest paths and the display layer. Not fully resolved by A2b. **Resolves cleanly under A4** (the `pipeline_stage` → `discovery_stage` rename, which collapses to two values). Until then, treat `pipeline_stage` values with care across the FDA/MHRA/EUDAMED sync paths vs the admin accept route.
+Interpreted and written inconsistently between the ingest paths and the display layer. **Resolves cleanly under A4** (the `pipeline_stage` → `discovery_stage` rename, which collapses to two values). Until then, treat the values with care across the FDA / MHRA / EUDAMED sync paths versus the admin accept route.
 
 ### BUG-006 — CT.gov status codes collapsed rather than normalised
-ClinicalTrials.gov status values (`WITHDRAWN`, `SUSPENDED`, `not_yet_recruiting`, etc.) are not all mapped distinctly. Revisit post-A2b now that real trial data flows into `device_trials`. Fix tracked as TODO B3.
+`WITHDRAWN`, `SUSPENDED`, `not_yet_recruiting` and others are not all mapped distinctly. Revisit now that real trial data flows into `device_trials`. Tracked as TODO B3.
 
 ### BUG-007 — cosmetic, low priority
-*(Detail unconfirmed — recovered only as "cosmetic and low priority" from the docs.)* Confirm against the real file and restore the description.
+*(Detail never recovered — the original entry was lost when this file was reconstructed on 25 May 2026, and the surviving reference said only "cosmetic and low priority".)* If it is still reproducible, re-describe it; if nobody can find it, delete this entry rather than carrying it forever.
 
-### BUG-010 — graduation rule not applied on regulatory sync paths
-First regulatory approval in any jurisdiction should set `pipeline_stage = null`. **FDA half resolved 5 Jun; EUDAMED discovery path resolved 9 Jun** (`ingestEudamedDevice` sets `pipeline_stage = null` on EU clearance, create/update paths). **MHRA half remains open.** On the admin *merge* path no source re-graduates (the target is already graduated — moot). Tracked as TODO B4.
+### BUG-017 — `/request-review` collects nothing and says otherwise
+The submit button's handler is `onClick={() => alert('Thanks! Our clinical team will be in touch within 5 business days.')}`. There is no form submission, no API route, and no persistence. Every enquiry made through that page has been discarded, while the user was told to expect a reply within five business days.
 
-### BUG-013 — pccpIngest drops PMA supplement submissions (`P######/Sxxx`)
-`classifySubmissionNumber` in `lib/pccpIngest.ts:158` matches PMA as `^P[0-9]+$`, so a PMA *supplement* number like `P190016/S007` fails the shape check and the row is skipped with an `Unrecognised submission_number shape` error. The 10 Jun PCCP run logged **~40** such errors — i.e. ~40 authorized-PCCP PMA supplements are not being recorded. Pre-existing; surfaced (not caused) by the post-dedup PCCP run.
+Worse than a dead form: it is a promise the site cannot keep. Either wire it to a route and a table, or replace the button with an email address.
 
-**Fix:** key on the base PMA number before the supplement suffix — either strip `/S\d+` in `normaliseId`, or relax the PMA branch to `^P[0-9]+(?:/S[0-9]+)?$` and classify on the base. Self-contained; do as its own task, not bolted onto dedup.
+### BUG-018 — `InterestButton` posts to a route that does not exist
+`app/device/[id]/InterestButton.tsx:62` posts to `/api/pre-approval/interested`. There is no such route. Noted in the June 2026 README as "frontend-only; backend pending" and never built.
+
+---
+
+## Fix written, not yet merged
+
+These are fixed on `batch-b-ingest-hardening`. They move to Resolved when that branch reaches `main` and the effect is verified in production.
+
+### BUG-010 — graduation rule not applied on the MHRA sync path
+First regulatory approval in any jurisdiction should set `pipeline_stage = null`. FDA resolved 5 June, EUDAMED 9 June; the MHRA half stayed open.
+
+**Fix (25 Aug):** `lib/mhraSync.ts` sets `pipeline_stage = null` on the `updated_existing` path, mirroring FDA and EUDAMED. An active PARD registration is a regulatory approval. `ai_ml_integral` is untouched, so a device confirmed AI/ML elsewhere is not downgraded by an MHRA hit. This was the last open half.
+
+### BUG-013 — PMA supplement submissions dropped, and worse
+`classifySubmissionNumber` matched PMA as `^P[0-9]+$`, which does not match a supplement such as `P190016/S007`.
+
+The bug was logged against `lib/pccpIngest.ts`, where roughly 40 authorized-PCCP supplements were skipped on the 10 June run. **The same defective check turned out to exist in four places**, and the other failure mode is worse: in the `legacy_queue` and `oleary_csv` arms of `app/api/admin/queue/accept/route.ts`, the PMA branch missed and the code fell through to a `fda_k_number` **default**. Accepting such a row would have written a supplement string into `device_external_ids` under the wrong `id_type` — a mistyped canonical identifier that the 4d gate could never match again. Silent, and permanent.
+
+**Fix (25 Aug):** consolidated into `lib/fdaSubmissionId.ts`, one home for four callers. Classification happens on the **base** identifier, since `device_external_ids` holds `P190016` and never the supplement; the full string is kept for audit. The slashless branch (whitespace is stripped before it runs) is pinned to six base digits so it cannot mis-split `K250007S001`. 18 fixtures, including every over-strip guard.
+
+Also made the PCCP ingest deterministic where several supplements resolve to one device: earliest authorization wins, decided before the loop. Previously whichever supplement the CSV listed last won, so the stored date could flip between runs with no data change.
+
+### BUG-019 — queue dedup ignored human decisions
+`lib/ingestion.ts` step 2 filtered `.eq('status','pending')`, so a rejected or duplicate row was invisible to the next sweep. The gate fell through to step 3 and inserted a fresh pending row: the same rejected candidate returned on every run, forever.
+
+The database did not backstop it either — the unique index is **partial**, `WHERE status = 'pending'`, so a terminal row and a new pending row coexist happily.
+
+**Fix (25 Aug):** dedup reads the latest queue row for `(source, source_id)` whatever its status. New `skipped_prior_decision` action, deliberately distinct from `already_queued` so cron reports show suppressed rows rather than hiding them. An `approved` sibling additionally logs an anomaly, since an approved row should have produced an identifier that step 1 would have matched. `reconsiderPriorDecisions` escape hatch, defaulted off.
 
 ---
 
 ## Resolved
 
-### BUG-014 — EUDAMED `additionalDescription` is a localised-text envelope, not a string (keyword guard silently dead)
-The live `udiDiData` detail returns `additionalDescription` as `{ texts: [{ language: { isoCode }, text }] }`, but `EudamedUdiDetail` declared it `string | null` and `fetchEudamedAiMlDevices` passed it straight into `hasAiKeyword(...)`. The object stringified to `"[object Object]"`, so the keyword precision guard never saw description text — one of the two corroborating signals in `classifyEudamedCandidate` was dead on that field, silently pushing keyword-only devices from `include` to `queue`.
+### SEC-002 — every table in the public schema was writable by anyone
+**The most serious defect this project has had.** An audit on 26 August found 12 of 15 tables with RLS off and `anon` holding SELECT, INSERT, UPDATE and DELETE. Only `admin_users`, `audit_log` and `ingest_runs` were protected.
 
-**Status (19 Jun): Resolved.** A shared `extractLocalisedText()` helper resolves the envelope (default-language → `allLanguagesApplicable` → `en` → first non-empty) before keyword-matching; `additionalDescription` retyped. Verified live (Part B re-run): the keyword guard is now *able* to fire on description text. Capability restored; **no measured guard-split change on the 10-device sample** (7 include / 3 queue, unchanged) because those devices carry no AI lexicon — the honest claim is "capability restored", not "more hits". Committed `main` `e7a4cea`.
+The publishable key ships inside the site's JavaScript by design; it is safe only because RLS protects the tables. It did not. For the life of the project, anyone who opened aletia-index.com could have written to or deleted from `device_master`, `device_external_ids` or the review queue. **No leak was required** — only that someone looked. Larger in scope than SEC-001, and open for longer.
 
-### BUG-015 — EUDAMED `tradeName.textByDefaultLanguage` null; real name in `texts[]` (null device_name → Dice degraded)
-The live shape is `{ texts: [{ language: null, text: "<name>", allLanguagesApplicable: true }], textByDefaultLanguage: null }`. The client read `textByDefaultLanguage` (null) then fell back to `row.tradeName` (usually null on search) → null `device_name`. That flows through `eudamedSync.ts` into the 4d gate, where `matchingCandidates.ts` sets Dice to 0 when either name is missing → no merge candidate → degraded EU crosswalk hit-rate.
+**Status (26 Aug): Resolved.** `20260826120000_enable_rls.sql`. Eight publicly read tables get a permissive select policy; `ingestion_review_queue`, `ingestion_anomalies` and `specialty_taxonomy` get RLS with no policies. Verified live: index renders 1,267 records, sitemap generates, a device page renders manufacturer, registrations and identifiers. Row counts checked; nothing anomalous.
 
-**Status (19 Jun): Resolved.** Same `extractLocalisedText()` helper reads `texts[]`. Verified live (Part B re-run): residual null names dropped **4/10 → 3/10** on the sample, and "Syngo Carbon Space" recovered from `texts[0]`. The 3 remaining nulls (NeoLogica ×2, Shanghai United Imaging) are **genuinely absent in EUDAMED** (empty `texts[]`) — a source limitation, not a code defect; these will Dice-zero in the gate and queue with no candidate (see `EUDAMED-DETAIL-ENDPOINT-FINDINGS.md`). Committed `main` `e7a4cea`.
+**Not a bug, but the trap that hides here:** `/device/[id]` reads five tables only as PostgREST embedded selects. An embed needs read access on the embedded table, so a missing policy blanks that section of the page instead of erroring. Enabling RLS and checking only that the site loads will look fine and be wrong.
 
-### BUG-016 — EUDAMED `cndNomenclatures[].description` same envelope (`emdn_description` null)
-The EMDN description site (`emdn?.description`) used the same localised-text envelope and was read via the old `.textByDefaultLanguage` path, resolving `emdn_description` to null. Third instance of the BUG-014/015 root cause.
+### SEC-001 — `.env.local` published in a committed archive
+`aletia-index.zip` was committed on 23 April (`7dd5fc4`) with a `.env.local` inside it: `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `RESEND_API_KEY`, `OPENFDA_API_KEY`, `SYNC_SECRET`, and the staging and production database passwords in comment lines. Four months on a public default branch.
 
-**Status (19 Jun): Resolved.** Fixed with the same helper in the same pass (judgment call, deliberately folded in with A/B rather than logged for later). Committed `main` `e7a4cea`.
+**Status (26 Aug): Resolved.** File removed at `239ded8`; Supabase keys migrated to the publishable/secret pair and the legacy keys deactivated; database passwords reset; stale project deleted; new `SYNC_SECRET` and openFDA key; secret scanning and push protection enabled. Resend key and `CRON_SECRET` remain outstanding and are tracked in `TODO.md` rather than here.
 
-### BUG-011 — admin Mark-duplicate 400s (contract mismatch, no target)
-The drawer's Mark-duplicate sent `{ queue_id, review_note }` while `duplicate/route.ts` required `{ queueId, targetDeviceId, note }` — snake/camel mismatch and no target device, so every Mark-duplicate 400'd.
+Two near-misses worth keeping on the record:
 
-**Status (10 Jun): Resolved.** Contract aligned to snake_case on both sides (`{ queue_id, target_device_id, review_note }`, matching accept/reject), and the drawer's duplicate flow now collects a required "duplicate of ALT-…" target. The route's behaviour is unchanged otherwise: queue disposition only, `device_master` untouched, `raw_data.duplicate_of` recorded.
+- The removal commit initially landed on a feature branch only. `origin/main` continued serving the zip until it was pushed there directly. **A fix on a feature branch does not remove a file from the default branch.**
+- `.claude/settings.local.json` was tracked and unignored, and the working copy had grown a permission rule containing a live `REGULATIONS_GOV_API_KEY` — one `git add .` from being the second credential published from this repo. Now untracked and ignored, with `*.zip` and `*.tar.gz`.
 
-### BUG-012 — FDA discovery proxy under- and over-captured AI/ML devices
-The FDA discovery path decided "is this AI/ML?" with a hand-maintained proxy that failed both ways: under-capture (`AIML_PRODUCT_CODES` + keyword, 510(k) endpoint only, `limit:1000` no pagination → `QIH` clipped; De Novo/PMA never queried; off-list AI devices missed) and over-capture (`buildFdaDeviceSeed` set `intended_use = device_name` and `ai_ml_integral = true` unconditionally, so broad imaging codes' non-AI devices read as AI). Result: ~5,017 "FDA" rows vs ~1,430 on the FDA's own AI list.
+The blob remains reachable in git history. Rotation, not deletion, is what closed this.
 
-**Status (5 Jun): Resolved.** FDA published list is now the authoritative seed (`lib/fdaList.ts`); supplementary sweep is paginated across 510(k)/De Novo/PMA; `ai_ml_integral` = list membership; off-list over-capture pruned via `excluded` (~4,612, reversible). Index reconciled to ~1,526 in-scope. *(Data applied to prod; the four rebuild files committed + deployed — `main` `d1dbeeb`.)*
+### BUG-014 / BUG-015 / BUG-016 — EUDAMED localised-text envelope
+One root cause, one fix. The live `udiDiData` detail returns several name-like fields as `{ textByDefaultLanguage, texts[] }` rather than strings, so `additionalDescription` stringified to `"[object Object]"` (killing a keyword guard), `tradeName` resolved null (Dice-zero in the 4d gate), and `emdn_description` resolved null.
 
-### BUG-001 — pre-approval profile read/write used wrong field names
-`buildPreApprovalProfile` read the wrong field names; trial data handling was incorrect. **Closed by A2b** — trial data moved out of `pre_approval_profile` into `device_trials`, and the backfill/ingest paths were rewritten. Verified through the A2b ingest rewrite.
+**Status (19 Jun): Resolved** by a shared `extractLocalisedText()` in `lib/eudamed.ts`. Verified live; residual null names dropped 4/10 → 3/10 on the sample. The remaining nulls have genuinely empty `texts[]` in EUDAMED — a source limitation, not a defect.
 
-### BUG-002 — `device_name` silently discarded on create
-The accept/create path dropped the device name. **Closed by A2b** — the accept route now writes the `name` column on `device_master`; further hardened by the create path. Verified. *(Further reinforced 10 Jun: the queue-rewrite deleted the implicit `fillIfNull` line that wrote `device_name` into `intended_use`.)*
+### BUG-012 — FDA discovery proxy under- and over-captured
+A hand-maintained product-code and keyword proxy failed both ways: 510(k) endpoint only, no pagination, De Novo and PMA never queried, and `ai_ml_integral` set unconditionally true so broad imaging codes' non-AI devices read as AI. Roughly 5,017 "FDA" rows against ~1,430 on the FDA's own list.
 
-### BUG-004 — five missing `pre_approval_profile` rows
-Five legacy devices lacked expected `pre_approval_profile` rows.
+**Status (5 Jun): Resolved.** The FDA published list is the authoritative seed (`lib/fdaList.ts`); the sweep is paginated across all three pathways; `ai_ml_integral` equals list membership; off-list over-capture pruned via `excluded`.
 
-**Status (3 Jun):** Resolved. `scripts/backfill-pipeline-descriptions.ts` re-fetched all 36 CT.gov pipeline trials by NCT and wrote the missing `device_trials` rows (the 10 orphans + others), plus `device_master.description`/`name`. The original `pre_approval_profile`-row question is folded into D3's re-evaluation (those columns may now be redundant against `device_trials`).
+**This is the canonical instance of the project's recurring failure**: vocabulary mistaken for function. It has since reappeared through the MHRA GMDN list and the CT.gov `neural network` problem. Check every new evidence channel for it.
 
-### BUG-005 — inconsistent `device_id` generation
-Inconsistent identifier generation on the create path. **Closed by A2b** — identity is now the DB-allocated `aletia_id`, and external identifiers are created through the 4d gate via `create_device_atomic`. Verified.
+### BUG-011 — admin Mark-duplicate 400s
+Snake/camel contract mismatch and no target device. **Status (10 Jun): Resolved** — contract aligned to snake_case on both sides; the drawer now collects a required target.
+
+### BUG-009 — home search missed MHRA-prefixed queries
+MHRA IDs are stored raw, so a search for the prefixed form missed. **Status: Resolved** — `normaliseIdentifierInput` strips the prefix before the secondary-ID lookup.
 
 ### BUG-008 — accept-route atomicity gap
-The create path was non-transactional: a device_master row could commit while the external-identifier append failed, leaving an orphan (observed as the ALT-006163 / ALT-006165 failure on staging, patched manually via SQL at the time). **Closed** by the `create_device_atomic` RPC (migration `20260424120000`), which wraps device_master + device_external_ids + optional device_trials in one transaction — any write fault rolls the whole thing back. Also defused a latent NOT NULL gap on `device_master.external_legacy_id`. Verified.
+A device row could commit while the identifier insert failed, leaving an orphan. **Status: Resolved** by the `create_device_atomic` RPC.
 
-### BUG-009 — home search missed MHRA-prefixed query strings
-Post-A2b, MHRA IDs are stored raw (`47392`, not `MHRA-47392`), so a user searching the prefixed form got no hit on the secondary-ID pre-query. **Closed** — `app/page.tsx` now runs `normaliseIdentifierInput(search)` (strips the `MHRA-` prefix) before the `device_external_ids.id_value` lookup; the direct-column ilike on `external_legacy_id` still matches the historical stored form, so both shapes resolve. Verified.
+### BUG-001 / BUG-002 / BUG-005 — closed together by the A2b ingest rewrite
+Wrong field names in the pre-approval profile read/write; `device_name` discarded on create; inconsistent identifier generation. All three fell out of the A2b rewrite: trial data moved to `device_trials`, the accept route writes `name`, and identity became the DB-allocated `aletia_id`.
+
+### BUG-004 — five missing `pre_approval_profile` rows
+**Status (3 Jun): Resolved** by `scripts/backfill-pipeline-descriptions.ts`.
 
 ---
 
-## Notes
-- **BUG-014, BUG-015, BUG-016 share one root cause** (the EUDAMED localised-text envelope) **and one fix** (`extractLocalisedText()` in `lib/eudamed.ts`, exported for unit-testing). Fold to a single entry if you prefer a tighter register.
-- BUG-001, BUG-002, BUG-005 were closed together as a side effect of the A2b ingest-path rewrites.
-- Several bug references across the docs point to file:line locations that have since changed in the A2b rewrite — re-grep before relying on any line number here.
-- **Not bugs (don't re-log):** (a) EUDAMED registrations carrying `regulatory_body`/`clearance_type` = `'pending'` — a correct reflection of source state (NB module unpopulated pre-28-May-2026), tracked as a TODO backfill with a monthly re-probe; see `EUDAMED-STEP-0A-FINDINGS.md` §2 correction. (b) The 21 `unmatched` PCCP anomalies from the 10 Jun run — FDA-sync discovery backlog (submissions not yet in `device_external_ids`), not a dedup regression; the apply's invariant confirmed all 1,425 submissions still resolve to one in-scope device. They self-resolve once FDA sync discovers them. (c) **EUDAMED devices with empty `tradeName.texts[]`** (no retrievable name even post-BUG-015) — a source limitation, not a defect; they Dice-zero and queue without a candidate.
+## Not bugs — do not re-log
+
+- **EUDAMED registrations with `regulatory_body` / `clearance_type` = `'pending'`** — a correct reflection of source state; the NB module is unpopulated. Tracked as a backfill with a monthly re-probe.
+- **EUDAMED devices with empty `tradeName.texts[]`** — no retrievable name on the public surface. They Dice-zero and queue without a candidate. A source-side floor on EU crosswalk recall.
+- **The HAIR sitemap serving different URL counts within an hour** — source behaviour. `extract-hair.ts` falls back to listing-page pagination.
+- **`anon` still showing INSERT / UPDATE / DELETE grants in `pg_class`** — inert once RLS is on. An operation with no matching policy is denied whatever the grant says. A blanket `REVOKE` was considered and rejected: it would break the `claim_requests` insert for no additional protection.
+- **72 files permanently showing as modified** — `core.autocrlf` is unset. `git diff -w` is the honest view. Annoying, not a defect; fix is in TODO housekeeping.
