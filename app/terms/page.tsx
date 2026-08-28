@@ -1,13 +1,12 @@
 import { Nav, Footer } from '@/components/NavFooter'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ⚠ FILL THIS IN BEFORE MERGING TO MAIN — see app/privacy/page.tsx for the
-// same block and the reasoning. Terms without an identified counterparty are
-// not enforceable against anyone.
+// The operating entity. See app/privacy/page.tsx for the mailbox precondition —
+// info@aletia-index.com must receive mail before this page goes live.
 // ─────────────────────────────────────────────────────────────────────────────
 const OPERATOR = {
-  legalName:    '[registered company name]',
-  contactEmail: '[contact email]',
+  legalName:    'Aletia Health (Pty) Ltd',
+  contactEmail: 'info@aletia-index.com',
 }
 
 const LAST_UPDATED = '26 August 2026'

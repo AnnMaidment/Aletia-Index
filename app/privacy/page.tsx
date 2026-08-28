@@ -1,24 +1,25 @@
 import { Nav, Footer } from '@/components/NavFooter'
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ⚠ FILL THESE IN BEFORE MERGING TO MAIN.
+// Responsible party, per POPIA s18(1)(b).
 //
-// These are the only facts on this page that could not be established from the
-// codebase. POPIA s18(1)(b) requires the name and address of the responsible
-// party, and s55 requires an Information Officer — a notice without them does
-// not do its job. Everything else below was derived from what the site
-// actually collects.
+// ⚠ ONE PRECONDITION BEFORE THIS GOES LIVE: privacy@aletia-index.com must
+// actually receive mail. As at 26 Aug 2026 the domain has NO MX records, so
+// anything sent to it bounces — and a privacy notice publishing a dead address
+// is worse than one publishing none, because it looks like a channel and
+// isn't. Resend's sending setup lives on the send. subdomain, so adding MX and
+// SPF for a mailbox provider on the root does not disturb it.
 //
-// Also confirm before publishing:
-//   • the Supabase project region (the transborder-flow paragraph depends on it)
-//   • that the privacy@ mailbox exists and is monitored
+// The Information Officer is the head of the private body by default under
+// POPIA; registration with the Information Regulator is a separate mandatory
+// step and is tracked in TODO.md.
 // ─────────────────────────────────────────────────────────────────────────────
 const RESPONSIBLE_PARTY = {
-  legalName:          '[registered company name]',
-  registrationNumber: '[CIPC registration number]',
-  address:            '[registered address]',
-  informationOfficer: '[Information Officer name]',
-  contactEmail:       '[privacy contact email]',
+  legalName:          'Aletia Health (Pty) Ltd',
+  registrationNumber: '2026/435000/07',
+  address:            'Plot 60, Kalkheuvel West, Lanseria, 1739, South Africa',
+  informationOfficer: 'A Maidment',
+  contactEmail:       'privacy@aletia-index.com',
 }
 
 const LAST_UPDATED = '26 August 2026'

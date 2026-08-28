@@ -54,7 +54,9 @@ Gated on items 2 and 3. Breadth before cadence.
 ### 7. Fix the two surfaces that promise something they cannot deliver
 - [ ] `/request-review` — the submit button raises an `alert()` saying a clinical team will respond within five business days, and discards the input. Either wire it up or stop making the promise
 - [ ] `InterestButton` posts to `/api/pre-approval/interested`, which does not exist
-- [ ] Fill the placeholder blocks at the top of `app/privacy/page.tsx` and `app/terms/page.tsx` — registered name, registration number, address, Information Officer, contact mailbox — **before** those pages go to `main`
+- [ ] **Stand up email on `aletia-index.com` — the legal pages cannot go live without it.** The domain has **no MX records**, so `privacy@` and `info@` bounce today, and a privacy notice publishing a dead contact address is worse than one publishing none. Resend sends from the `send.` subdomain (`v=spf1 include:amazonses.com ~all`), so the root is free — adding MX and a root SPF will not disturb transactional mail
+- [ ] Add a DMARC record at `_dmarc.aletia-index.com` — there is none, so the domain is trivially spoofable, which matters more than usual for a regulatory brand
+- [ ] Register the Information Officer with the Information Regulator — mandatory, and separate from designating one (the head of a private body is the IO by default)
 
 ---
 
