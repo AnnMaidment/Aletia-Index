@@ -149,14 +149,19 @@ const AI_IMPROVED_CONVENTIONAL = [
  */
 const AI_DEVICE_FUNCTION = [
   /computer[- ]?(aided|assisted) (detection|diagnosis|triage)/i,
-  /\bcade?\b(?!\w)/i, /\bcadx\b/i, /\bcad (system|software|device)\b/i,
+  // NOT bare /\bcade?\b/ — validated 28 Aug, it produced two false inclusions on
+  // its own. "CAD" is a false friend twice over: coronary artery disease in a
+  // cardiology trial (NCT06868940, a wearable ECG device) and computer-aided
+  // DESIGN in an engineering one (NCT06507774, 3D reconstruction). Only the
+  // unambiguous forms survive.
+  /\bcade\b/i, /\bcadx\b/i, /\bcad (system|software|device)\b/i,
   /automated (detection|diagnosis|classification|grading|segmentation|interpretation|screening|scoring|quantification)/i,
   /automatic (detection|diagnosis|classification|grading|segmentation|interpretation)/i,
   /(lesion|polyp|nodule|haemorrhage|hemorrhage|fracture|aneurysm|embolism|tumou?r) detection/i,
   /(diabetic retinopathy|breast cancer|lung cancer|stroke) (detection|screening|triage)/i,
   /ai[- ](based |powered |enabled |assisted |driven |augmented )?(detection|diagnosis|diagnostic|triage|screening|classification|segmentation)/i,
   /(detection|diagnostic|triage|screening|prognostic) (algorithm|model|software|system|tool|device)/i,
-  /clinical decision support (system|software|tool)/i,
+  /clinical decision support (system|software|tool|device)/i,
   /\bcdss\b/i,
   /risk (prediction|stratification|score) (model|algorithm|software|tool)/i,
   /predictive (model|algorithm) for/i,
@@ -205,6 +210,33 @@ export function classifyCtgovScope(input: ScopeInput): ScopeVerdict {
     return { tier: 'out_of_scope', reason: 'no_ai_signal', detail: 'empty text', matched: [] }
   }
 
+  // The device name is the ARTICLE UNDER STUDY — the strongest single statement
+  // of what the trial is actually evaluating. When the name itself carries AI
+  // vocabulary or a device-function claim, no amount of surrounding context
+  // should drop the row silently: an "Artificial intelligence assistant system"
+  // is not a drug trial because the summary happens to say 'drug'.
+  //
+  // Added 28 Aug after validation. Three of nine silent losses were exactly
+  // this shape: NCT05497258 "Artificial intelligence assistant system" and
+  // NCT05303051 dropped on \bdrug\b; NCT06235190 "Felix NeuroAI Wristband"
+  // dropped as a stimulator. This floors them at in_scope_low — a human sees
+  // them — without promoting anything to auto-create tier.
+  const nameRaw  = (input.deviceName ?? '')
+  const nameOnly = nameRaw.toLowerCase()
+  const nameSignal = nameOnly.trim()
+    ? [...hits(nameOnly, AI_DEVICE_FUNCTION), ...hits(nameOnly, AI_LEXICON)]
+    : []
+
+  // Camel-case AI inside a product name is a deliberate branding claim, and the
+  // lowercased lexicon cannot see it: /\bai\b/ finds nothing in "NeuroAI"
+  // because there is no word boundary. Matched against ORIGINAL casing, with
+  // AI neither preceded nor followed by another letter, so "NeuroAI" and
+  // "CardioAI" match while "CHAIR" and "AIRWAY" do not.
+  // (NCT06235190, "Felix NeuroAI Wristband", was a silent loss without this.)
+  if (/(?<![A-Za-z])AI(?![A-Za-z])|(?<=[a-z])AI(?![A-Za-z])/.test(nameRaw)) {
+    nameSignal.push('AI in product name')
+  }
+
   const fn      = hits(text, AI_DEVICE_FUNCTION)
   const lexicon = hits(text, AI_LEXICON)
   const stim    = hits(text, STIMULATION)
@@ -215,12 +247,12 @@ export function classifyCtgovScope(input: ScopeInput): ScopeVerdict {
   // 1. Not a device trial at all. Checked first and unconditionally: a drug
   //    trial with an AI-read endpoint is a drug trial.
   if (nonDevice.length && fn.length === 0) {
-    return {
+    return applyDeviceNameFloor({
       tier: 'out_of_scope',
       reason: 'non_device_trial',
       detail: `non-device trial article (${nonDevice[0]})`,
       matched: nonDevice,
-    }
+    }, nameSignal)
   }
 
   // 2. Physical stimulation article. A genuine closed-loop AI-guided
@@ -235,33 +267,39 @@ export function classifyCtgovScope(input: ScopeInput): ScopeVerdict {
         matched: [...stim, ...fn],
       }
     }
-    return {
+    return applyDeviceNameFloor({
       tier: 'out_of_scope',
       reason: 'stimulation_modality',
       detail: `article is a stimulator (${stim[0]}); any AI is a downstream analysis step`,
       matched: stim,
-    }
+    }, nameSignal)
   }
 
   // 3. 'neural network' as anatomy. Only fires when the sole AI evidence is
   //    lexical — a device-function claim outranks brain context.
   if (!fn.length && lexicon.length && brain.length && /neural network/i.test(text)) {
-    return {
+    return applyDeviceNameFloor({
       tier: 'out_of_scope',
       reason: 'anatomical_neural_network',
       detail: `'neural network' in brain context (${brain[0]}) with no device-function claim — anatomical, not artificial`,
       matched: [...brain, 'neural network'],
-    }
+    }, nameSignal)
   }
 
   // 4. AI improves acquisition/reconstruction/workflow rather than the finding.
   //    Requires an AI signal to be present at all — 'motion correction' on its
   //    own is just an imaging trial, not an AI-improved one.
   if (improved.length && (lexicon.length || fn.length) && !fn.length) {
+    // QUEUED, not dropped. The 28 Aug validation put two of these in the silent
+    // -loss column: GE TrueFidelity (NCT03980470) and a denoising algorithm
+    // (NCT04775810), both of which the human reviewer KEPT. DL image
+    // reconstruction is a shipped, cleared product category, so the judgement
+    // "the AI improves the picture, not the finding" is a reviewer's call to
+    // make and not the classifier's to make silently.
     return {
-      tier: 'out_of_scope',
+      tier: 'in_scope_low',
       reason: 'ai_improved_conventional',
-      detail: `AI improves acquisition/reconstruction/workflow (${improved[0]}), not the clinical finding`,
+      detail: `AI improves acquisition/reconstruction/workflow (${improved[0]}) rather than the clinical finding — reviewer's call`,
       matched: improved,
     }
   }
@@ -291,7 +329,26 @@ export function classifyCtgovScope(input: ScopeInput): ScopeVerdict {
     }
   }
 
-  return { tier: 'out_of_scope', reason: 'no_ai_signal', detail: 'no AI signal', matched: [] }
+  return applyDeviceNameFloor(
+    { tier: 'out_of_scope', reason: 'no_ai_signal', detail: 'no AI signal', matched: [] },
+    nameSignal,
+  )
+}
+
+/**
+ * The device-name floor. Applied to every verdict: a row whose ARTICLE is named
+ * as AI never disappears silently, whatever the surrounding text says.
+ * Floors at in_scope_low only — it can rescue a row into the queue, never
+ * promote one toward auto-create.
+ */
+function applyDeviceNameFloor(v: ScopeVerdict, nameSignal: string[]): ScopeVerdict {
+  if (v.tier !== 'out_of_scope' || nameSignal.length === 0) return v
+  return {
+    ...v,
+    tier: 'in_scope_low',
+    detail: `${v.detail} — but the device name itself claims AI (${nameSignal[0]}), so queued rather than dropped`,
+    matched: [...v.matched, ...nameSignal],
+  }
 }
 
 /** Convenience for ingest paths: may this verdict auto-create a device? */

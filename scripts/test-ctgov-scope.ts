@@ -65,7 +65,9 @@ const CASES: Case[] = [
     tier: 'out_of_scope', reason: 'non_device_trial',
   },
 
-  // ── OUT: AI improves the picture, not the finding ────────────────────────
+  // ── QUEUED: AI improves the picture, not the finding ─────────────────────
+  // These were out_of_scope until the 28 Aug validation put two real examples
+  // in the silent-loss column — the human reviewer KEPT both. They now queue.
   {
     name: 'deep learning image reconstruction on an MRI scanner',
     input: {
@@ -73,7 +75,7 @@ const CASES: Case[] = [
       briefSummary: 'We compare scan time and image quality improvement between conventional and deep learning reconstruction.',
       conditions: ['Knee Injuries'],
     },
-    tier: 'out_of_scope', reason: 'ai_improved_conventional',
+    tier: 'in_scope_low', reason: 'ai_improved_conventional',
   },
   {
     name: 'AI denoising for dose reduction in CT',
@@ -82,7 +84,7 @@ const CASES: Case[] = [
       briefSummary: 'An artificial intelligence denoising algorithm is evaluated for dose reduction while preserving diagnostic quality.',
       conditions: ['Lung Diseases'],
     },
-    tier: 'out_of_scope', reason: 'ai_improved_conventional',
+    tier: 'in_scope_low', reason: 'ai_improved_conventional',
   },
 
   // ── OUT: nothing at all ──────────────────────────────────────────────────
@@ -153,6 +155,58 @@ const CASES: Case[] = [
       title: 'Closed-Loop Responsive Neurostimulation With an AI-Based Seizure Detection Algorithm',
       briefSummary: 'A machine learning classifier for detection of seizure onset drives responsive stimulation.',
       conditions: ['Epilepsy'],
+    },
+    tier: 'in_scope_low', reason: 'ai_device_function',
+  },
+
+  // ── Regressions from the 28 Aug validation run ───────────────────────────
+  {
+    name: "'CAD' meaning coronary artery disease must not fire",
+    input: {
+      title: 'Wearable Multi-Channel ECG Acquisition Device in Patients With CAD',
+      briefSummary: 'An artificial intelligence approach is applied to recordings from patients with known CAD.',
+      deviceName: 'wearable multi-channel ECG acquisition device',
+      conditions: ['Coronary Artery Disease'],
+    },
+    tier: 'in_scope_low', reason: 'ai_lexicon_only',
+  },
+  {
+    name: "'CAD' meaning computer-aided design must not fire",
+    input: {
+      title: '3D Reconstruction Technology for Surgical Planning',
+      briefSummary: 'CAD models are produced and artificial intelligence assists the reconstruction.',
+      deviceName: '3D Reconstruction Technology',
+      conditions: ['Surgery'],
+    },
+    tier: 'in_scope_low', reason: 'ai_lexicon_only',
+  },
+  {
+    name: 'device named as AI survives a drug-trial context',
+    input: {
+      title: 'A Randomised Trial of Drug X With an AI Assistant',
+      briefSummary: 'Placebo-controlled study of drug X; an assistant system supports dosing.',
+      deviceName: 'Artificial intelligence assistant system',
+      conditions: ['Hypertension'],
+    },
+    tier: 'in_scope_low', reason: 'non_device_trial',
+  },
+  {
+    name: 'device named as AI survives a stimulation context',
+    input: {
+      title: 'Neuromodulation Wristband for Tremor',
+      briefSummary: 'A wristband delivering peripheral nerve stimulation.',
+      deviceName: 'Felix NeuroAI Wristband',
+      conditions: ['Essential Tremor'],
+    },
+    tier: 'in_scope_low', reason: 'stimulation_modality',
+  },
+  {
+    name: "'Clinical Decision Support Device' is a device-function claim",
+    input: {
+      title: 'Evaluation of a Clinical Decision Support Device',
+      briefSummary: 'Prospective evaluation in primary care.',
+      deviceName: 'Clinical Decision Support Device',
+      conditions: ['Primary Health Care'],
     },
     tier: 'in_scope_low', reason: 'ai_device_function',
   },
