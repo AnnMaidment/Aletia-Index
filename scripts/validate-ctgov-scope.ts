@@ -159,14 +159,29 @@ async function main() {
   console.log(`  keeps reaching high tier (auto-create candidates)     : ${keptHigh.length}   ${pct(keptHigh.length, totalKeep)} of keeps`);
   console.log(`  rejects correctly dropped (never queued)              : ${rejectedOut.length}   ${pct(rejectedOut.length, totalReject)} of rejects`);
 
-  const verdictLine =
-    falseHigh.length === 0 && falseHighImproved.length === 0
-      ? '  ✅ zero false inclusions at high tier — auto-create is DEFENSIBLE on this evidence.'
-      : `  ❌ ${falseHigh.length + falseHighImproved.length} false inclusion(s) at high tier — auto-create stays OFF. Fix the lexicon, re-run.`;
-  console.log(`\n${verdictLine}`);
-  console.log('     (Defensible ≠ mandatory. Auto-create also needs a commercial sponsor');
-  console.log('      and no merge candidates; and staying with queue-everything costs');
-  console.log('      only review time, which is the cheaper mistake.)');
+  const clean = falseHigh.length === 0 && falseHighImproved.length === 0;
+  console.log(
+    clean
+      ? '\n  ◑ zero false inclusions at high tier ON THIS CORPUS.'
+      : `\n  ❌ ${falseHigh.length + falseHighImproved.length} false inclusion(s) at high tier.`,
+  );
+
+  // 28 Aug 2026. This message used to read "Fix the lexicon, re-run." That was
+  // the wrong instruction and it is retired: following it is how a classifier
+  // gets fitted to its own scoreboard. See lib/ctgovScope.ts AUTO_CREATE_ELIGIBLE
+  // and claude/CTGOV-AUTO-CREATE-DECISION.md.
+  console.log('     AUTO-CREATE IS OFF BY DECISION, not by this number.');
+  console.log('     scope-decisions.csv has been used three times over to both find');
+  console.log('     faults and score the fixes, so it can no longer license anything:');
+  console.log('     a rule fitted on the rows it is scored against will reach zero');
+  console.log('     eventually, and that zero measures the fitting. Do not tune to it.');
+  console.log('     To reopen auto-create, score the gate on a HELD-OUT set — queue');
+  console.log('     decisions made on rows the lexicon has never seen (~150 is enough).');
+  console.log('');
+  console.log('     What this run IS good for: the silent-loss column. A dropped keep');
+  console.log('     never becomes a queue row, so nobody ever sees what was missed —');
+  console.log('     that is the one error class worth chasing, and it is chaseable');
+  console.log('     because the fix is always a rule about the ARTICLE, not the text.');
 
   // ── Error listings — the point is to read these, not just count them ─────
   const show = (title: string, rows: Scored[]) => {

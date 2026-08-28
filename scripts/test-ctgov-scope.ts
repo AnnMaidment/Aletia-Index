@@ -296,5 +296,7 @@ if (failures.length) {
   process.exit(1)
 }
 console.log('All ctgovScope fixtures green.')
-console.log('NOTE: fixtures are not validation. Run scripts/validate-ctgov-scope.ts')
-console.log('      against the 487 labelled rows before enabling auto-create.\n')
+console.log('NOTE: fixtures encode the rules; they do not measure whether the rules')
+console.log('      are right. scripts/validate-ctgov-scope.ts does that — but read')
+console.log('      AUTO_CREATE_ELIGIBLE in lib/ctgovScope.ts first: auto-create is off')
+console.log('      by decision, and scope-decisions.csv can no longer license it.\n')

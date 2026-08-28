@@ -71,8 +71,49 @@ export interface ScopeVerdict {
   matched: string[]
 }
 
-/** Tiers a caller may auto-create from. Deliberately a named constant: flipping
- *  auto-create on or off should be one obvious edit with one obvious meaning. */
+/**
+ * Tiers a caller may auto-create from. Deliberately a named constant: flipping
+ * auto-create on or off should be one obvious edit with one obvious meaning.
+ *
+ * ── DECISION, 28 Aug 2026: AUTO-CREATE STAYS OFF. DO NOT TUNE TOWARD IT. ─────
+ *
+ * Final scores against the 487 labelled rows (scope-decisions.csv):
+ *
+ *     false inclusions at in_scope_high   9      [bar: 0]
+ *     silent losses (human kept, dropped) 1      0.3% of keeps
+ *     keeps reaching high tier            133    39.5%
+ *     rejects dropped before review       49     36.6%
+ *
+ * The 9 did not move across three tuning passes, and the recommendation is to
+ * stop rather than to keep going. The reason is not the 9. It is that the
+ * corpus is SPENT: those 487 rows are the only labelled data that exists, and
+ * they have now been used three times over to both find faults and score the
+ * fixes. A rule fitted on the rows it is scored against will eventually reach
+ * zero, and that zero would measure the fitting, not the classifier — while the
+ * thing it licenses is minting a device into a public regulatory index with no
+ * human ever looking at it.
+ *
+ * One rule was built and rejected, and it is recorded here because it is the
+ * trap a future pass will most likely walk into. The 9 all name a procedure in
+ * the device field (`MRI`, `blood sampling`, `Take photo`), so: gate the high
+ * tier on the device name carrying AI or software vocabulary. It blocks all 9.
+ * It also blocks 62 of the 133 correct ones, GI GENIUS AMONG THEM. A brand name
+ * carries no vocabulary at all — Lung-SIGHT, EyeCheckup, AsthmaTuner,
+ * Empatica EmbracePlus. Vocabulary is not function, one level up. Any rule that
+ * scores well here should be checked against GI Genius before it is believed.
+ *
+ * WHAT WOULD REOPEN THIS: labels the classifier has never been tuned against.
+ * Let a CT.gov sweep tier incoming rows, review them in the queue as normal, and
+ * keep those decisions as a held-out set. Score the gate on ~150 rows the
+ * lexicon never saw. Zero on THAT is earned; zero on scope-decisions.csv is not.
+ *
+ * Full reasoning: claude/CTGOV-AUTO-CREATE-DECISION.md.
+ *
+ * Until then the classifier ships as triage: `in_scope_high` is a REVIEW-FIRST
+ * ordering (133 of 337 keeps at 94% precision), not a minting licence. The
+ * `CTGOV_AUTO_CREATE` env flag stays off, and the ingest path must keep
+ * queueing every in-scope row.
+ */
 export const AUTO_CREATE_ELIGIBLE: readonly ScopeTier[] = ['in_scope_high']
 
 // ── Lexicons ────────────────────────────────────────────────────────────────
