@@ -79,12 +79,46 @@ export const AUTO_CREATE_ELIGIBLE: readonly ScopeTier[] = ['in_scope_high']
 // Order matters below; these are just the vocabulary.
 
 /**
- * Trials whose article is plainly not a device. Checked first: a drug trial
- * that mentions an AI-assisted endpoint is still a drug trial.
+ * Trials whose article is plainly not a device.
+ *
+ * SPLIT ON 28 AUG, after the second validation run. The single list mixed two
+ * different kinds of evidence, and the difference is the whole reason this rule
+ * was the only leaky one in the classifier:
+ *
+ *   design markers  — the trial IS a drug/biologic study. A statement about the
+ *                     ARTICLE. 'placebo-controlled', 'dose escalation'.
+ *   context words   — the trial merely mentions or involves drugs, or names a
+ *                     conventional device alongside. A statement about the
+ *                     SURROUNDINGS. 'drug', 'chemotherapy', 'suture'.
+ *
+ * Every other drop rule here names the article — a stimulator, a brain network —
+ * and every one of them is clean: on the 487 labelled rows stimulation_modality
+ * dropped 40 with ZERO silent losses, anatomical_neural_network 6 with zero.
+ * This rule was the only one reading the surroundings, and the only one that lost
+ * keeps: 7 rejects caught at the cost of 3 (NCT07312019 'Posos' and NCT05303051
+ * on \bdrug\b, NCT04407039 on \bchemotherapy\b — all three genuine AI articles
+ * that happened to be about medication). \bplacebo[- ]controlled\b fired three
+ * times and was right all three.
+ *
+ * So: a design marker still drops the row. A context word can no longer be the
+ * sole reason a row carrying AI vocabulary disappears — it falls through to the
+ * rest of the classifier instead, and a human decides whether the AI is the
+ * article or the endpoint. Same principle already applied to
+ * ai_improved_conventional and to the device-name floor: only drop on evidence
+ * about the article, never on evidence about the context.
+ *
+ * The conventional-device terms (suture, hip replacement, PCR assay …) never
+ * fired on the labelled corpus, so there is no evidence either way about them.
+ * They sit in the context list deliberately: an untested term there can only add
+ * a queue row, while in the design list it could silently delete a real device.
  */
-const NON_DEVICE_TRIAL = [
-  /\bplacebo[- ]controlled\b/i, /\bdrug\b/i, /\bvaccine\b/i, /\bdose escalation\b/i,
-  /\bpharmacokinetic/i, /\bchemotherapy\b/i, /\bimmunotherapy\b/i,
+const NON_DEVICE_DESIGN = [
+  /\bplacebo[- ]controlled\b/i, /\bdose escalation\b/i, /\bpharmacokinetic/i,
+  /\bvaccine\b/i,
+]
+
+const NON_DEVICE_CONTEXT = [
+  /\bdrug\b/i, /\bchemotherapy\b/i, /\bimmunotherapy\b/i,
   /\bantimicrobial susceptibility\b/i, /\bbreakpoint\b/i,
   /minimum inhibitory concentration/i, /\bculture media\b/i,
   /\bspinal (fixation|fusion)\b/i, /\bbone screw\b/i, /\bvascular graft\b/i,
@@ -242,16 +276,31 @@ export function classifyCtgovScope(input: ScopeInput): ScopeVerdict {
   const stim    = hits(text, STIMULATION)
   const brain   = hits(text, BRAIN_CONTEXT)
   const improved = hits(text, AI_IMPROVED_CONVENTIONAL)
-  const nonDevice = hits(text, NON_DEVICE_TRIAL)
+  const design    = hits(text, NON_DEVICE_DESIGN)
+  const nonDevCtx = hits(text, NON_DEVICE_CONTEXT)
 
-  // 1. Not a device trial at all. Checked first and unconditionally: a drug
-  //    trial with an AI-read endpoint is a drug trial.
-  if (nonDevice.length && fn.length === 0) {
+  // 1. Not a device trial at all. A drug trial with an AI-read endpoint is a
+  //    drug trial — but only a DESIGN marker is allowed to say so on its own.
+  if (design.length && fn.length === 0) {
     return applyDeviceNameFloor({
       tier: 'out_of_scope',
       reason: 'non_device_trial',
-      detail: `non-device trial article (${nonDevice[0]})`,
-      matched: nonDevice,
+      detail: `non-device trial article (${design[0]})`,
+      matched: design,
+    }, nameSignal)
+  }
+
+  // 1b. Context words only. If the row carries AI vocabulary, the mention of a
+  //     drug is not enough to delete it: fall through and let the rest of the
+  //     classifier decide, which at worst queues it at in_scope_low for a human.
+  //     Falling through rather than returning also means a stimulation trial
+  //     that happens to mention a drug is still caught by rule 2 below.
+  if (nonDevCtx.length && fn.length === 0 && lexicon.length === 0) {
+    return applyDeviceNameFloor({
+      tier: 'out_of_scope',
+      reason: 'non_device_trial',
+      detail: `non-device trial context (${nonDevCtx[0]}) with no AI vocabulary at all`,
+      matched: nonDevCtx,
     }, nameSignal)
   }
 

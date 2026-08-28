@@ -211,6 +211,50 @@ const CASES: Case[] = [
     tier: 'in_scope_low', reason: 'ai_device_function',
   },
 
+  // ── Regressions from the 28 Aug SECOND validation run ────────────────────
+  // The non_device_trial rule was the only leaky drop rule in the classifier:
+  // 7 rejects caught, 3 keeps silently lost. All three were AI articles that
+  // merely happened to concern medication. The list is now split into design
+  // markers (drop) and context words (queue, if any AI vocabulary is present).
+  {
+    name: "'drug' as a topic word must not delete a medication-information AI",
+    input: {
+      title: 'Evaluation of an Artificial Intelligence Medication Information Assistant',
+      briefSummary: 'A machine learning system answers clinician questions about drug interactions and dosing.',
+      deviceName: 'Posos',
+      conditions: ['Medication Errors'],
+    },
+    tier: 'in_scope_low', reason: 'ai_lexicon_only',
+  },
+  {
+    name: "'chemotherapy' as patient context must not delete an imaging AI",
+    input: {
+      title: 'Machine Learning Analysis of PET/CT and MR Spectroscopy Treatment Response',
+      briefSummary: 'Patients receiving chemotherapy undergo serial imaging; a machine learning approach is evaluated against response criteria.',
+      deviceName: 'PET/CT, H-MRS and MRI',
+      conditions: ['Neoplasms'],
+    },
+    tier: 'in_scope_low', reason: 'ai_lexicon_only',
+  },
+  {
+    name: 'a context word with NO AI vocabulary still drops',
+    input: {
+      title: 'A Trial of Suture Technique in Abdominal Wound Closure',
+      briefSummary: 'Two wound closure methods are compared for dehiscence rate.',
+      conditions: ['Surgical Wound'],
+    },
+    tier: 'out_of_scope', reason: 'non_device_trial',
+  },
+  {
+    name: 'a DESIGN marker still drops even with AI vocabulary present',
+    input: {
+      title: 'A Placebo-Controlled Trial of Compound Y',
+      briefSummary: 'Endpoints are adjudicated with machine learning assistance.',
+      conditions: ['Hypertension'],
+    },
+    tier: 'out_of_scope', reason: 'non_device_trial',
+  },
+
   // ── Guards ───────────────────────────────────────────────────────────────
   {
     name: "bare 'software' must not be a signal",
