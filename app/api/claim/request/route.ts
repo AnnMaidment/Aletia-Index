@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { sendClaimRequestConfirmationEmail } from '@/lib/email'
+
+// SEC-003. This route reads and writes claim_requests, whose `token` column is
+// the proof of entitlement to claim a listing. The table previously carried
+// blanket public SELECT + INSERT policies, so the token of every request ever
+// made was readable with the key that ships in the site's JavaScript.
+//
+// The accompanying migration drops both policies and seals the table to
+// service_role, so this route needs the admin client. It is an API route — the
+// key stays on the server. The insert is still open to the public in the sense
+// that anyone may request a claim; it is now mediated by this route rather than
+// written directly by the browser, which is what makes the read side sealable.
+const supabase = createAdminClient()
 
 export async function POST(req: NextRequest) {
   try {

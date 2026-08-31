@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
+
+// SEC-003. Both queries below selected claimed_by_email — a requester's email
+// address — with the publishable key, and neither response ever used it. The
+// column is dropped from both selects here, and the route moves to the admin
+// client because the migration revokes claimed_by_email and auth_user_id from
+// anon. Responses are unchanged: booleans and a tier, no personal data.
+const supabase = createAdminClient()
 
 export async function GET(req: NextRequest) {
   try {
@@ -15,7 +22,7 @@ export async function GET(req: NextRequest) {
     if (deviceId) {
       const { data, error } = await supabase
         .from('device_master')
-        .select('claimed_at, claimed_by_email, auth_user_id')
+        .select('claimed_at, auth_user_id')
         .eq('aletia_id', deviceId)
         .single()
 
@@ -31,7 +38,7 @@ export async function GET(req: NextRequest) {
     if (manufacturerId) {
       const { data, error } = await supabase
         .from('manufacturers')
-        .select('claimed_at, claimed_by_email, tier, auth_user_id')
+        .select('claimed_at, tier, auth_user_id')
         .eq('id', manufacturerId)
         .single()
 
