@@ -15,14 +15,13 @@ export async function sendClaimInviteEmail({
   entityName: string
 }) {
   const claimUrl = `${BASE_URL}/claim/${token}`
-  
 
   await resend.emails.send({
-from: 'Aletia Index <noreply@aletia-index.com>',
-  to,
-  replyTo: 'annemarie.maidment@gmail.com',
-  subject: `Your listing on Aletia Index — ${entityName}`,
- html: `
+    from: 'Aletia Index <noreply@aletia-index.com>',
+    to,
+    replyTo: 'info@aletia-index.com',
+    subject: `Your listing on Aletia Index — ${entityName}`,
+    html: `
       <p>Hi ${name},</p>
       <p><strong>${entityName}</strong> is listed on the Aletia Index,
       the regulatory reference standard for AI/ML medical devices across
@@ -49,6 +48,7 @@ export async function sendClaimRequestConfirmationEmail({
   await resend.emails.send({
     from: 'Aletia Index <noreply@aletia-index.com>',
     to,
+    replyTo: 'info@aletia-index.com',
     subject: 'Confirm your claim — Aletia Index',
     html: `
       <p>Hi ${name},</p>

@@ -1,59 +1,108 @@
 # STATE — Aletia Index
 
-**Rewritten:** 13 July 2026 (session: specialty backbone de-baring, full review + apply)
-**Rule:** this file is rewritten fresh at each session end. Code is ground truth; this file is orientation.
+**Rewritten:** 26 August 2026 (session: credential rotation, row-level security, ingest-hardening batch B)
+**Rule:** rewritten fresh at each session end. Code is ground truth; this file is orientation.
 
 ---
 
 ## Where things stand
 
-The public index (~1,270 shown devices) now has **human-verified specialty coverage across the FDA backbone**. The 8-Jul situation — ~99.6% of shown devices with `specialty_link` null because the bulk-seeded backbone never passed through the accept drawer — is resolved by the de-baring pass: 1,088 devices measured, every writable row human-reviewed, all 1,088 written (see "Specialty pass" below). Null remains the honest value for the ~175 devices whose evidence never rose above brand-name level.
+Two security holes were found and closed this session. Both were older than any feature work in the backlog, and one of them did not require a leak to exploit.
 
-Live Supabase project remains **Aletia-Index-Staging** (`wwianscisjuuzbljprrb`). "Aletia-Index" is stale/retired — do not query it.
+The **ingest-hardening batch (B a–e)** is code-complete and pushed, but sits on `batch-b-ingest-hardening` — **not merged to `main`**, and none of its database work has run. That work is what gates all cron wiring, so nothing downstream of it has moved.
 
-## Specialty pass — done this session
+Live Supabase project remains **Aletia-Index-Staging** (`wwianscisjuuzbljprrb`). The stale **Aletia-Index** project has now been deleted.
 
-**Pipeline (all committed):**
-- `lib/specialtyEvidence.ts` — `buildDeviceMasterEvidence()`: master-shaped evidence bundle. Inputs: master name/intended_use/description, FDA-list submission device names, and **openFDA classification device_name + definition per product code** (construct-valid functional descriptions; the FDA advisory panel remains carried-but-never-matched). Product codes are NOT persisted in the DB — they are re-derived at runtime via `device_external_ids` → FDA list CSV.
-- `lib/specialtyTaxonomy.ts` — `inferSpecialtyForMaster()`: **channel-aware arbitration**. Radiology matches split into HOME-class (mammography, fracture detection…) vs MODALITY-class (`MASTER_MODALITY_CLASS_SOURCES`: imaging, radiological, x-ray, MRI, CT…). Organ-specific signals beat modality-class Radiology at any level; modality-only evidence → Radiology at MEDIUM flagged `modalityOnly=true`. The queue path `inferSpecialty()` is untouched. A drift-guard fixture fails if the modality-class list falls out of sync with the live Radiology patterns.
-- `scripts/debar-specialty-master.ts` (v2) — dry-run emits full report + review workbook; `--apply` REQUIRES `--decisions=<reviewed workbook>` + `--expect=N`; taxonomy pre-validation; snapshot; every update guarded `.is('specialty_link', null)` (fill-nulls only — the script can never overwrite).
-- `scripts/test-specialty-inference.ts` — 29 fixtures green (19 original queue + 10 master incl. every spot-check failure mode).
-- `specialty-overrides.csv` — **143 rows, committed curation record**: 52 spot-check decisions + 91 full-review decisions + Arterys (13 Jul). Precedence in the script: override > queue-cascade > master text. Future dry-runs reproduce all decisions.
-- `debar-specialty-decisions-final.csv` — the applied decision set (1,088 rows, 1,088 writes). Commit alongside the apply snapshot.
+Public index: roughly **1,270 devices** (~1,175 FDA-attached, 58 MHRA, small EU set). Queue: **307 rows** — 227 `eudamed_sync` (186 single-candidate, 41 multi) and 80 `fda_dedup`.
 
-**Numbers:** 1,088 workbook rows → Radiology 726, Cardiology 112, Neurology 63, Oncology 31, Gastroenterology 25, Orthopaedics 22, Ophthalmology 21, Pulmonology 17, Pathology 14, Dermatology 12, Urology 10, then the long tail. 805 rows are modality-only platforms (Radiology-medium default). Queue-cascade route resolved 28 devices from approved queue rows (the pre-extractor accepts) after `extract-queue-specialty.ts --status=approved` was run.
+---
+
+## The security work (done, verified)
+
+### Credential leak
+
+`aletia-index.zip` was committed to the public repo on 23 April (`7dd5fc4`) with a `.env.local` inside it: service-role key, anon key, Resend key, openFDA key, `SYNC_SECRET`, and the staging and production database passwords in comment lines. Four months exposed on a public default branch.
+
+Two things about the removal are worth recording because both nearly went wrong:
+
+- The removal commit initially landed on `feat/fda-docket-puller` only. `origin/main` continued serving the zip until `239ded8`. **A fix pushed to a feature branch does not remove a file from the default branch** — check `origin/main` explicitly.
+- `.claude/settings.local.json` was tracked and unignored, and the working copy had grown a Claude Code permission rule containing a live `REGULATIONS_GOV_API_KEY`. It was one `git add .` from being the second credential published from this repo. Now untracked and ignored, along with `*.zip` and `*.tar.gz`.
+
+Rotation status: Supabase keys replaced with the new publishable/secret pair and the **legacy keys deactivated** — Supabase no longer permits rotating legacy anon/service_role in place, so migration is the only route. Database passwords reset. Stale project deleted. New `SYNC_SECRET`. New openFDA key. GitHub secret scanning and push protection enabled.
+
+**Still outstanding:** the Resend key (revoke and reissue scoped to sending only, and check the Emails tab for anything unsent by you), and `CRON_SECRET`.
+
+### Row-level security — the larger hole
+
+An audit found **12 of 15 tables with RLS off and `anon` holding SELECT, INSERT, UPDATE and DELETE.** Only `admin_users`, `audit_log` and `ingest_runs` were protected.
+
+The publishable key ships inside the site's JavaScript by design. It is safe *only* if RLS protects the tables. It did not. For the life of the project, anyone who opened aletia-index.com could have written to or deleted from `device_master`, `device_external_ids` or the review queue. No leak was required — only that someone looked.
+
+Fixed in `20260826120000_enable_rls.sql`, applied and verified against the live site: index renders 1,267 records, sitemap generates, `/device/ALT-006194` renders manufacturer, registrations and identifiers.
+
+**The trap worth remembering:** `/device/[id]` reads five tables *only* as PostgREST embedded selects. An embed needs read access on the embedded table, and a missing policy blanks that section of the page rather than raising an error. Enabling RLS without checking a populated device page will look fine and be broken.
+
+Row counts checked against expectation afterwards; nothing anomalous.
+
+---
+
+## Batch B — ingest hardening (code done, database not run)
+
+Branch `batch-b-ingest-hardening`, five commits off the security fix. Typecheck and lint clean; 62 fixtures green (18 new PCCP, 15 new CT.gov scope, 29 pre-existing specialty unchanged).
+
+**B(a) — status-aware queue dedup.** The 4d gate filtered `.eq('status','pending')`, so a rejected or duplicated row was invisible to the next sweep; the gate fell through and re-queued the same candidate on every run, forever. The database did not backstop it either: the unique index is partial, `WHERE status = 'pending'`, so a terminal row and a fresh pending row coexist. Dedup now reads the latest row whatever its status; new `skipped_prior_decision` action; `reconsiderPriorDecisions` escape hatch defaulted off. Ships with an index migration and `scripts/repair-requeued-decisions.ts` for the ghost rows already created.
+
+**B(b) — CT.gov scope classifier.** `lib/ctgovScope.ts` replaces the flat keyword filter that put 150 out-of-scope trials in the queue. Three tiers with reason codes. Bare `neural network`, `deep learning`, `software` and `algorithm` are all out of the positive lexicon — vocabulary, not function. The known-AI-sponsor bypass is demoted: it now rescues only rows where the classifier found nothing, and only as far as the queue. **Auto-create ships OFF** behind `CTGOV_AUTO_CREATE`.
+
+**B(c) — MHRA posture, and BUG-010 closed.** `autoCreate` was true, which is how 58 MHRA devices entered unreviewed. The GMDN term list is a *software* filter — `ophthalmology pacs software` is on it — so membership evidences software, never AI. Now queues; `ai_ml_integral` passed as explicit `false`, because `create_device_atomic` does `COALESCE(..., true)` and would otherwise assert the very claim being retracted. BUG-010's MHRA half closed: an active PARD registration graduates the device out of pipeline.
+
+**B(d) — BUG-013.** PMA supplements. The defective shape check existed in **four** places, not one, with two different failure modes: `pccpIngest` skipped the row (~40 lost), while two arms of the admin accept route fell through to a `fda_k_number` **default** and would have written a supplement string under the wrong `id_type` — a mistyped canonical identifier the gate could never match again. Consolidated into `lib/fdaSubmissionId.ts`, classifying on the base number.
+
+**B(e)** — read-only breakthrough probe. Route stays parked.
+
+---
 
 ## What was learned (do not relearn)
 
-1. **The modality-lane trap.** openFDA classification text is saturated with modality vocabulary ("radiological image processing", "imaging"). Patterns tuned for trial text (where "radiologist" = clinical home) fire on lane vocabulary at high confidence. This is the same construct-validity failure as the rejected panel backfill, re-entering through a new evidence channel. Any future evidence channel must be checked for lane-vs-home vocabulary before matching.
-2. **First-specialty-wins was a bug at equal confidence.** Radiology listed first meant generic "imaging" beat genuine organ signals at the same level (NaviCam). Arbitration now collects all matches and pools organ-specific + home-class above modality-class.
-3. **"General-purpose imaging" is NOT a specialty.** Decision (13 Jul, backed by FDA/GMDN/EMDN structure): clinical specialty and imaging role/modality are separate axes. Modality buckets do not enter `specialty_taxonomy`. The `modality_only` flag in the report is the ready-made candidate list for a future "imaging role" axis (own spec, own schema — deferred).
-4. **The review rule set** (now precedent, applied to 1,088 rows): *detection/triage on imaging → Radiology; disease-pathway quantification → organ specialty; surgical/therapy planning → organ specialty; tumour/RT segmentation → Oncology; fetal heart US → Obstetrics & Gynaecology.* Reviewer exceptions on file: AI-Rad Brain/Prostate modules and ScanDiags kept Radiology; CAC scoring kept Radiology (vs coronary plaque → Cardiology).
-5. **Nuclear medicine bundles** (syngo.via MI/Scenium/MBF): Radiology as organizational home absent a Nuclear Medicine taxonomy value.
-6. **Brand names carry machine-invisible signal** (Vivid=echo, NeuroQuant=brain). Only overrides capture these — hence the overrides file is load-bearing curation, not convenience.
-7. **`extract-queue-specialty.ts` env fix re-landed**: bare `import 'dotenv/config'` → explicit `.env.local` load. The 8-Jul STATE recorded this as done but the committed file didn't have it. Verify claimed fixes against committed code.
+1. **A fix on a feature branch is not a fix on `main`.** Verify against `origin/main`, not your working tree.
+2. **Legacy Supabase keys cannot be rotated.** Creating new keys does not revoke old ones; deactivating the legacy pair is the step that closes the hole, and it is separate.
+3. **RLS is not a feature, it is the thing that makes the publishable key safe.** Any new table needs its policy in the same migration.
+4. **Vocabulary is not function.** BUG-012 (FDA keywords), the MHRA GMDN list and the CT.gov `neural network` problem are one failure repeating through three channels. Check every new evidence channel for it.
+5. **`create_device_atomic` defaults `ai_ml_integral` to true** when the field is omitted or null. "Unknown" is currently unrepresentable for that column.
+6. **The repo's line endings are unset.** 72 files always show as modified; `git diff -w` is the honest view. Until `core.autocrlf` is set, `git status` is close to useless here.
 
-## Corrections to the 8-Jul STATE
+---
 
-- **EUDAMED candidate recompute is COMMITTED and APPLIED** (commit `971688b`, applied 12 Jun, 0-change dry-run verified). The 8-Jul rewrite regressed to an earlier draft claiming it was uncommitted with a 159/68 split. Correct queue state: **186 single-candidate + 41 multi-candidate**.
-- Tier-1 docs were committed with browser suffixes: rename `STATE (14).md` → `STATE.md`, `KNOWN-BUGS (10).md` → `KNOWN-BUGS.md`.
+## Next priorities
 
-## Next priorities (agreed sequencing, 8 Jul session)
+1. **Finish the rotation** — Resend key, `CRON_SECRET`.
+2. **Run batch B's database half**, in order: `validate-ctgov-scope.ts` (the measurement that decides whether auto-create may ever turn on — the bar is zero false inclusions at `in_scope_high` against the 487 labelled rows in `scope-decisions.csv`); `probe-mhra-bulk-audit.ts` (58-row workbook); `probe-breakthrough-aiml.ts`; then the queue-dedup migration and `repair-requeued-decisions.ts`.
+3. **Merge batch B to `main`** once the above passes.
+4. **Work the MHRA audit workbook** and apply exclusions via a gated script.
+5. **Queue grind** — EUDAMED drawer (186 single, then 41 multi), FDA Band B+C (80 rows), then HAIR Step 1b and the Step 1c recall measurement. **The EUDAMED legacy-backfill window closes November 2026.**
+6. **Cron wiring** — `vercel.json`, new `CRON_SECRET`, re-enable the commented-out auth on the CT.gov and breakthrough routes. FDA/EUDAMED/MHRA monthly, PCCP fortnightly, CT.gov monthly once the classifier is validated.
+7. **Seal `claim_requests`** — public select exposes every claim token, and a token is what proves entitlement to claim a device. Both the reader and the writer are server-side, so both can move to the admin client and the table can be sealed like the queue.
 
-1. **Ingest-hardening batch** — unblocks all crons:
-   a. **Status-aware queue dedup** (`lib/ingestion.ts` step 2 checks `status='pending'` only → rejected rows re-queue on every re-run; human decisions are not durable). Highest-leverage single fix.
-   b. **CT.gov scope classifier** (`lib/ctgovScope.ts`): integrality bar, stimulation-literature hard exclusions, drop bare `'neural network'`; **validate against the 487 labelled rows in `scope-decisions.csv`** (confusion matrix; high tier gated on ~zero false inclusions). Tiered gate: out_of_scope dropped, in_scope_low queued, in_scope_high+commercial+no-candidates may auto-create with inline specialty extraction. Auto-create survives only if validation earns it.
-   c. **MHRA posture fix**: `autoCreate=false`, no blanket `ai_ml_integral=true` (GMDN software-category terms are not AI categories) + **one-off audit of the 58 bulk-created MHRA devices** (probe workbook → review → exclusions with dry-run/--expect).
-   d. **BUG-013**: PMA supplement IDs dropped in `pccpIngest` normaliser. Fix before PCCP cron. O'Leary URLs also 404 (`…/202408-pccp/data/…` path).
-   e. **Breakthrough probe**: read-only scan for `BREAKTHROUGH:%` pre-approval rows stamped `ai_ml_integral=true` (route has NO AI filter — worse than MHRA). Route stays parked; do not cron.
-2. **Queue grind**: EUDAMED drawer (186 single → 41 multi), FDA Band B+C (80 rows), then HAIR Step 1b (write reconcile results to queue) and Step 1c recall measurement. EUDAMED backfill window closes **Nov 2026** — EU-only discovery stays gated behind this.
-3. **Cron wiring** (`vercel.json`, `CRON_SECRET`, re-enable commented-out route auth on CT.gov/breakthrough): FDA + EUDAMED + MHRA monthly, PCCP fortnightly, CT.gov monthly post-classifier. FDA cron recipe: re-pull list → ingest → `fda-dedup-detect` dry-run as hygiene.
-4. **Backlog observation** (from the de-baring scan): same-name device families beyond the queued 80 look like Band-B/C dedup candidates — AI-Rad Companion pairs, EchoPAC ×3, syngo.CT Lung CAD ×3, icobrain, Quantib Brain, UNiD ×2, BoneMRI ×2, InferRead ×2, LiverMultiScan ×3. Specialty is internally consistent within each family, so merges won't fork it.
-5. **Future feature (own spec, not now):** imaging-role / modality axis alongside clinical specialty. Candidate list = `modality_only` rows in the debar report.
+---
+
+## Also open
+
+- **`intended_use = deviceName` on the admin accept path** — the same pattern BUG-012 removed from `buildFdaDeviceSeed`, still alive in `app/api/admin/queue/accept/route.ts`.
+- **Two non-functional public surfaces.** The `/request-review` form has no submit handler — its button raises an `alert()` promising a response within five business days and discards the input. `InterestButton` posts to `/api/pre-approval/interested`, which does not exist. Both promise the user something that cannot happen.
+- **O'Leary PCCP URLs** reported 404ing; unverified.
+- **`app/api/admin/queue/QueueTable.tsx`** — stale pre-rewrite copy, dead, still present.
+- **`fda_ai_dockets/`** — 153 MB untracked and unignored, with two 11.6 MB PDFs.
+- **`feat/fda-docket-puller`** — the regulations.gov puller, unmerged. Thesis work rather than index work. Its 277-comment corpus has null attribution on every row, recoverable from the title (`Comment from X`).
+- **EUDAMED NB/certificate backfill** — still not retrievable; monthly re-probe.
+- Manufacturer-level dedup; the imaging-role axis; the RP/NB directory; the startup portal; the vigilance module (~2027).
+
+---
 
 ## Invariants (standing)
 
-- `aletia_id` stability is load-bearing. **No wipe-and-reingest** — decided 8 Jul against a full re-ingest: fix filters at source, re-run idempotently through the 4d gate, preserve identity + curation.
-- Provenance registers never blend. Null is the honest default; the specialty pass fills nulls only and never overwrites.
-- Dry-run → snapshot → `--apply --expect N` for every bulk write. "Done" = committed to `main` + verified in production.
-- False positives worse than duplicates; ambiguity goes to the queue, not to auto-writes.
+- `aletia_id` stability is load-bearing. **No wipe-and-reingest** — fix filters at source and re-run idempotently through the 4d gate.
+- Public reads filter **both** `excluded = false` **and** `merged_into IS NULL`.
+- Provenance registers never blend. Null is the honest default.
+- Dry run → snapshot → `--apply --expect N` for every bulk write.
+- False positives are worse than duplicates; ambiguity goes to the queue, never to an auto-write.
+- A device is in the index only if it is AI/ML **by the relevant regulator's own classification.**
