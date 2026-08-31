@@ -31,6 +31,7 @@ import {
   type IngestResult,
 } from '@/lib/fdaSync'
 import { createAdminClient } from '@/lib/supabase-admin'
+import type { MhraIngestResult } from '@/lib/mhraSync'
 
 // Allow the longest duration the plan permits; for a full one-shot seed run the
 // route locally (where no platform timeout applies) or drive the batches.
@@ -60,6 +61,7 @@ const emptyCounters = (): FdaCounters => ({
   created_new: 0,
   queued_for_review: 0,
   already_queued: 0,
+  skipped_prior_decision: 0,
   skipped_class_1: 0,
   failed: 0,
 })
@@ -277,11 +279,12 @@ export async function PUT(req: NextRequest) {
     }
 
     const results = []
-    const counters = {
+    const counters: Record<MhraIngestResult['action'], number> = {
       updated_existing: 0,
       created_new: 0,
       queued_for_review: 0,
       already_queued: 0,
+      skipped_prior_decision: 0,
       failed: 0,
     }
 

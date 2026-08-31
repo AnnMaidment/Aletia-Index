@@ -61,7 +61,7 @@ export interface MhraSyncResult {
 
 export interface MhraIngestResult {
   external_id_value: string
-  action: 'updated_existing' | 'created_new' | 'queued_for_review' | 'already_queued' | 'failed'
+  action: 'updated_existing' | 'created_new' | 'queued_for_review' | 'already_queued' | 'skipped_prior_decision' | 'failed'
   aletia_id: string | null
   error?:   string
 }
@@ -360,7 +360,20 @@ export async function ingestMhraDevice(
       manufacturer_name:    manufacturerName,
       fetched_at:           new Date().toISOString(),
     },
-    autoCreate: true,
+    // ── Posture (25 Aug) ──────────────────────────────────────────────────
+    // autoCreate was true, so a PARD sweep minted device_master rows with no
+    // human in the loop. That is how 58 MHRA devices arrived in the index
+    // unreviewed. MHRA discovery is a GMDN-term sweep, and GMDN software
+    // categories are NOT AI categories: 'radiology dicom image processing
+    // application software', 'ct system application software' and
+    // 'ophthalmology pacs software' are all on MHRA_AIML_GMDN_TERMS, and a
+    // PACS is not an AI device. The sweep is therefore a candidate generator,
+    // not an inclusion decision — same construct-validity failure BUG-012 fixed
+    // on the FDA side, arriving through a different channel.
+    //
+    // With autoCreate false, discovery queues instead of creating; the accept
+    // drawer is where a device enters the index.
+    autoCreate: false,
     deviceSeed: {
       manufacturer_name:   manufacturerName,
       name:                device.GMDN_TERM_NAME ?? null,
@@ -372,7 +385,16 @@ export async function ingestMhraDevice(
       data_source:         'registry_sync',
       last_automated_sync: new Date().toISOString(),
       excluded:            false,
-      ai_ml_integral:      true,   // seed path filters to AI/ML GMDN terms only
+      // NOT blanket-true. The GMDN term list is a software-category filter, so
+      // membership evidences "software", never "AI/ML" (see the posture note
+      // above). Explicit false rather than omitted: create_device_atomic does
+      // COALESCE(..., true), so an omitted or null value would silently become
+      // true — the very claim being retracted. False here reads as "not
+      // established as AI/ML from MHRA evidence", which is what PARD supports.
+      //
+      // Only reachable if autoCreate is ever flipped back on; the live path
+      // now queues, and the accept drawer sets the field on a human decision.
+      ai_ml_integral:      false,
       // external_legacy_id defaults to id_value in the RPC — no need to pass it.
     },
   })
@@ -402,6 +424,23 @@ export async function ingestMhraDevice(
       )
     }
 
+    // Graduation rule (BUG-010, MHRA half — the last one open). An active PARD
+    // registration is a regulatory approval, so the device is no longer in
+    // pipeline. Mirrors the FDA and EUDAMED paths; ai_ml_integral is untouched,
+    // so a device confirmed AI/ML elsewhere is not downgraded by an MHRA hit.
+    if (decision.action === 'updated_existing') {
+      const { error: gradErr } = await admin
+        .from('device_master')
+        .update({ pipeline_stage: null })
+        .eq('aletia_id', decision.aletia_id)
+
+      if (gradErr) {
+        console.warn(
+          `[mhraSync] graduation update warning for ${decision.aletia_id}: ${gradErr.message}`,
+        )
+      }
+    }
+
     return {
       external_id_value: externalIdValue,
       action:            decision.action,
@@ -409,7 +448,11 @@ export async function ingestMhraDevice(
     }
   }
 
-  if (decision.action === 'queued_for_review' || decision.action === 'already_queued') {
+  if (
+    decision.action === 'queued_for_review' ||
+    decision.action === 'already_queued' ||
+    decision.action === 'skipped_prior_decision'
+  ) {
     return {
       external_id_value: externalIdValue,
       action:            decision.action,

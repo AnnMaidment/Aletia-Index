@@ -56,6 +56,7 @@ const emptyCounters = (): Counters => ({
   created_new: 0,
   queued_for_review: 0,
   already_queued: 0,
+  skipped_prior_decision: 0,
   failed: 0,
 });
 

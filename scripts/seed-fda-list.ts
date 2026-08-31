@@ -62,6 +62,7 @@ async function main() {
     created_new: 0,
     queued_for_review: 0,
     already_queued: 0,
+    skipped_prior_decision: 0,
     skipped_class_1: 0,
     failed: 0,
   }
@@ -104,6 +105,7 @@ async function main() {
   console.log(`  updated_existing : ${counters.updated_existing}`)
   console.log(`  queued_for_review: ${counters.queued_for_review}`)
   console.log(`  already_queued   : ${counters.already_queued}`)
+  console.log(`  skipped_prior    : ${counters.skipped_prior_decision}   (human already decided — not re-queued)`)
   console.log(`  skipped_class_1  : ${counters.skipped_class_1}`)
   console.log(`  failed           : ${counters.failed}`)
 

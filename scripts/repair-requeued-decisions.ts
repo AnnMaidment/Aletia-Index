@@ -1,0 +1,211 @@
+/**
+ * scripts/repair-requeued-decisions.ts
+ *
+ * Repairs the queue rows created by the status-aware-dedup bug
+ * (lib/ingestion.ts step 2 filtered `.eq('status','pending')`, so a rejected
+ * or duplicate row was invisible to the next sweep and the same candidate was
+ * re-queued — every run, forever).
+ *
+ *   npx tsx scripts/repair-requeued-decisions.ts                    # dry run (default)
+ *   npx tsx scripts/repair-requeued-decisions.ts --source=clinical_trials
+ *   npx tsx scripts/repair-requeued-decisions.ts --apply --expect=N  # write
+ *
+ * WHAT COUNTS AS A GHOST. A pending row is a ghost iff, for the same
+ * (source, source_id), a TERMINAL row (rejected | duplicate) exists that was
+ * created EARLIER. That ordering is the whole argument: the human saw this
+ * identifier, said no, and the machine asked again afterwards.
+ *
+ * Deliberately NOT treated as ghosts:
+ *   - pending rows whose only terminal sibling is `approved` — an approved
+ *     sibling plus a live pending row is an identity problem (the accept did
+ *     not write the external id), not a re-queue. Reported separately; fix the
+ *     identifier, do not close the row.
+ *   - pending rows created BEFORE the terminal decision — ordinary queue
+ *     history, or a human working two rows at once.
+ *   - the newest row in a group where nothing is terminal.
+ *
+ * WHAT --apply DOES. Sets the ghost rows to status='rejected' with a
+ * review_note naming the decision they duplicate. It never deletes, never
+ * touches device_master, and never re-opens a terminal row. Full pre-image is
+ * written to a rollback file before the first write.
+ *
+ * Run this AFTER deploying the lib/ingestion.ts fix — otherwise the next sweep
+ * simply recreates what you just closed.
+ */
+
+import { config } from 'dotenv';
+config({ path: '.env.local' });
+
+import { createClient } from '@supabase/supabase-js';
+import { writeFileSync } from 'node:fs';
+
+function arg(name: string, def?: string): string | undefined {
+  const hit = process.argv.find((a) => a.startsWith(`--${name}=`));
+  return hit ? hit.split('=')[1] : def;
+}
+const APPLY = process.argv.includes('--apply');
+const EXPECT = arg('expect');
+const SOURCE = arg('source');           // optional filter, e.g. clinical_trials
+const TERMINAL = new Set(['rejected', 'duplicate']);
+
+interface QueueRow {
+  queue_id: string;
+  source: string;
+  source_id: string | null;
+  status: string;
+  device_name: string | null;
+  review_note: string | null;
+  created_at: string;
+}
+
+function snippet(s: string | null, n = 46): string {
+  const t = (s ?? '').replace(/\s+/g, ' ').trim();
+  return t.length > n ? t.slice(0, n) + '…' : t || '(no name)';
+}
+
+async function main() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY (.env.local)');
+  }
+  const supabase = createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+
+  // Page through — the queue is a few thousand rows and PostgREST caps at 1000.
+  const rows: QueueRow[] = [];
+  const PAGE = 1000;
+  for (let from = 0; ; from += PAGE) {
+    let q = supabase
+      .from('ingestion_review_queue')
+      .select('queue_id, source, source_id, status, device_name, review_note, created_at')
+      .order('created_at', { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (SOURCE) q = q.eq('source', SOURCE);
+
+    const { data, error } = await q;
+    if (error) throw new Error(error.message);
+    if (!data || data.length === 0) break;
+    rows.push(...(data as QueueRow[]));
+    if (data.length < PAGE) break;
+  }
+
+  // Group by (source, source_id). Rows without a source_id cannot be deduped
+  // by identifier at all, so they are out of scope for this repair.
+  const groups = new Map<string, QueueRow[]>();
+  let noSourceId = 0;
+  for (const r of rows) {
+    if (!r.source_id) { noSourceId++; continue; }
+    // JSON key rather than a delimiter-joined string: no separator can collide
+    // with a source name or an identifier.
+    const k = JSON.stringify([r.source, r.source_id]);
+    (groups.get(k) ?? groups.set(k, []).get(k)!).push(r);
+  }
+
+  const ghosts: { row: QueueRow; decidedAt: string; decidedStatus: string }[] = [];
+  const approvedWithPending: QueueRow[] = [];
+  let multiTerminal = 0;
+
+  for (const g of groups.values()) {
+    g.sort((a, b) => a.created_at.localeCompare(b.created_at));
+    const terminals = g.filter((r) => TERMINAL.has(r.status));
+    const approved = g.filter((r) => r.status === 'approved');
+    const pendings = g.filter((r) => r.status === 'pending');
+    if (terminals.length > 1) multiTerminal++;
+
+    for (const p of pendings) {
+      const priorTerminal = terminals.filter((t) => t.created_at < p.created_at).pop();
+      if (priorTerminal) {
+        ghosts.push({ row: p, decidedAt: priorTerminal.created_at, decidedStatus: priorTerminal.status });
+        continue;
+      }
+      if (approved.some((a) => a.created_at < p.created_at)) approvedWithPending.push(p);
+    }
+  }
+
+  const bySource = new Map<string, number>();
+  for (const gh of ghosts) bySource.set(gh.row.source, (bySource.get(gh.row.source) ?? 0) + 1);
+
+  console.log(`\nrequeue repair — ${rows.length} queue rows${SOURCE ? ` (source=${SOURCE})` : ''}, ${groups.size} identifier groups\n`);
+  if (noSourceId) console.log(`  ${noSourceId} rows have no source_id — not dedupable by identifier, skipped\n`);
+  console.log(`  ghost pending rows (re-queued after a human said no) : ${ghosts.length}`);
+  for (const [src, n] of [...bySource.entries()].sort((a, b) => b[1] - a[1])) {
+    console.log(`      ${src.padEnd(20)} ${n}`);
+  }
+  console.log(`  groups with >1 terminal row (historical churn)       : ${multiTerminal}`);
+  console.log(`  pending rows sitting behind an APPROVED row          : ${approvedWithPending.length}   ← identity problem, not a re-queue\n`);
+
+  for (const gh of ghosts.slice(0, 20)) {
+    console.log(`    ${gh.row.queue_id.slice(0, 8)}  ${(gh.row.source_id ?? '').padEnd(14)} ${snippet(gh.row.device_name)}`);
+    console.log(`             re-queued ${gh.row.created_at.slice(0, 10)} after ${gh.decidedStatus} on ${gh.decidedAt.slice(0, 10)}`);
+  }
+  if (ghosts.length > 20) console.log(`    … and ${ghosts.length - 20} more`);
+
+  if (approvedWithPending.length) {
+    console.log(`\n  ⚠ pending-behind-approved (investigate, do NOT close):`);
+    for (const r of approvedWithPending.slice(0, 10)) {
+      console.log(`    ${r.queue_id.slice(0, 8)}  ${(r.source_id ?? '').padEnd(14)} ${snippet(r.device_name)}`);
+    }
+  }
+
+  if (!APPLY) {
+    console.log(`\n  DRY RUN — nothing written. To apply:`);
+    console.log(`    npx tsx scripts/repair-requeued-decisions.ts --apply --expect=${ghosts.length}\n`);
+    return;
+  }
+
+  if (EXPECT === undefined) {
+    console.error(`\nABORT: --apply requires --expect=N (found ${ghosts.length} ghosts).`);
+    process.exit(1);
+  }
+  if (Number(EXPECT) !== ghosts.length) {
+    console.error(`\nABORT: --expect=${EXPECT} but ${ghosts.length} ghosts found. The queue moved since the dry run — re-run it.`);
+    process.exit(1);
+  }
+  if (ghosts.length === 0) {
+    console.log('\nNothing to do.\n');
+    return;
+  }
+
+  const stamp = Date.now();
+  const rollbackFile = `requeue-repair-rollback-${stamp}.json`;
+  writeFileSync(
+    rollbackFile,
+    JSON.stringify(
+      ghosts.map((g) => ({
+        queue_id: g.row.queue_id,
+        previous_status: g.row.status,
+        previous_review_note: g.row.review_note,
+      })),
+      null,
+      2,
+    ),
+    'utf-8',
+  );
+  console.log(`\n  rollback pre-image → ${rollbackFile}`);
+
+  let ok = 0;
+  const failed: string[] = [];
+  for (const g of ghosts) {
+    const note = [
+      g.row.review_note,
+      `[auto ${new Date().toISOString().slice(0, 10)}] closed by repair-requeued-decisions: duplicate of a ${g.decidedStatus} decision made ${g.decidedAt.slice(0, 10)} on the same identifier (status-aware dedup bug).`,
+    ].filter(Boolean).join(' ');
+
+    const { error } = await supabase
+      .from('ingestion_review_queue')
+      .update({ status: 'rejected', review_note: note })
+      .eq('queue_id', g.row.queue_id)
+      .eq('status', 'pending');          // guard: never clobber a row someone just actioned
+
+    if (error) failed.push(`${g.row.queue_id}: ${error.message}`);
+    else ok++;
+  }
+
+  console.log(`\n  closed ${ok} / ${ghosts.length} ghost rows; ${failed.length} failed`);
+  for (const f of failed.slice(0, 10)) console.log(`    ${f}`);
+  console.log(`  undo: restore previous_status per row from ${rollbackFile}\n`);
+}
+
+main().catch((e) => { console.error('Fatal:', e); process.exit(1); });

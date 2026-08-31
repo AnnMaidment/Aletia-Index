@@ -53,7 +53,7 @@ export interface SyncResult {
 
 export interface IngestResult {
   identifier: string
-  action: 'updated_existing' | 'created_new' | 'queued_for_review' | 'already_queued' | 'failed' | 'skipped_class_1'
+  action: 'updated_existing' | 'created_new' | 'queued_for_review' | 'already_queued' | 'skipped_prior_decision' | 'failed' | 'skipped_class_1'
   aletia_id: string | null
   error?: string
 }
@@ -424,7 +424,11 @@ export async function ingestFdaDevice(input: FdaIngestInput): Promise<IngestResu
     return { identifier, action: decision.action, aletia_id: decision.aletia_id }
   }
 
-  if (decision.action === 'queued_for_review' || decision.action === 'already_queued') {
+  if (
+    decision.action === 'queued_for_review' ||
+    decision.action === 'already_queued' ||
+    decision.action === 'skipped_prior_decision'
+  ) {
     return { identifier, action: decision.action, aletia_id: null }
   }
 
