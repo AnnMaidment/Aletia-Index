@@ -1,6 +1,6 @@
 import { cache } from 'react'
 import { permanentRedirect } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { Nav, Footer } from '@/components/NavFooter'
 import type { Metadata } from 'next'
 import type { CSSProperties } from 'react'
@@ -19,6 +19,33 @@ import {
 import type { DeviceExternalId, DeviceTrial } from '@/lib/types'
 
 const BASE_URL = 'https://www.aletia-index.com'
+
+// ── Why this page uses the admin client (SEC-003) ────────────────────────────
+//
+// fetchDeviceByAletiaId below selects `*` from device_master. device_master
+// carries claim_token, claimed_by_email and auth_user_id, so under the anon key
+// that query was serving every device's claim token — and claim_token is what
+// proves entitlement to take control of a listing. Anyone could reproduce the
+// same PostgREST request with the publishable key that ships in the site's own
+// JavaScript.
+//
+// The accompanying migration REVOKEs SELECT on those columns from anon, which
+// would break a `select *` issued as anon (Postgres rejects the whole select if
+// the role lacks any named column). Rather than replace `*` with a hand-written
+// column list — the live schema has drifted from the migrations, so any list I
+// wrote would risk silently dropping a field from the page — this file moves to
+// the service-role client, which bypasses both RLS and column grants.
+//
+// ⚠ CONSEQUENCE: RLS is no longer a backstop for this page. The
+// `.eq('excluded', false)` and `.is('merged_into', null)` filters below are now
+// the ONLY thing keeping excluded and absorbed devices off the public site.
+// Do not remove them. If this file ever needs a public-key path again, replace
+// `*` with an explicit column list first.
+//
+// This is server-only. SUPABASE_SERVICE_ROLE_KEY has no NEXT_PUBLIC_ prefix, so
+// if this module were ever pulled into a client bundle the key would be
+// undefined and the client would fail to construct — it cannot leak.
+const supabase = createAdminClient()
 
 const FLAG: Record<string, string> = {
   'United States': '🇺🇸',

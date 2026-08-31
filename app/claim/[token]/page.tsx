@@ -1,8 +1,18 @@
-import { supabase } from '@/lib/supabase'
+import { createAdminClient } from '@/lib/supabase-admin'
 import { notFound } from 'next/navigation'
 import ClaimForm from './ClaimForm'
 
-export default async function ClaimPage({ 
+// SEC-003. This page looks a token up against manufacturers.claim_token and
+// claim_requests.token. Both were readable with the publishable key, so the
+// lookup it performs was one anyone could perform in bulk — and a claim token
+// is the whole proof of entitlement to take over a listing.
+//
+// The accompanying migration seals claim_requests and revokes the token columns
+// from anon, so this lookup now requires the service-role client. It is a server
+// component; nothing here reaches the browser.
+const supabase = createAdminClient()
+
+export default async function ClaimPage({
   params 
 }: { 
   params: Promise<{ token: string }> 
@@ -23,8 +33,8 @@ export default async function ClaimPage({
     return (
       <main style={{ maxWidth: 480, margin: '80px auto', padding: '0 24px' }}>
         <h1>Already claimed</h1>
-        <p>This listing has already been claimed. If you believe this is an error, 
-        email <a href="mailto:annemarie.maidment@gmail.com">annemarie.maidment@gmail.com</a>.</p>
+        <p>This listing has already been claimed. If you believe this is an error,
+        email <a href="mailto:info@aletia-index.com">info@aletia-index.com</a>.</p>
       </main>
     )
   }
