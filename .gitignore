@@ -57,3 +57,6 @@ debar-specialty-snapshot-*.json
 *.tgz
 *.7z
 *.rar
+
+# database dumps — contain claim tokens and personal data
+backups/
