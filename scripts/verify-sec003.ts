@@ -28,13 +28,13 @@ const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 let pass = 0, fail = 0;
 
-async function control(label: string, run: () => Promise<{ error: unknown }>) {
+async function control(label: string, run: () => PromiseLike<{ error: unknown }>) {
   const { error } = await run();
   if (error) { fail++; console.log(`  ✗ CONTROL BROKEN  ${label}\n      ${(error as { message?: string }).message}`); }
   else { pass++; console.log(`  ✓ control ok       ${label}`); }
 }
 
-async function sealed(label: string, run: () => Promise<{ error: unknown; data: unknown }>) {
+async function sealed(label: string, run: () => PromiseLike<{ error: unknown; data: unknown }>) {
   const { error, data } = await run();
   if (error) { pass++; console.log(`  ✓ SEALED           ${label}\n      rejected: ${(error as { message?: string }).message}`); }
   else if (Array.isArray(data) && data.length === 0) { pass++; console.log(`  ✓ SEALED           ${label}  (no rows returned)`); }
